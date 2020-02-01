@@ -78,7 +78,7 @@ regex_cid_ranges =
 
 
 #-----------------------------------------------------------------------------------------------------------
-@declare 'interplot_text_with_hiragana',
+@declare 'intertext_text_with_hiragana',
   tests:
     '? is a text':              ( x ) -> @isa.text x
     '? has hiragana':           ( x ) -> ( x.match ///#{regex_cid_ranges.hiragana}///u )?
@@ -126,7 +126,7 @@ regex_cid_ranges =
     '? is ideographic':         ( x ) -> ( x.match ///^#{regex_cid_ranges.ideographic}+$///u )?
 
 #-----------------------------------------------------------------------------------------------------------
-@declare 'blank_text',
+@declare 'interplot_text_cjk',
   tests:
     '? is a text':              ( x ) -> @isa.text x
     '? is cjk':                 ( x ) -> ( x.match /// ^ #{L._regex_any_of_cjk_property_terms()}+ $ /// )?
@@ -138,6 +138,63 @@ regex_cid_ranges =
     '? has cjk':                ( x ) -> ( x.match ///   #{L._regex_any_of_cjk_property_terms()}+   /// )?
 
 
+#===========================================================================================================
+# HTML
+#-----------------------------------------------------------------------------------------------------------
+### thx to https://www.w3.org/TR/xml ###
+tagname_head_pattern = ///
+  a-z
+  A-Z
+  :_
+  \xc0-\xd6
+  \xd8-\xf6
+  \u00f8-\u02ff
+  \u0370-\u037d
+  \u037f-\u1fff
+  \u200c-\u200d
+  \u2070-\u218f
+  \u2c00-\u2fef
+  \u3001-\ud7ff
+  \uf900-\ufdcf
+  \ufdf0-\ufffd
+  \u{10000}-\u{effff} ///u
+tagname_tail_pattern = ///
+  \.-
+  0-9
+  \xb7
+  \u0300-\u036f
+  \u203f-\u2040 ///u
+tagname_pattern = /// ^
+  [#{tagname_head_pattern.source}]
+  [#{tagname_head_pattern.source}#{tagname_tail_pattern.source}]* $ ///u ### must NOT set global flag ###
+
+#-----------------------------------------------------------------------------------------------------------
+@declare 'intertext_html_tagname',
+  tests:
+    "x is a text":                    ( x ) -> @isa.text x
+    "x matches tagname_pattern":      ( x ) -> tagname_pattern.test x
+
+#-----------------------------------------------------------------------------------------------------------
+@declare 'intertext_html_naked_attribute_value',
+  ### thx to https://raw.githubusercontent.com/mathiasbynens/mothereff.in/master/unquoted-attributes/eff.js
+  also see https://mothereff.in/unquoted-attributes,
+  https://mathiasbynens.be/notes/unquoted-attribute-values ###
+  tests:
+    "x is a text":                            ( x ) -> @isa.text x
+    "x isa intertext_html_naked_attribute_text":  ( x ) -> @isa._intertext_html_naked_attribute_text x
+
+#-----------------------------------------------------------------------------------------------------------
+@declare '_intertext_html_naked_attribute_text', ( x ) -> /^[^ \t\n\f\r"'`=<>]+$/.test x
+
+# #-----------------------------------------------------------------------------------------------------------
+# @_CSS_must_quote = ( x ) ->
+#   ### NOTE for completeness, from the same source https://mathiasbynens.be/notes/unquoted-attribute-values ###
+#   return true if ( x is '' ) or ( x is '-' )
+#   ### Escapes are valid, so replace them with a valid non-empty string ###
+#   x = ( x.replace /\\([0-9A-Fa-f]{1,6})[ \t\n\f\r]?/g, 'a' ).replace /\\./g, 'a'
+#   return not not ( ( /[\0-\x2C\x2E\x2F\x3A-\x40\x5B-\x5E\x60\x7B-\x9F]/.test x ) or ( /^-?\d/.test x ) )
+
+
 
 # #-----------------------------------------------------------------------------------------------------------
 # @declare 'blank_text',
@@ -146,6 +203,6 @@ regex_cid_ranges =
 #     '? is blank':               ( x ) -> ( x.match ///^\s*$///u )?
 
 
-@defaults =
-  settings:
-    merge:    true
+# @defaults =
+#   settings:
+#     merge:    true

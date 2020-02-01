@@ -272,6 +272,33 @@ test                      = require 'guy-test'
   return null
 
 #-----------------------------------------------------------------------------------------------------------
+@[ "HTML.html_as_datoms (dubious)" ] = ( T, done ) ->
+  probes_and_matchers = [
+    ### TAINT these edge cases should be solved by an appropriate (MKTScript) pre-processor; NB that in
+    MKTScript stray pointy brackets in ordinary text (but not in `<code>` blocks) are forbidden and must
+    be escaped as entities wherever they appear in attribute values; these rules, however, do not
+    necessarily apply when parsing general HTML sources. ###
+    ###
+    ["< >",[{"text":"< >","$key":"^text"}],null]          # !!! silent failure
+    ["< x >",[{"text":"< x >","$key":"^text"}],null]      # !!! silent failure
+    ["<>",[{"text":"<>","$key":"^text"}],null]            # !!! silent failure
+    ["<",[{"text":"<","$key":"^text"}],null]              # !!! silent failure
+    ["<tag",[{"text":"<tag","$key":"^text"}],null]        # !!! silent failure
+    ###
+    ["if <math> a > b </math> then",[{"text":"if ","$key":"^text"},{"$key":"<math"},{"text":" a > b ","$key":"^text"},{"$key":">math"},{"text":" then","$key":"^text"}],null]
+    [">",[{"text":">","$key":"^text"}],null]
+    ["&",[{"text":"&","$key":"^text"}],null]
+    ["&amp;",[{"text":"&amp;","$key":"^text"}],null]
+    ["<tag a='<'>",[{"a":"<","$key":"<tag"}],null]
+    ]
+  for [ probe, matcher, error, ] in probes_and_matchers
+    await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
+      resolve HTML.html_as_datoms probe
+  #.........................................................................................................
+  done()
+  return null
+
+#-----------------------------------------------------------------------------------------------------------
 @[ "HTML.html_as_datoms (2)" ] = ( T, done ) ->
   probes_and_matchers = [
     ["<!DOCTYPE html>","<!DOCTYPE html>",null]

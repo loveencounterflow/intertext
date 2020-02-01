@@ -1,0 +1,13 @@
+{
+  "version": 3,
+  "file": "hyphenation.js",
+  "sourceRoot": "..",
+  "sources": [
+    "src/hyphenation.coffee"
+  ],
+  "names": [],
+  "mappings": ";AAAA;;AAAA",
+  "sourcesContent": [
+    "\n\n\n"
+  ]
+}

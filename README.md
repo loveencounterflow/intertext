@@ -7,8 +7,9 @@
 - [Tabulation, `width_of`](#tabulation-width_of)
 - [Hyphenation](#hyphenation)
   - [Turning Texts into "Slabs"](#turning-texts-into-slabs)
-- [HTML Parsing](#html-parsing)
-- [HTML Generation](#html-generation)
+- [HTML](#html)
+  - [HTML Parsing](#html-parsing)
+  - [HTML Generation](#html-generation)
 - [Codepoint Characterization](#codepoint-characterization)
 - [Benchmarks](#benchmarks)
   - [Hyphenators](#hyphenators)
@@ -62,19 +63,122 @@ Slabs used to be known as 'Logotypes' in typesetting:
 > “word”.—(typography.guru)[https://typography.guru/journal/words-and-phrases-in-common-use-which-originated-in-the-field-of-typography-r78/]
 
 
-## HTML Parsing
+## HTML
 
-see jzr/benchmarks/src/streaming-html-parsers/main.coffee
-see jzr/benchmarks/src/streaming-html-parsers/mkts-tagparser.coffee
+### HTML Parsing
 
-probably using `atlassubbed/atlas-html-stream`
+HTML parsing uses `atlassubbed/atlas-html-stream` to turn HTML5 texts into series of
+[datoms](https://github.com/loveencounterflow/datom). Two HTML formats are supported:
+
+* plain HTML5, and
+* MKTScript, a nascent crossbreed of a kind-of MarkDown with HTMLish tags.
+
+Unless you know what you're after you'll probably want to use the plain HTML5 flavor.
+
+After `{ HTML, } = require 'intertext'`, use one of these methods:
+
+* `HTML.html_as_datoms = ( text ) ->` to turn HTML fragments or entire documents into a list of datoms, or
+
+* `HTML.mkts_html_as_datoms = ( text ) ->` to do the same with MKTScript.
+
+Both methods work pretty much the same and are the inverse operations to `HTML.datom_as_html()`:
+
+* All opening tags will be turned into datoms whose `$key` is the tagname prefixed with the left pointy
+  bracket as sigil, and attribute name/value pairs becoming properties of the datom.
+* Closing tags will be turned into datoms whose `$key` is the tagname prefixed with the right pointy bracket
+  as sigil.
+* For plain HTML, 'lone'/'self-closing' tags will be treated like an opening tag immediately followed by a
+  closing tag. as sigil.
+* For MKTScript, 'lone'/'self-closing' tags will be turned into datoms whose `$key` is the tagname prefixed
+  with the caret as sigil.
+* Intermittent text will be turned into datoms whose `$key` is `^text` and whose contents are stored under
+  the `text` property.
+* Whitespace will be preserved.
+
+An example:
+
+```coffee
+text = """<!DOCTYPE html>
+<h1><strong>CHAPTER VI.</strong> <name ref=hd553>Humpty Dumpty</h1>
+
+<p id=p227>However, the egg only got larger and larger, and <em>more and more human</em>:<br>
+
+when she had come within a few yards of it, she saw that it had eyes and a nose and mouth; and when she
+had come close to it, she saw clearly that it was <name ref=hd556>HUMPTY DUMPTY</name> himself. ‘It can’t
+be anybody else!’ she said to herself.<br/>
+
+‘I’m as certain of it, as if his name were written all over his face.’
+
+"""
+for d in HTML.html_as_datoms text
+  console.log JSON.stringify d
+```
+
+... will produce:
+
+```coffee
+{ "$key": "^doctype",   "$value": "html",                                                           }
+{ "$key": "^text",      "text":   "\n",                                                             }
+{ "$key": "<h1",                                                                                    }
+{ "$key": "<strong",                                                                                }
+{ "$key": "^text",      "text":   "CHAPTER VI.",                                                    }
+{ "$key": ">strong",                                                                                }
+{ "$key": "^text",      "text":   " ",                                                              }
+{ "$key": "<name",      "ref":    "hd553",                                                          }
+{ "$key": "^text",      "text":   "Humpty Dumpty",                                                  }
+{ "$key": ">h1",                                                                                    }
+{ "$key": "^text",      "text":   "\n\n",                                                           }
+{ "$key": "<p",         "id":     "p227",                                                           }
+{ "$key": "^text",      "text":   "However, the egg only got larger and larger, and ",              }
+{ "$key": "<em",                                                                                    }
+{ "$key": "^text",      "text":   "more and more human",                                            }
+{ "$key": ">em",                                                                                    }
+{ "$key": "^text",      "text":   ":",                                                              }
+{ "$key": "<br",                                                                                    }
+{ "$key": "^text",      "text":   "\n\nwhen she had come within ...  she saw clearly that it was ", }
+{ "$key": "<name",      "ref":    "hd556",                                                          }
+{ "$key": "^text",      "text":   "HUMPTY DUMPTY",                                                  }
+{ "$key": ">name",                                                                                  }
+{ "$key": "^text",      "text":   " himself. ‘It can’t\nbe anybody else!’ she said to herself.",    }
+{ "$key": "<br",                                                                                    }
+{ "$key": ">br",                                                                                    }
+{ "$key": "^text",      "text":   "\n\n‘I’m as certain ... all over his face.’\n",                  }
+
+```
+
+### HTML Generation
+
+<!-- Successor to `coffeenode-teacup`? -->
+
+`{ HTML, } = require 'intertext'`
+
+* `HTML.datom_as_html = ( d ) ->`
 
 
-## HTML Generation
+* For the tagname:
+  *  `d.$key` will become the tagname
+  * the tagname must conform to the [XML tagname restrictions](https://www.w3.org/TR/xml)
 
-Successor to `coffeenode-teacup`
+* For the attributes:
+  * all facets with value `true` (the boolean, not the text) will be turned into 'lone attributes', such
+    that `{ $key: '<p', contenteditable: true, }` will result in `<p contenteditable>`
+  * facet values are subject to HTML5 attribute value escaping rules as detailed in
+    https://mathiasbynens.be/notes/unquoted-attribute-values
+  * where permitted, values will be left unquoted ('naked'); where necessary, values will be surrounded
+    by `'` (single quotes)
+  * facets with an empty string are not treated specially; per attribute value escaping rules, they will
+    result in `''` (two single quotes)
+  * all keys that start with a `$` will be ignored
+  * if `d.$value` is an object, its facets will be turned into HTML attributes; all other keys are ignored
 
-Serialization implemented in [Datom](https://github.com/loveencounterflow/datom)
+* Open questions:
+  * how to treat system-level names (sigils `[`, `~`, `]`)?
+    * ignore?
+    * as comments?
+    * as prefixed/namespaced tags?
+  * how to treat datom keys that contain hyphens, underscores?
+    * turn underscores into hyphens?
+
 
 ## Codepoint Characterization
 
@@ -163,7 +267,7 @@ genitive (so far I have not tested whether that strange behavior also occurs wit
 apostrophes or quotes); this occurs in 3,057 (3%) of all words in the list:
 
 ```
-hyphenopoly 									 hypher
+hyphenopoly                    hypher
 —————————————————————————————————————————————————————————
 thun-der-storm’s               thun-der-stor-m’s
 tib-ia’s                       tib-i-a’s
@@ -176,7 +280,7 @@ these have letters with diacritics; observe that some words with diacritics *are
 `hyphenopoly`:
 
 ```
-hyphenopoly 									 hypher
+hyphenopoly                    hypher
 —————————————————————————————————————————————————————————
 Düssel-dorf                    Düs-sel-dorf
 Es-terházy                     Es-ter-házy

@@ -311,6 +311,8 @@ test                      = require 'guy-test'
     throw new Error "Syntax error: closing before opening bracket"                if ( idx_1 < idx_0 )
     throw new Error "Syntax error: closing bracket too close to opening bracket"  if ( idx_1 < idx_0 + 2 )
     throw new Error "Syntax error: whitespace not allowed here"                   if /\s/.test text[ idx_0 + 1 ]
+    idx_2 = text.indexOf '<', idx_0 + 1
+    throw new Error "Syntax error: additional opening bracket"                    if ( 0 < idx_2 < idx_1 )
     return [ idx_0, idx_1, ]
   #.........................................................................................................
   parse_mktscript_html = ( text ) ->
@@ -370,7 +372,9 @@ test                      = require 'guy-test'
     ["&&",[{"text":"&&","$key":"^text"}],null]
     ["max & moritz",[{"text":"max & moritz","$key":"^text"}],null]
     ["&amp;",[{"text":"&amp;","$key":"^text"}],null]
-    ["<tag a='<'>",[{"a":"<","$key":"<tag"}],null]
+    ["<tag>\n \n\t\n</p>",[{"$key":"<tag"},{"text":"\n \n\t\n","$key":"^text"},{"$key":">p"}],null]
+    ["<tag a='<'>",[{"message":"Syntax error: additional opening bracket: \"<tag a='<'>\"","type":"mkts-syntax-html","source":"<tag a='<'>","$key":"~error"}],null]
+    ["<tag a='>'>",[{"text":">","$key":"^text"},{"message":"Syntax error: closing but no opening bracket: \"'>\"","type":"mkts-syntax-html","source":"'>","$key":"~error"}],null]
     ["if <math> a > b </math> then",[{"text":"if ","$key":"^text"},{"$key":"<math"},{"message":"Syntax error: closing before opening bracket: \" a > b </math> then\"","type":"mkts-syntax-html","source":" a > b </math> then","$key":"~error"}],null]
     ]
   for [ probe, matcher, error, ] in probes_and_matchers
@@ -408,7 +412,7 @@ test                      = require 'guy-test'
 ############################################################################################################
 if module is require.main then do => # await do =>
   # await @_demo()
-  # test @
+  test @
   help 'ok'
 
   # test @[ "must quote attribute value" ]
@@ -424,7 +428,7 @@ if module is require.main then do => # await do =>
   # test @[ "HTML.datom_as_html (doctype)" ]
   # test @[ "HTML.html_as_datoms (1)" ]
   # test @[ "HTML.html_as_datoms (dubious 2)" ]
-  test @[ "HTML.html_as_datoms (dubious w/ pre-processor)" ]
+  # test @[ "HTML.html_as_datoms (dubious w/ pre-processor)" ]
 
 
 

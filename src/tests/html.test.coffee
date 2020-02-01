@@ -299,61 +299,7 @@ test                      = require 'guy-test'
   return null
 
 #-----------------------------------------------------------------------------------------------------------
-@[ "HTML.html_as_datoms (dubious w/ pre-processor)" ] = ( T, done ) ->
-  #.........................................................................................................
-  find_next_tag = ( text, prv_idx = 0 ) ->
-    idx_0 = text.indexOf '<', prv_idx
-    idx_1 = text.indexOf '>', prv_idx
-    if ( idx_0 < 0 )
-      return [ null, null, ] if ( idx_1 < 0 )
-      throw new Error "Syntax error: closing but no opening bracket"
-    throw new Error "Syntax error: opening but no closing bracket"                if ( idx_1 < 0 )
-    throw new Error "Syntax error: closing before opening bracket"                if ( idx_1 < idx_0 )
-    throw new Error "Syntax error: closing bracket too close to opening bracket"  if ( idx_1 < idx_0 + 2 )
-    throw new Error "Syntax error: whitespace not allowed here"                   if /\s/.test text[ idx_0 + 1 ]
-    idx_2 = text.indexOf '<', idx_0 + 1
-    throw new Error "Syntax error: additional opening bracket"                    if ( 0 < idx_2 < idx_1 )
-    return [ idx_0, idx_1, ]
-  #.........................................................................................................
-  parse_mktscript_html = ( text ) ->
-    R         = []
-    prv_idx   = 0
-    prv_idx_1 = -1
-    #.......................................................................................................
-    loop
-      #.....................................................................................................
-      try
-        [ idx_0, idx_1, ] = find_next_tag text, prv_idx
-      catch error
-        throw error unless /Syntax error/.test error.message
-        source = text[ prv_idx .. ]
-        R.push new_datom '~error', {
-          message:  "#{error.message}: #{jr source}",
-          type:     'mkts-syntax-html',
-          source:   source, }
-        return R
-      #.....................................................................................................
-      if idx_0 > prv_idx_1 + 1
-        R.push new_datom '^text', { text: text[ prv_idx_1 + 1 ... idx_0 ], }
-      break unless idx_0?
-      tags = HTML.html_as_datoms text[ idx_0 .. idx_1 ]
-      if text[ idx_1 - 1 ] is '/'
-        R.push d = lets tags[ 0 ], ( d ) -> d.$key = '^' + d.$key[ 1 .. ]
-      else
-        R.push tags...
-      prv_idx_1 = idx_1
-      prv_idx   = idx_1 + 1
-    #.......................................................................................................
-    # debug '7776^', rpr { prv_idx, prv_idx_1, idx_0, idx_1, length: text.length, }
-    if prv_idx < text.length
-        R.push new_datom '^text', { text: text[ prv_idx_1 + 1 .. ], }
-    return R
-  #.........................................................................................................
-  # find_next_tag = ( text, prv_idx = 0 ) ->
-  #   return [ null, null, ]          if ( idx_0 = text.indexOf '<', prv_idx    ) < 0
-  #   throw new Error "Syntax error"  if ( idx_1 = text.indexOf '>', idx_0 + 1  ) < 0
-  #   return [ idx_0, idx_1, ]
-  #.........................................................................................................
+@[ "HTML.mkts_html_as_datoms" ] = ( T, done ) ->
   probes_and_matchers = [
     ["line A<br/>line B",[{"text":"line A","$key":"^text"},{"$key":"^br"},{"text":"line B","$key":"^text"}],null]
     ["<p>|here and|<br>",[{"$key":"<p"},{"text":"|here and|","$key":"^text"},{"$key":"<br"}],null]
@@ -380,7 +326,7 @@ test                      = require 'guy-test'
   for [ probe, matcher, error, ] in probes_and_matchers
     await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
       text      = probe
-      resolve parse_mktscript_html text
+      resolve HTML.mkts_html_as_datoms text
   #.........................................................................................................
   done()
   return null

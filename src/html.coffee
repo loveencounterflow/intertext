@@ -16,9 +16,11 @@ urge                      = CND.get_logger 'urge',      badge
 echo                      = CND.echo.bind CND
 { jr, }                   = CND
 #...........................................................................................................
-DATOM                     = require 'datom'
-{ new_datom }             = DATOM.export()
-@types                    = require './types'
+DATOM                     = new ( require 'datom' ).Datom { dirty: false, }
+{ new_datom
+  lets
+  select }                = DATOM.export()
+types                     = require './types'
 { isa
   validate
   # cast
@@ -28,7 +30,7 @@ DATOM                     = require 'datom'
   # sad
   # is_sad
   # is_happy
-  type_of }               = @types
+  type_of }               = types
 #...........................................................................................................
 HtmlParser                = require 'atlas-html-stream'
 
@@ -93,12 +95,15 @@ HtmlParser                = require 'atlas-html-stream'
   # return "<#{tagname}#{slash}>" if atxt is ''
   # return "<#{tagname}#{atxt}#{slash}>"
 
+
 #===========================================================================================================
-#
+# PARSING
 #-----------------------------------------------------------------------------------------------------------
-@new_parse_method = ->
-  R       = null
-  parser  = new HtmlParser { preserveWS: true, }
+# @new_parse_method = ( settings ) ->
+#   validate.parse_html_settings settings = { types.defaults.parse_html_settings..., settings..., }
+@_new_parse_method = ( settings ) ->
+  R         = null
+  parser    = new HtmlParser { preserveWS: true, }
   #.........................................................................................................
   parser.on 'data', ( { name, data, text, } ) =>
     name = name.toLowerCase() if name?
@@ -129,59 +134,59 @@ HtmlParser                = require 'atlas-html-stream'
     return R
 
 #-----------------------------------------------------------------------------------------------------------
-@html_as_datoms = @new_parse_method()
+@html_as_datoms = @_new_parse_method()
+
+#-----------------------------------------------------------------------------------------------------------
+find_next_tag = ( text, prv_idx = 0 ) ->
+  idx_0 = text.indexOf '<', prv_idx
+  idx_1 = text.indexOf '>', prv_idx
+  if ( idx_0 < 0 )
+    return [ null, null, ] if ( idx_1 < 0 )
+    throw new Error "Syntax error: closing but no opening bracket"
+  throw new Error "Syntax error: opening but no closing bracket"                if ( idx_1 < 0 )
+  throw new Error "Syntax error: closing before opening bracket"                if ( idx_1 < idx_0 )
+  throw new Error "Syntax error: closing bracket too close to opening bracket"  if ( idx_1 < idx_0 + 2 )
+  throw new Error "Syntax error: whitespace not allowed here"                   if /\s/.test text[ idx_0 + 1 ]
+  idx_2 = text.indexOf '<', idx_0 + 1
+  throw new Error "Syntax error: additional opening bracket"                    if ( 0 < idx_2 < idx_1 )
+  return [ idx_0, idx_1, ]
+
+#-----------------------------------------------------------------------------------------------------------
+@mkts_html_as_datoms = ( text ) ->
+  R         = []
+  prv_idx   = 0
+  prv_idx_1 = -1
+  #.........................................................................................................
+  loop
+    #.......................................................................................................
+    try
+      [ idx_0, idx_1, ] = find_next_tag text, prv_idx
+    catch error
+      throw error unless /Syntax error/.test error.message
+      source = text[ prv_idx .. ]
+      R.push new_datom '~error', {
+        message:  "#{error.message}: #{jr source}",
+        type:     'mkts-syntax-html',
+        source:   source, }
+      return R
+    #.......................................................................................................
+    if idx_0 > prv_idx_1 + 1
+      R.push new_datom '^text', { text: text[ prv_idx_1 + 1 ... idx_0 ], }
+    break unless idx_0?
+    tags = @html_as_datoms text[ idx_0 .. idx_1 ]
+    if text[ idx_1 - 1 ] is '/'
+      R.push d = lets tags[ 0 ], ( d ) -> d.$key = '^' + d.$key[ 1 .. ]
+    else
+      R.push tags...
+    prv_idx_1 = idx_1
+    prv_idx   = idx_1 + 1
+  #.........................................................................................................
+  # debug '7776^', rpr { prv_idx, prv_idx_1, idx_0, idx_1, length: text.length, }
+  if prv_idx < text.length
+      R.push new_datom '^text', { text: text[ prv_idx_1 + 1 .. ], }
+  return R
 
 
-
-
-############################################################################################################
-############################################################################################################
-############################################################################################################
-############################################################################################################
-############################################################################################################
-
-# #-----------------------------------------------------------------------------------------------------------
-# @new_parse_method = ( handler ) ->
-#   validate.callable handler
-#   parser  = new HtmlParser { preserveWS: true, }
-#   #.........................................................................................................
-#   parser.on 'data', ( { name, data, text, } ) =>
-#     name = name.toLowerCase() if name?
-#     #.......................................................................................................
-#     if name is '!doctype'
-#       $value = 'html'
-#       for key of data
-#         $value = key
-#         break
-#       return handler null, new_datom '^doctype', $value
-#     #.......................................................................................................
-#     return handler null, new_datom '^text', { text, } if text?
-#     return handler null, new_datom '>' + name unless data?
-#     has_keys = false
-#     for key, value of data
-#       has_keys    = true
-#       data[ key ] = true if value is ''
-#     return handler null, new_datom '<' + name unless has_keys
-#     return handler null, new_datom '<' + name, data
-#   parser.on 'error', ( error ) -> handler error
-#   # parser.on 'end', -> R.push new_datom '^stop'
-#   #.........................................................................................................
-#   return ( html ) =>
-#     parser.write html
-#     parser.flushText()
-#     parser.reset()
-#     return null
-
-# #-----------------------------------------------------------------------------------------------------------
-# @walk_datoms_from_html = @new_parse_method ( error, d ) =>
-#   throw error if error?
-
-
-
-############################################################################################################
-############################################################################################################
-############################################################################################################
-############################################################################################################
 ############################################################################################################
 if module is require.main then do => # await do =>
   help 'ok'

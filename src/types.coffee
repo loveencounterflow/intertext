@@ -187,22 +187,17 @@ tagname_pattern = /// ^
 @declare '_intertext_html_naked_attribute_text', ( x ) -> /^[^ \t\n\f\r"'`=<>]+$/.test x
 
 # #-----------------------------------------------------------------------------------------------------------
-# @_CSS_must_quote = ( x ) ->
-#   ### NOTE for completeness, from the same source https://mathiasbynens.be/notes/unquoted-attribute-values ###
-#   return true if ( x is '' ) or ( x is '-' )
-#   ### Escapes are valid, so replace them with a valid non-empty string ###
-#   x = ( x.replace /\\([0-9A-Fa-f]{1,6})[ \t\n\f\r]?/g, 'a' ).replace /\\./g, 'a'
-#   return not not ( ( /[\0-\x2C\x2E\x2F\x3A-\x40\x5B-\x5E\x60\x7B-\x9F]/.test x ) or ( /^-?\d/.test x ) )
-
-
+# @declare 'parse_html_settings',
+#   tests:
+#     "x is an object":                       ( x ) -> @isa.object x
+#     "x.format is known":                    ( x ) -> x.format in [ 'html5', 'mkts', ]
 
 # #-----------------------------------------------------------------------------------------------------------
-# @declare 'blank_text',
-#   tests:
-#     '? is a text':              ( x ) -> @isa.text x
-#     '? is blank':               ( x ) -> ( x.match ///^\s*$///u )?
-
-
 # @defaults =
 #   settings:
-#     merge:    true
+#     parse_html_settings:
+#       format:     'html5'
+
+
+
+

@@ -144,8 +144,11 @@ for d in HTML.html_as_datoms text
 { "$key": "<br",                                                                                    }
 { "$key": ">br",                                                                                    }
 { "$key": "^text",      "text":   "\n\n‘I’m as certain ... all over his face.’\n",                  }
-
 ```
+
+As can be seen, no validation will be done, and the parser will happily produce events for unclosed and
+unbalanced closing tags.
+
 
 ### HTML Generation
 

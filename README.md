@@ -153,7 +153,7 @@ log ( HTML.datom_as_html d for d in datoms ).join ''
 
 ... will produce:
 
-```coffee
+```json
 { "$key": "^doctype",   "$value": "html",                                                           }
 { "$key": "^text",      "text":   "\n",                                                             }
 { "$key": "<h1",                                                                                    }
@@ -180,7 +180,9 @@ log ( HTML.datom_as_html d for d in datoms ).join ''
 { "$key": "<br",                                                                                    }
 { "$key": ">br",                                                                                    }
 { "$key": "^text",      "text":   "\n\n‘I’m as certain ... all over his face.’\n",                  }
-------------------------------------------------------------------------------------------------------------
+```
+
+```html
 <!DOCTYPE html>
 <h1><strong>CHAPTER VI.</strong> <name ref=hd553>Humpty Dumpty</h1>
 

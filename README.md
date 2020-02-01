@@ -67,8 +67,9 @@ Slabs used to be known as 'Logotypes' in typesetting:
 
 ### HTML Parsing
 
-HTML parsing uses `atlassubbed/atlas-html-stream` to turn HTML5 texts into series of
-[datoms](https://github.com/loveencounterflow/datom). Two HTML formats are supported:
+HTML parsing uses [`atlassubbed/atlas-html-stream`](https://github.com/atlassubbed/atlas-html-stream) to
+turn HTML5 texts into series of [datoms](https://github.com/loveencounterflow/datom). Two HTML formats are
+supported:
 
 * plain HTML5, and
 * MKTScript, a nascent crossbreed of a kind-of MarkDown with HTMLish tags.

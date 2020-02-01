@@ -20,56 +20,33 @@ PATH                      = require 'path'
 Multimix                  = require 'multimix'
 { assign
   jr }                    = CND
-# { walk_cids_in_cid_range
-#   cwd_abspath
-#   cwd_relpath
-#   here_abspath
-#   _drop_extension
-#   project_abspath }       = require './helpers'
-# @types                    = require './types'
-# { isa
-#   validate
-#   cast
-#   type_of }               = @types
-# SP                        = require 'steampipes'
-# { $
-#   $async
-#   $watch
-#   $show
-#   $drain }                = SP.export()
-# { jr, }                   = CND
-# DATOM                     = new ( require 'datom' ).Datom { dirty: false, }
-# { new_datom
-#   wrap_datom
-#   # lets
-#   select }                = DATOM.export()
+@types                    = require './types'
+{ isa
+  validate
+  cast
+  type_of }               = @types
 Multimix                  = require 'multimix'
 
 
 
-# #===========================================================================================================
-# #
-# #-----------------------------------------------------------------------------------------------------------
-# MAIN = @
-# class Fontmirror extends Multimix
-#   @include MAIN,                              { overwrite: false, }
-#   @include ( require './outliner.mixin' ),    { overwrite: false, }
-#   @include ( require './cachewalker.mixin' ), { overwrite: false, }
-#   @include ( require './_temp_svgttf' ),      { overwrite: false, } ### !!!!!!!!!!!!!!!!!!!!!!!!!!! ###
-#   # @extend MAIN, { overwrite: false, }
+#===========================================================================================================
+#
+#-----------------------------------------------------------------------------------------------------------
+MAIN = @
+class Intertext extends Multimix
+  @include MAIN,                              { overwrite: false, }
+  # @include ( require './outliner.mixin' ),    { overwrite: false, }
+  # @extend MAIN, { overwrite: false, }
 
-#   #---------------------------------------------------------------------------------------------------------
-#   constructor: ( target = null ) ->
-#     super()
-#     @CLI    = require './cli'
-#     @CFG    = require './cfg'
-#     @TAGS   = require './tags'
-#     @NICKS  = require './texfontnamesake'
-#     @LINKS  = require './links'
-#     @export target if target?
-#     return @
+  #---------------------------------------------------------------------------------------------------------
+  constructor: ( target = null ) ->
+    super()
+    @HTML   = require './html'
+    @export target if target?
+    return @
 
-# module.exports = FONTMIRROR = new Fontmirror()
+module.exports = INTERTEXT = new Intertext()
+
 
 ############################################################################################################
 if module is require.main then do =>

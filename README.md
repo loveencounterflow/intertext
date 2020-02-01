@@ -10,6 +10,7 @@
 - [HTML](#html)
   - [HTML Parsing](#html-parsing)
   - [HTML Generation](#html-generation)
+  - [Example: HTML Parsing and HTML Generation](#example-html-parsing-and-html-generation)
 - [Codepoint Characterization](#codepoint-characterization)
 - [Benchmarks](#benchmarks)
   - [Hyphenators](#hyphenators)
@@ -96,60 +97,6 @@ Both methods work pretty much the same and are the inverse operations to `HTML.d
   the `text` property.
 * Whitespace will be preserved.
 
-An example:
-
-```coffee
-text = """<!DOCTYPE html>
-<h1><strong>CHAPTER VI.</strong> <name ref=hd553>Humpty Dumpty</h1>
-
-<p id=p227>However, the egg only got larger and larger, and <em>more and more human</em>:<br>
-
-when she had come within a few yards of it, she saw that it had eyes and a nose and mouth; and when she
-had come close to it, she saw clearly that it was <name ref=hd556>HUMPTY DUMPTY</name> himself. ‘It can’t
-be anybody else!’ she said to herself.<br/>
-
-‘I’m as certain of it, as if his name were written all over his face.’
-
-"""
-for d in HTML.html_as_datoms text
-  console.log JSON.stringify d
-```
-
-... will produce:
-
-```coffee
-{ "$key": "^doctype",   "$value": "html",                                                           }
-{ "$key": "^text",      "text":   "\n",                                                             }
-{ "$key": "<h1",                                                                                    }
-{ "$key": "<strong",                                                                                }
-{ "$key": "^text",      "text":   "CHAPTER VI.",                                                    }
-{ "$key": ">strong",                                                                                }
-{ "$key": "^text",      "text":   " ",                                                              }
-{ "$key": "<name",      "ref":    "hd553",                                                          }
-{ "$key": "^text",      "text":   "Humpty Dumpty",                                                  }
-{ "$key": ">h1",                                                                                    }
-{ "$key": "^text",      "text":   "\n\n",                                                           }
-{ "$key": "<p",         "id":     "p227",                                                           }
-{ "$key": "^text",      "text":   "However, the egg only got larger and larger, and ",              }
-{ "$key": "<em",                                                                                    }
-{ "$key": "^text",      "text":   "more and more human",                                            }
-{ "$key": ">em",                                                                                    }
-{ "$key": "^text",      "text":   ":",                                                              }
-{ "$key": "<br",                                                                                    }
-{ "$key": "^text",      "text":   "\n\nwhen she had come within ...  she saw clearly that it was ", }
-{ "$key": "<name",      "ref":    "hd556",                                                          }
-{ "$key": "^text",      "text":   "HUMPTY DUMPTY",                                                  }
-{ "$key": ">name",                                                                                  }
-{ "$key": "^text",      "text":   " himself. ‘It can’t\nbe anybody else!’ she said to herself.",    }
-{ "$key": "<br",                                                                                    }
-{ "$key": ">br",                                                                                    }
-{ "$key": "^text",      "text":   "\n\n‘I’m as certain ... all over his face.’\n",                  }
-```
-
-As can be seen, no validation will be done, and the parser will happily produce events for unclosed and
-unbalanced closing tags.
-
-
 ### HTML Generation
 
 <!-- Successor to `coffeenode-teacup`? -->
@@ -182,6 +129,73 @@ unbalanced closing tags.
     * as prefixed/namespaced tags?
   * how to treat datom keys that contain hyphens, underscores?
     * turn underscores into hyphens?
+
+### Example: HTML Parsing and HTML Generation
+
+```coffee
+text = """<!DOCTYPE html>
+<h1><strong>CHAPTER VI.</strong> <name ref=hd553>Humpty Dumpty</h1>
+
+<p id=p227>However, the egg only got larger and larger, and <em>more and more human</em>:<br>
+
+when she had come within a few yards of it, she saw that it had eyes and a nose and mouth; and when she
+had come close to it, she saw clearly that it was <name ref=hd556>HUMPTY DUMPTY</name> himself. ‘It can’t
+be anybody else!’ she said to herself.<br/>
+
+‘I’m as certain of it, as if his name were written all over his face.’
+
+"""
+for d in HTML.html_as_datoms text
+  log JSON.stringify d
+log '-'.repeat 108
+log ( HTML.datom_as_html d for d in datoms ).join ''
+```
+
+... will produce:
+
+```coffee
+{ "$key": "^doctype",   "$value": "html",                                                           }
+{ "$key": "^text",      "text":   "\n",                                                             }
+{ "$key": "<h1",                                                                                    }
+{ "$key": "<strong",                                                                                }
+{ "$key": "^text",      "text":   "CHAPTER VI.",                                                    }
+{ "$key": ">strong",                                                                                }
+{ "$key": "^text",      "text":   " ",                                                              }
+{ "$key": "<name",      "ref":    "hd553",                                                          }
+{ "$key": "^text",      "text":   "Humpty Dumpty",                                                  }
+{ "$key": ">h1",                                                                                    }
+{ "$key": "^text",      "text":   "\n\n",                                                           }
+{ "$key": "<p",         "id":     "p227",                                                           }
+{ "$key": "^text",      "text":   "However, the egg only got larger and larger, and ",              }
+{ "$key": "<em",                                                                                    }
+{ "$key": "^text",      "text":   "more and more human",                                            }
+{ "$key": ">em",                                                                                    }
+{ "$key": "^text",      "text":   ":",                                                              }
+{ "$key": "<br",                                                                                    }
+{ "$key": "^text",      "text":   "\n\nwhen she had come within ...  she saw clearly that it was ", }
+{ "$key": "<name",      "ref":    "hd556",                                                          }
+{ "$key": "^text",      "text":   "HUMPTY DUMPTY",                                                  }
+{ "$key": ">name",                                                                                  }
+{ "$key": "^text",      "text":   " himself. ‘It can’t\nbe anybody else!’ she said to herself.",    }
+{ "$key": "<br",                                                                                    }
+{ "$key": ">br",                                                                                    }
+{ "$key": "^text",      "text":   "\n\n‘I’m as certain ... all over his face.’\n",                  }
+------------------------------------------------------------------------------------------------------------
+<!DOCTYPE html>
+<h1><strong>CHAPTER VI.</strong> <name ref=hd553>Humpty Dumpty</h1>
+
+<p id=p227>However, the egg only got larger and larger, and <em>more and more human</em>:<br>
+
+when she had come within a few yards of it, she saw that it had eyes and a nose and mouth; and when she
+had come close to it, she saw clearly that it was <name ref=hd556>HUMPTY DUMPTY</name> himself. ‘It can’t
+be anybody else!’ she said to herself.<br></br>
+
+‘I’m as certain of it, as if his name were written all over his face.’
+```
+
+As can be seen, no validation will be done, and the parser will happily produce events for unclosed and
+unbalanced closing tags. There is a minor issue with the `<br></br>` tag pair which will get resolved in
+a future version.
 
 
 ## Codepoint Characterization

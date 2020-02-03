@@ -261,6 +261,7 @@ INTERTEXT                 = require '../..'
     ["<foo></foo>",[{"$key":"<foo"},{"$key":">foo"}],null]
     ["<p>here and<br>there",[{"$key":"<p"},{"text":"here and","$key":"^text"},{"$key":"<br"},{"text":"there","$key":"^text"}],null]
     ["<p>here and<br>there</p>",[{"$key":"<p"},{"text":"here and","$key":"^text"},{"$key":"<br"},{"text":"there","$key":"^text"},{"$key":">p"}],null]
+    ["<p>here and<br>there</p>",[{"$key":"<p"},{"text":"here and","$key":"^text"},{"$key":"<br"},{"text":"there","$key":"^text"},{"$key":">p"}],null]
     ["<p>here and<br/>there</p>",[{"$key":"<p"},{"text":"here and","$key":"^text"},{"$key":"<br"},{"$key":">br"},{"text":"there","$key":"^text"},{"$key":">p"}],null]
     ["just some plain text",[{"$key":"^text","text":"just some plain text"},],null]
     ["<p>one<p>two",[{"$key":"<p"},{"text":"one","$key":"^text"},{"$key":"<p"},{"text":"two","$key":"^text"}],null]
@@ -355,12 +356,50 @@ INTERTEXT                 = require '../..'
   done()
   return null
 
+#-----------------------------------------------------------------------------------------------------------
+@[ "demo" ] = ( T, done ) ->
+  text = """<!DOCTYPE html>
+  <h1><strong>CHAPTER VI.</strong> <name ref=hd553>Humpty Dumpty</h1>
+
+  <p id=p227>However, the egg only got larger and larger, and <em>more and more human</em>:<br>
+
+  when she had come within a few yards of it, she saw that it had eyes and a nose and mouth; and when she
+  had come close to it, she saw clearly that it was <name ref=hd556>HUMPTY DUMPTY</name> himself. ‘It can’t
+  be anybody else!’ she said to herself.<br/>
+
+  ‘I’m as certain of it, as if his name were written all over his face.’
+
+  """
+  for d in datoms = HTML.html_as_datoms text
+    echo jr d
+  echo '-'.repeat 108
+  echo ( HTML.datom_as_html d for d in datoms ).join ''
+  #.........................................................................................................
+  done()
+  return null
+
+#-----------------------------------------------------------------------------------------------------------
+@[ "demo (buffer)" ] = ( T, done ) ->
+  text    = """<!DOCTYPE html>
+  <h1><strong>CHAPTER VI.</strong> <name ref=hd553>Humpty Dumpty</h1>"""
+  buffer  = Buffer.from text
+  debug '^80009^', buffer
+  for d in datoms = HTML.html_as_datoms buffer
+    echo jr d
+  echo '-'.repeat 108
+  echo ( HTML.datom_as_html d for d in datoms ).join ''
+  #.........................................................................................................
+  done()
+  return null
+
 
 ############################################################################################################
 if module is require.main then do => # await do =>
   # await @_demo()
-  test @
+  # test @
   help 'ok'
+  # test @[ "demo" ]
+  test @[ "demo (buffer)" ]
 
   # test @[ "must quote attribute value" ]
   # test @[ "DATOM.HTML._as_attribute_literal" ]

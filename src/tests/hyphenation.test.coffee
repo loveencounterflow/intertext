@@ -80,6 +80,7 @@ INTERTEXT                 = require '../..'
     ["BESTED","BESTED",]
     ["SUNDERED","SUN|DERED",]
     ["ARTICULATION","AR|TIC|U|LA|TION",]
+    ["over-guesstimate","over-guessti|mate"]
     ]
   for [ probe, matcher, error, ] in probes_and_matchers
     await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->

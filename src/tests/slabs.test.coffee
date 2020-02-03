@@ -47,6 +47,7 @@ INTERTEXT                 = require '../..'
     ["䷾Letterpress printing",{"slabs":["䷾Letterpress","printing"],"ends":["spc",null]},null]
     ["ベルリンBerlin",{"slabs":["ベ","ル","リ","ン","Berlin"],"ends":[null,null,null,null,null]},null]
     ["其法用膠泥刻字、薄如錢唇",{"slabs":["其","法","用","膠","泥","刻","字、","薄","如","錢","唇"],"ends":[null,null,null,null,null,null,null,null,null,null,null]},null]
+    ["over-guess\xadti\xadmate",{"slabs":["over-","guess","ti","mate"],"ends":[null,"shy","shy",null]},null]
     ]
   for [ probe, matcher, error, ] in probes_and_matchers
     await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
@@ -84,12 +85,53 @@ INTERTEXT                 = require '../..'
     ["䷾Letterpress printing","",null]
     ["ベルリンBerlin","リンBerlin",null]
     ["其法用膠泥刻字、薄如錢唇","用膠泥刻",null]
+    ["over-guess\xadti\xadmate","timate",null]
     ]
   for [ probe, matcher, error, ] in probes_and_matchers
     await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
       slb = INTERTEXT.SLABS.slabs_from_text probe
       resolve INTERTEXT.SLABS.assemble slb, 2, 5
   #.........................................................................................................
+  done()
+  return null
+
+#-----------------------------------------------------------------------------------------------------------
+@[ "INTERTEXT.SLABS.assemble (3)" ] = ( T, done ) ->
+  probe   = "a very fine day for a cro\xadmu\xadlent so\xadlu\xadtion"
+  matcher = [
+    "a"
+    "a very"
+    "a very fine"
+    "a very fine day"
+    "a very fine day for"
+    "a very fine day for a"
+    "a very fine day for a cro-"
+    "a very fine day for a cromu-"
+    "a very fine day for a cromulent"
+    "a very fine day for a cromulent so-"
+    "a very fine day for a cromulent solu-"
+    "a very fine day for a cromulent solution"
+    ]
+  slb     = INTERTEXT.SLABS.slabs_from_text probe
+  result  = ( INTERTEXT.SLABS.assemble slb, 0, idx for idx in [ 0 ... slb.slabs.length ] )
+  help jr result
+  T.eq result, matcher
+  done()
+  return null
+
+#-----------------------------------------------------------------------------------------------------------
+@[ "INTERTEXT.SLABS.assemble (4)" ] = ( T, done ) ->
+  probe   = "over-guess\xadti\xadmate"
+  matcher = [
+    "over-"
+    "over-guess-"
+    "over-guessti-"
+    "over-guesstimate"
+    ]
+  slb     = INTERTEXT.SLABS.slabs_from_text probe
+  result  = ( INTERTEXT.SLABS.assemble slb, 0, idx for idx in [ 0 ... slb.slabs.length ] )
+  help jr result
+  T.eq result, matcher
   done()
   return null
 

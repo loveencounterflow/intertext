@@ -133,7 +133,7 @@ LineBreaker               = null
     R += me.slabs[ idx ]
     switch end = me.ends[ idx ]
       when null   then null
-      when 'spc'  then R+= '\x20'
+      when 'spc'  then ( if idx isnt last_idx then R+= '\x20' )
       ### TAINT allow to configure hyphen ###
       when 'shy'  then ( if idx is last_idx then R+= '-' )
       else throw new Error "^INTERTEXT/SLABS@4352^ unknown slab `end` option #{rpr end}"

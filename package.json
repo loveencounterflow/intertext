@@ -31,6 +31,7 @@
     "cnd": "^4.9.0",
     "datom": "^2.5.0",
     "guy-test": "^1.4.1",
+    "hyphenopoly": "^4.0.0",
     "intertype": "^3.1.0",
     "multimix": "^2.1.1",
     "steampipes": "^3.5.1"

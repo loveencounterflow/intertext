@@ -39,7 +39,7 @@ INTERTEXT                 = require '../..'
 #===========================================================================================================
 # TESTS
 #-----------------------------------------------------------------------------------------------------------
-@[ "INTERTEXT.hyphenate" ] = ( T, done ) ->
+@[ "INTERTEXT.HYPH.hyphenate" ] = ( T, done ) ->
   probes_and_matchers = [
     ["","",]
     ["lexicographer","lex|i|cog|ra|pher",]
@@ -83,22 +83,22 @@ INTERTEXT                 = require '../..'
     ]
   for [ probe, matcher, error, ] in probes_and_matchers
     await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
-      # debug '^44453^', INTERTEXT.new_hyphenator()
-      # debug '^44453^', INTERTEXT.reveal_hyphens INTERTEXT.new_hyphenator() 'fantastic'
-      # debug '^777801^', INTERTEXT.hyphenate probe
-      resolve ( INTERTEXT.hyphenate probe ).replace /\xad/g, '|'
+      # debug '^44453^', INTERTEXT.HYPH.new_hyphenator()
+      # debug '^44453^', INTERTEXT.HYPH.reveal_hyphens INTERTEXT.HYPH.new_hyphenator() 'fantastic'
+      # debug '^777801^', INTERTEXT.HYPH.hyphenate probe
+      resolve ( INTERTEXT.HYPH.hyphenate probe ).replace /\xad/g, '|'
   #.........................................................................................................
   done()
   return null
 
 #-----------------------------------------------------------------------------------------------------------
-@[ "INTERTEXT.soft_hyphen_chr" ] = ( T, done ) ->
-  T.eq INTERTEXT.soft_hyphen_chr, '\u00ad'
+@[ "INTERTEXT.HYPH.soft_hyphen_chr" ] = ( T, done ) ->
+  T.eq INTERTEXT.HYPH.soft_hyphen_chr, '\u00ad'
   done()
   return null
 
 #-----------------------------------------------------------------------------------------------------------
-@[ "INTERTEXT.count_soft_hyphens" ] = ( T, done ) ->
+@[ "INTERTEXT.HYPH.count_soft_hyphens" ] = ( T, done ) ->
   probes_and_matchers = [
     [ "",           0, ]
     ["lex­i­cog­ra­pher",4,]
@@ -111,19 +111,19 @@ INTERTEXT                 = require '../..'
     ]
   for [ probe, matcher, error, ] in probes_and_matchers
     await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
-      resolve INTERTEXT.count_soft_hyphens probe
+      resolve INTERTEXT.HYPH.count_soft_hyphens probe
   #.........................................................................................................
   done()
   return null
 
 #-----------------------------------------------------------------------------------------------------------
-@[ "INTERTEXT.reveal_hyphens" ] = ( T, done ) ->
+@[ "INTERTEXT.HYPH.reveal_hyphens" ] = ( T, done ) ->
   probes_and_matchers = [
     [ "fan\xadtas\xadtic",           "fan-tas-tic", ]
     ]
   for [ probe, matcher, error, ] in probes_and_matchers
     await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
-      resolve INTERTEXT.reveal_hyphens probe
+      resolve INTERTEXT.HYPH.reveal_hyphens probe
   #.........................................................................................................
   done()
   return null

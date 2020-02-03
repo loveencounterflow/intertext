@@ -42,13 +42,14 @@ format_as_percentage      = ( x ) -> _format '#,##0.00',  x * 100
 MAIN = @
 class Intertext extends Multimix
   @include MAIN,                              { overwrite: false, }
-  @include ( require './hyphenation' ),       { overwrite: false, }
   # @extend MAIN, { overwrite: false, }
 
   #---------------------------------------------------------------------------------------------------------
   constructor: ( target = null ) ->
     super()
-    @HTML = require './html'
+    @HTML   = require './html'
+    @HYPH   = require './hyphenation'
+    @SLABS  = require './slabs'
     @export target if target?
     return @
 

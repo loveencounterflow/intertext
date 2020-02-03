@@ -66,19 +66,20 @@ LineBreaker               = null
   #.........................................................................................................
   ### LBO: line break opportunity ###
   while ( lbo = line_breaker.nextBreak() )?
-    end           = null
+    end           = 'x'
     slab          = text[ prv_position ... lbo.position ]
     prv_position  = lbo.position
     last_idx      = slab.length - 1
     #.......................................................................................................
     switch slab[ last_idx ]
-      when shy then [ end, slab, ] = [ 'shy', slab[ ... last_idx ], ]
+      when shy then [ end, slab, ] = [ '|', slab[ ... last_idx ], ]
       ### TAINT in the future, we might want to consider other breaking (fixed or variable) spaces ###
-      when spc then [ end, slab, ] = [ 'spc', slab[ ... last_idx ], ]
+      when spc then [ end, slab, ] = [ '_', slab[ ... last_idx ], ]
     #.......................................................................................................
     slabs.push  slab
     ends.push   end
   #.........................................................................................................
+  R.ends = R.ends.join ''
   return R
 
 #-----------------------------------------------------------------------------------------------------------
@@ -93,10 +94,10 @@ LineBreaker               = null
   for idx in [ first_idx .. last_idx ] by +1
     R += me.slabs[ idx ]
     switch end = me.ends[ idx ]
-      when null   then null
-      when 'spc'  then ( if idx isnt last_idx then R+= '\x20' )
+      when 'x'  then null
+      when '_'  then ( if idx isnt last_idx then R+= '\x20' )
       ### TAINT allow to configure hyphen ###
-      when 'shy'  then ( if idx is last_idx then R+= '-' )
+      when '|'  then ( if idx is last_idx then R+= '-' )
       else throw new Error "^INTERTEXT/SLABS@4352^ unknown slab `end` option #{rpr end}"
   #.........................................................................................................
   return R

@@ -41,13 +41,13 @@ INTERTEXT                 = require '../..'
 #-----------------------------------------------------------------------------------------------------------
 @[ "INTERTEXT.SLABS.slabs_from_text" ] = ( T, done ) ->
   probes_and_matchers = [
-    ["",{"slabs":[],"ends":[]},null]
-    ["a very fine day",{"slabs":["a","very","fine","day"],"ends":["spc","spc","spc",null]},null]
-    ["a cro\xadmu\xadlent so\xadlu\xadtion",{"slabs":["a","cro","mu","lent","so","lu","tion"],"ends":["spc","shy","shy","spc","shy","shy",null]},null]
-    ["䷾Letterpress printing",{"slabs":["䷾Letterpress","printing"],"ends":["spc",null]},null]
-    ["ベルリンBerlin",{"slabs":["ベ","ル","リ","ン","Berlin"],"ends":[null,null,null,null,null]},null]
-    ["其法用膠泥刻字、薄如錢唇",{"slabs":["其","法","用","膠","泥","刻","字、","薄","如","錢","唇"],"ends":[null,null,null,null,null,null,null,null,null,null,null]},null]
-    ["over-guess\xadti\xadmate",{"slabs":["over-","guess","ti","mate"],"ends":[null,"shy","shy",null]},null]
+    ["",{"slabs":[],"ends":""},null]
+    ["a very fine day",{"slabs":["a","very","fine","day"],"ends":"___x"},null]
+    ["a cro­mu­lent so­lu­tion",{"slabs":["a","cro","mu","lent","so","lu","tion"],"ends":"_||_||x"},null]
+    ["䷾Letterpress printing",{"slabs":["䷾Letterpress","printing"],"ends":"_x"},null]
+    ["ベルリンBerlin",{"slabs":["ベ","ル","リ","ン","Berlin"],"ends":"xxxxx"},null]
+    ["其法用膠泥刻字、薄如錢唇",{"slabs":["其","法","用","膠","泥","刻","字、","薄","如","錢","唇"],"ends":"xxxxxxxxxxx"},null]
+    ["over-guess­ti­mate",{"slabs":["over-","guess","ti","mate"],"ends":"x||x"},null]
     ]
   for [ probe, matcher, error, ] in probes_and_matchers
     await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->

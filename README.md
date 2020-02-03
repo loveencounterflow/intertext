@@ -42,9 +42,16 @@ format_as_percentage      = ( x ) -> _format '#,##0.00',  x * 100
 
 ## Hyphenation
 
-see jzr/benchmarks/src/hyphenation/main.coffee
-see jzr/benchmarks/README.md
-probably using `mnater/hyphenopoly`
+Implemented with [`mnater/hyphenopoly`](https://github.com/mnater/Hyphenopoly).
+
+* `INTERTEXT.hyphenate = ( text ) ->`: return the text with soft hyphens (U+00ad) inserted. For languages
+  other than US English, `INTERTEXT.new_hyphenator = ( settings ) ->` may in a future version be used to
+  obtain a custom hyphenation function.
+
+* `INTERTEXT.count_soft_hyphens = ( text ) ->`: Count occurances of U+00ad in `text`.
+
+* `INTERTEXT.reveal_hyphens = ( text, replacement = '-' ) ->`: Replace all soft hyphens with `replacement`.
+
 
 ### Turning Texts into "Slabs"
 

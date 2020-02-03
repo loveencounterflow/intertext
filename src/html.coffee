@@ -91,9 +91,6 @@ HtmlParser                = require 'atlas-html-stream'
   x_sys_key = if x_key? then "<x-sys-key>#{x_key}</x-sys-key>" else ''
   return "<#{tagname}>#{slash}#{x_sys_key}" if atxt is ''
   return "<#{tagname}#{atxt}>#{x_sys_key}#{slash}"
-  # slash = if sigil is '<' then '' else '/'
-  # return "<#{tagname}#{slash}>" if atxt is ''
-  # return "<#{tagname}#{atxt}#{slash}>"
 
 
 #===========================================================================================================

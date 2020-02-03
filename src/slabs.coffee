@@ -50,45 +50,6 @@ LineBreaker               = null
 #===========================================================================================================
 #
 #-----------------------------------------------------------------------------------------------------------
-# reconstitute_text = ( slab ) ->
-#   R = slab.txt
-#   if slab.rhs is 'shy' then R += '-'
-#   else if slab.rhs is 'spc' then R += ' '
-#   return R
-# @slabs_from_paragraph = ( text ) ->
-#   ### TAINT avoid to instantiate new parser for each paragraph ###
-#   ### TAINT consider to use pipestreaming instead of looping ###
-#   parse_html  = SP.HTML.new_onepiece_parser()
-#   ctx_stack   = []
-#   R           = []
-#   for d in parse_html text
-#     ### TAINT should check for matching tags ###
-#     ### TAINT must also store HTML attributes ###
-#     if ( select d, '<' )      then ctx_stack.push d.$key[ 1 .. ]
-#     else if ( select d, '>' ) then ctx_stack.pop()
-#     #.......................................................................................................
-#     if ( select d, '<' ) and ( d.is_block ? false )
-#       info CND.white '————————————————————————————————————— ' + d.$key
-#       continue
-#     #.......................................................................................................
-#     if ( select d, '^text' )
-#       text      = d.text.replace /\n/g, ' '
-#       slabs     = @slabs_from_text text
-#       R.push slabs
-#       # for slab in slabs.$value
-#       #   rhs = if slab.rhs? then slab.rhs else null
-#       opener  = "<slug>" + ( "<#{element}>" for element in ctx_stack ).join ''
-#       closer  = "</slug>"
-#       info ( CND.yellow opener ), \
-#         ( ( ( CND.blue reconstitute_text slab ) for slab in slabs.$value ). join CND.grey '|' ), \
-#         ( CND.yellow closer )
-#       continue
-#     whisper d.$key
-#   #.........................................................................................................
-#   return new_datom '^slab-blocks', R
-
-
-#-----------------------------------------------------------------------------------------------------------
 @slabs_from_text = ( text ) ->
   ### TAINT why doesn't import in top level work? ###
   INTERTEXT    ?= require '..'

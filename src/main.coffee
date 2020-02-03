@@ -27,6 +27,13 @@ Multimix                  = require 'multimix'
   type_of }               = @types
 Multimix                  = require 'multimix'
 
+###
+#...........................................................................................................
+_format                   = require 'number-format.js'
+format_float              = ( x ) -> _format '#,##0.000', x
+format_integer            = ( x ) -> _format '#,##0.',    x
+format_as_percentage      = ( x ) -> _format '#,##0.00',  x * 100
+###
 
 
 #===========================================================================================================
@@ -35,13 +42,13 @@ Multimix                  = require 'multimix'
 MAIN = @
 class Intertext extends Multimix
   @include MAIN,                              { overwrite: false, }
-  # @include ( require './outliner.mixin' ),    { overwrite: false, }
+  @include ( require './hyphenation' ),       { overwrite: false, }
   # @extend MAIN, { overwrite: false, }
 
   #---------------------------------------------------------------------------------------------------------
   constructor: ( target = null ) ->
     super()
-    @HTML   = require './html'
+    @HTML = require './html'
     @export target if target?
     return @
 

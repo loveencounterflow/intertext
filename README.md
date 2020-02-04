@@ -135,10 +135,9 @@ a very fine day for a cromulent solu-              0    10   37
 a very fine day for a cromulent solution           0    11   40
 ```
 
-We can stop at the third iteration (`idx == 2`) since that yields a line that fits into the desired length while
-the next one exceeds our 14-character limit.
-
-The candidates for the second line are:
+We can stop at the third iteration (`idx == 2`) since that yields a line that fits into the desired length
+while the next one exceeds our 14-character limit. Continuing with a `first_idx` of `3`, the candidates for
+the second line are:
 
 ```
 day                                                3     3     3
@@ -148,17 +147,48 @@ day for a cro-                                     3     6     14
 day for a cromu-                                   3     7     16
 ```
 
-which gives us `day for a cro-` as second line. So far, our heroic typesetting efforts have given us these
-two lines:
+which gives us `day for a cro-` as second line. Going on, one arrives at this finely formatted paragraph:
 
 ```
 --------------
 a very fine
 day for a cro-
+mulent solu-
+tion
 --------------
 ```
 
+Hardly rocket science but also best not coded in too much of a cobbled-together ad-hoc way, all the more
+since this barely scratches the surface of the complexities in line-oriented typesetting, which include but
+are not limited to the following considersations:
 
+* When the output is indeed monspaced as shown here, we still have to take care of wide glyphs (e.g. Chinese
+  characters); InterText `?TBL?` will provide solutions for that. Generally speaking, using JavaScript
+  `String::length` as a proxy for display is generally a bad idea and has only been done for presentation.
+
+* When lines are considerably longer than the average slab width, a lot of unnecessary computations are
+  performed. In real life situations, it will probably be more performant to estimate how man slabs will fit
+  onto a given line and start looking from there instead of trying out all the solutions that are probably
+  much too short anyway.
+
+* Outside of the most restricted of environments, ligatures have to be taken into account, meaning that one
+  has to either reconstruct font metrics in ones software or else try each line candidate in the targetted
+  application (e.g. a web browser) and retrieve the resulting text lengths; this will exacerbate performance
+  considerations.
+
+* In advanced typesetting, and maybe even when outputting to the console or typesetting a technical manual
+  in all-monospace, using hanging puntuation may result in a more balanced look. One will then have to
+  adjust the right edge (and maybe the left one, too) depending on the last (and first) characters of each
+  candidate line.
+
+* Some writing systems (Arabic, Hebrew) allow or call for elongated letters that depend on available space;
+  others may not use hyphens when breaking words.
+
+* If text with mixed styles (different fonts, italic, bold, subscripts) is taken into consideration, one can
+  easily see that instead of 'let's just reconstruct font metrics of this TTF font so we can add all the
+  character widths', all of a sudden the task shifts to 'let's write a full fledged universal font rendering
+  engine that takes account of all the OpenType features and all the scripts and languages of the world'.
+  In other words, don't. Even. Try. Instead, use an existing piece of software.
 
 
 

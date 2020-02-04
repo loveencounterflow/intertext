@@ -1,44 +1,46 @@
+
+# InterText
+
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-- [Ansi Colors (??? or keep in CND)](#ansi-colors--or-keep-in-cnd)
-- [Number Formatting](#number-formatting)
-- [Tabulation, `width_of`](#tabulation-width_of)
+- [InterText: Services for Recurrent Text-related Tasks](#intertext-services-for-recurrent-text-related-tasks)
 - [Hyphenation](#hyphenation)
-  - [Turning Texts into "Slabs"](#turning-texts-into-slabs)
+- [Turning Texts into "Slabs"](#turning-texts-into-slabs)
 - [HTML](#html)
   - [HTML Parsing](#html-parsing)
   - [HTML Generation](#html-generation)
   - [Example: HTML Parsing and HTML Generation](#example-html-parsing-and-html-generation)
-- [Codepoint Characterization](#codepoint-characterization)
 - [Benchmarks](#benchmarks)
   - [Hyphenators](#hyphenators)
     - [Speed](#speed)
     - [Quality](#quality)
     - [Verdict](#verdict)
+- [Planned Features](#planned-features)
+  - [Ansi Colors (??? or keep in CND)](#ansi-colors--or-keep-in-cnd)
+  - [Number Formatting](#number-formatting)
+  - [Tabulation, `width_of`](#tabulation-width_of)
+  - [Codepoint Characterization](#codepoint-characterization)
 - [Links](#links)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 
-InterText: Services for Recurrent Text-related Tasks
+## InterText: Services for Recurrent Text-related Tasks
 
+InterText provides pre-packaged solutioons for a number of tasks in text formatting and typesetting that
+tend to show up frequently. I'm aiming at conducing comparative benchmarks and soundness checks for all
+solutions (see [Benchmarks](#benchmarks), below, for available data). The areas covered so far and planned
+for the future include:
 
-## Ansi Colors (??? or keep in CND)
+* [x] **InterText HYPH** for hyphenating text in multiple languages (only en-US covered so far, but
+  underlying software is multilingual and configurable).
 
-* use TrueColors for modern terminal emulators
-
-## Number Formatting
-
-```coffee
-_format                   = require 'number-format.js'
-format_float              = ( x ) -> _format '#,##0.000', x
-format_integer            = ( x ) -> _format '#,##0.',    x
-format_as_percentage      = ( x ) -> _format '#,##0.00',  x * 100
-```
-
-## Tabulation, `width_of`
+* [x] **InterText SLABS** for segmenting and re-assembling text according to *Unicode Standard Annex #14:
+  Unicode Line Breaking Algorithm* (UAX#14); this is useful to determine line breaking opportunities (LBOs)
+  for running text. So far, ASCII spaces (U+0020), Soft Hyphens (U+00ad) and implicit CJK Inter-Character
+  Breaks work.
 
 ## Hyphenation
 
@@ -54,7 +56,7 @@ Implemented with [`mnater/hyphenopoly`](https://github.com/mnater/Hyphenopoly).
   `replacement`.
 
 
-### Turning Texts into "Slabs"
+## Turning Texts into "Slabs"
 
 What to call the part of a word that is separated from others by breakpoints
 
@@ -70,6 +72,12 @@ Slabs used to be known as 'Logotypes' in typesetting:
 > There were later attempts to speed up the typesetting process by casting syllables or entire words as one
 > piece. Those pieces were called logotypes—from Ancient Greek “lógos” meaning
 > “word”.—(typography.guru)[https://typography.guru/journal/words-and-phrases-in-common-use-which-originated-in-the-field-of-typography-r78/]
+
+Currently we use three single-character `end` markers:
+
+* `x`—'none': nothing (empty string) whether non-final or final
+* `_`—'space': space (U+0020) when non-final, nothing (empty string) when final
+* `|`—'hyphen': nothing when non-final, add hyphen (U+002d) when final
 
 
 ## HTML
@@ -208,39 +216,6 @@ unbalanced closing tags. There is a minor issue with the `<br></br>` tag pair wh
 a future version.
 
 
-## Codepoint Characterization
-
-JS regex unicode properties:
-
-```
-/\p{Script_Extensions=Latin}/u
-/\p{Script=Latin}/u
-/\p{Script_Extensions=Cyrillic}/u
-/\p{Script_Extensions=Greek}/u
-/\p{Unified_Ideograph}/u
-/\p{Script=Han}/u
-/\p{Script_Extensions=Han}/u
-/\p{Ideographic}/u
-/\p{IDS_Binary_Operator}/u
-/\p{IDS_Trinary_Operator}/u
-/\p{Radical}/u
-/\p{White_Space}/u
-/\p{Script_Extensions=Hiragana}/u
-/\p{Script=Hiragana}/u
-/\p{Script_Extensions=Katakana}/u
-/\p{Script=Katakana}/u
-```
-
-```
-regex_cid_ranges =
-  hiragana:     '[\u3041-\u3096]'
-  katakana:     '[\u30a1-\u30fa]'
-  kana:         '[\u3041-\u3096\u30a1-\u30fa]'
-  ideographic:  '[\u3006-\u3007\u3021-\u3029\u3038-\u303a\u3400-\u4db5\u4e00-\u9fef\uf900-\ufa6d\ufa70-\ufad9\u{17000}-\u{187f7}\u{18800}-\u{18af2}\u{1b170}-\u{1b2fb}\u{20000}-\u{2a6d6}\u{2a700}-\u{2b734}\u{2b740}-\u{2b81d}\u{2b820}-\u{2cea1}\u{2ceb0}-\u{2ebe0}\u{2f800}-\u{2fa1d}]'
-```
-
-Should be extensible (extending/diminishing existing categories, add new ones)
-
 
 ## Benchmarks
 
@@ -367,6 +342,55 @@ opportunities; in particular, it seems to have an adversion (but not a strict ta
 words in the genitive case. That, be it said, is still much better than suggesting to write `tight-s’s` as
 `hypher` would have it.
 
+## Planned Features
+
+### Ansi Colors (??? or keep in CND)
+
+* use TrueColors for modern terminal emulators
+
+### Number Formatting
+
+```coffee
+_format                   = require 'number-format.js'
+format_float              = ( x ) -> _format '#,##0.000', x
+format_integer            = ( x ) -> _format '#,##0.',    x
+format_as_percentage      = ( x ) -> _format '#,##0.00',  x * 100
+```
+
+### Tabulation, `width_of`
+
+### Codepoint Characterization
+
+JS regex unicode properties:
+
+```
+/\p{Script_Extensions=Latin}/u
+/\p{Script=Latin}/u
+/\p{Script_Extensions=Cyrillic}/u
+/\p{Script_Extensions=Greek}/u
+/\p{Unified_Ideograph}/u
+/\p{Script=Han}/u
+/\p{Script_Extensions=Han}/u
+/\p{Ideographic}/u
+/\p{IDS_Binary_Operator}/u
+/\p{IDS_Trinary_Operator}/u
+/\p{Radical}/u
+/\p{White_Space}/u
+/\p{Script_Extensions=Hiragana}/u
+/\p{Script=Hiragana}/u
+/\p{Script_Extensions=Katakana}/u
+/\p{Script=Katakana}/u
+```
+
+```
+regex_cid_ranges =
+  hiragana:     '[\u3041-\u3096]'
+  katakana:     '[\u30a1-\u30fa]'
+  kana:         '[\u3041-\u3096\u30a1-\u30fa]'
+  ideographic:  '[\u3006-\u3007\u3021-\u3029\u3038-\u303a\u3400-\u4db5\u4e00-\u9fef\uf900-\ufa6d\ufa70-\ufad9\u{17000}-\u{187f7}\u{18800}-\u{18af2}\u{1b170}-\u{1b2fb}\u{20000}-\u{2a6d6}\u{2a700}-\u{2b734}\u{2b740}-\u{2b81d}\u{2b820}-\u{2cea1}\u{2ceb0}-\u{2ebe0}\u{2f800}-\u{2fa1d}]'
+```
+
+Should be extensible (extending/diminishing existing categories, add new ones)
 
 
 ## Links

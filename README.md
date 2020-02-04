@@ -98,10 +98,10 @@ a very fine day for a cromulent solution
 ```
 
 The first step is to hyphenate the text; using InterText `HYPH.hyphenate()`, that will insert Soft Hyphen
-characters (U+00ad) into the text, here symbolized with verticals:
+characters (U+00ad) into the text, here symbolized with `🞛`:
 
 ```
-a very fine day for a cro|mu|lent so|lu|tion⊝⍚⃟◆◇⬖🞛
+a very fine day for a cro🞛mu🞛lent so🞛lu🞛tion
 ```
 
 Passing the hyphenated text to InterText `SLABS.slabs_from_text()` returns this `slb` object:

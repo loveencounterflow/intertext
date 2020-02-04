@@ -117,6 +117,15 @@ Passing the hyphenated text to InterText `SLABS.slabs_from_text()` returns this 
 }
 ```
 
+> As it stands, `SLABS` `slb` objects uses three different single-character markers in the `ends` string
+> to indicate how to treat the corresponding slab (text portion):
+>
+> * `x`—'none': insert nothing (empty string) whether non-final or final
+> * `_`—'space': insert space (U+0020) when non-final, insert nothing (empty string) when final
+> * `|`—'hyphen': insert nothing when non-final, add hyphen (U+002d) when final
+>
+> These are purely conventional and may change in the future.
+
 One can then use `( INTERTEXT.SLABS.assemble slb, 0, idx for idx in [ 0 ... slb.slabs.length ] )` to
 re-assemble all possible initial lines:
 
@@ -205,12 +214,6 @@ Slabs used to be known as 'Logotypes' in typesetting:
 > There were later attempts to speed up the typesetting process by casting syllables or entire words as one
 > piece. Those pieces were called logotypes—from Ancient Greek “lógos” meaning
 > “word”.—(typography.guru)[https://typography.guru/journal/words-and-phrases-in-common-use-which-originated-in-the-field-of-typography-r78/]
-
-Currently we use three single-character `end` markers:
-
-* `x`—'none': nothing (empty string) whether non-final or final
-* `_`—'space': space (U+0020) when non-final, nothing (empty string) when final
-* `|`—'hyphen': nothing when non-final, add hyphen (U+002d) when final
 
 
 ## HTML

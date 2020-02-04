@@ -29,7 +29,7 @@
   "homepage": "https://github.com/loveencounterflow/intertext#readme",
   "dependencies": {
     "cnd": "^4.9.0",
-    "datom": "^2.5.0",
+    "datom": "^3.0.0",
     "guy-test": "^1.4.1",
     "hyphenopoly": "^4.0.0",
     "intertype": "^3.1.0",

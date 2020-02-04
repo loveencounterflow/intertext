@@ -91,14 +91,14 @@ An `slb` is a plain JS object with two attributes:
 ### A Practical Example
 
 Given a text that one would like to break into properly hyphenated lines of approximately equal length of,
-say, up to 10 characters each:
+say, up to 14 characters each:
 
 ```
 a very fine day for a cromulent solution
 ```
 
-The first step is to hyphenate the text; using InterText `HYPH.hyphenate()`, that will insert Soft Hyphen
-characters (U+00ad) into the text, here symbolized with `🞛`:
+The first step is to hyphenate the text. InterText `HYPH.hyphenate text` inserts 'Soft' (Discretionary)
+Hyphen characters (U+00ad) into the text, here symbolized with `🞛`:
 
 ```
 a very fine day for a cro🞛mu🞛lent so🞛lu🞛tion
@@ -116,6 +116,51 @@ Passing the hyphenated text to InterText `SLABS.slabs_from_text()` returns this 
   ends: '______||_||x'
 }
 ```
+
+One can then use `( INTERTEXT.SLABS.assemble slb, 0, idx for idx in [ 0 ... slb.slabs.length ] )` to
+re-assemble all possible initial lines:
+
+```
+a                                                  0    0    1
+a very                                             0    1    6
+a very fine                                        0    2    11
+a very fine day                                    0    3    15
+a very fine day for                                0    4    19
+a very fine day for a                              0    5    21
+a very fine day for a cro-                         0    6    26
+a very fine day for a cromu-                       0    7    28
+a very fine day for a cromulent                    0    8    31
+a very fine day for a cromulent so-                0    9    35
+a very fine day for a cromulent solu-              0    10   37
+a very fine day for a cromulent solution           0    11   40
+```
+
+We can stop at the third iteration (`idx == 2`) since that yields a line that fits into the desired length while
+the next one exceeds our 14-character limit.
+
+The candidates for the second line are:
+
+```
+day                                                3     3     3
+day for                                            3     4     7
+day for a                                          3     5     9
+day for a cro-                                     3     6     14
+day for a cromu-                                   3     7     16
+```
+
+which gives us `day for a cro-` as second line. So far, our heroic typesetting efforts have given us these
+two lines:
+
+```
+--------------
+a very fine
+day for a cro-
+--------------
+```
+
+
+
+
 
 ### Terminology
 

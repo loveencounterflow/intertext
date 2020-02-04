@@ -101,9 +101,21 @@ The first step is to hyphenate the text; using InterText `HYPH.hyphenate()`, tha
 characters (U+00ad) into the text, here symbolized with verticals:
 
 ```
-a very fine day for a cro|mu|lent so|lu|tion
+a very fine day for a cro|mu|lent so|lu|tion⊝⍚⃟◆◇⬖🞛
 ```
 
+Passing the hyphenated text to InterText `SLABS.slabs_from_text()` returns this `slb` object:
+
+```coffee
+{ slabs: [
+    'a',   'very', 'fine',
+    'day', 'for',  'a',
+    'cro', 'mu',   'lent',
+    'so',  'lu',   'tion'
+  ],
+  ends: '______||_||x'
+}
+```
 
 ### Terminology
 

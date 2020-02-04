@@ -185,14 +185,14 @@ are not limited to the following considersations:
   application (e.g. a web browser) and retrieve the resulting text lengths; this will exacerbate performance
   considerations.
 
-* If text with mixed styles (different fonts, italic, bold, subscripts) is taken into consideration, one can
-  easily see that instead of 'let's just reconstruct font metrics of this TTF font so we can add all the
-  character widths', all of a sudden the task shifts to 'let's write a full fledged universal font rendering
-  engine that takes account of all the OpenType features and all the scripts and languages of the world'.
-  In other words, don't. Even. Try. Instead, use an existing piece of software.
+* If text with mixed styles (different fonts, italic, bold, subscripts) is taken into consideration, all of
+  a sudden the task shifts from *"let's just reconstruct the metrics of this TTF font so we can add all the
+  character widths"* to *"let's write a full fledged universal font rendering engine that takes account of
+  all the OpenType features and all the scripts and languages of the world"*. In other words, don't. Even.
+  Try. Instead, use an existing piece of software.
 
 * In advanced typesetting, and maybe even when outputting to the console or typesetting a technical manual
-  in all-monospace, using hanging puntuation may result in a more balanced look. One will then have to
+  in all-monospace, using hanging punctuation may result in a more balanced look. One will then have to
   adjust the right edge (and maybe the left one, too) depending on the last (and first) characters of each
   candidate line.
 

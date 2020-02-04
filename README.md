@@ -181,9 +181,10 @@ are not limited to the following considersations:
   much too short anyway.
 
 * Outside of the most restricted of environments, ligatures have to be taken into account, meaning that one
-  has to either reconstruct font metrics in ones software or else try each line candidate in the targetted
-  application (e.g. a web browser) and retrieve the resulting text lengths; this will exacerbate performance
-  considerations.
+  has to either reconstruct font metrics in ones software (*don't*, see the next point) or else try each
+  line candidate in the targetted application (e.g. a web browser) and retrieve the resulting typeset
+  lengths. Needless, this will exacerbate performance considerations, so best to strive and limit the number
+  of attempts need for each line.
 
 * If text with mixed styles (different fonts, italic, bold, subscripts) is taken into consideration, all of
   a sudden the task shifts from *"let's just reconstruct the metrics of this TTF font so we can add all the
@@ -194,15 +195,21 @@ are not limited to the following considersations:
   I still believe that under many circumstances, hyphenation paired with 'slabification' gives a good enough
   approximation to cut down the number of line candidates in a meaningful way, especially when the
   typesetting algorithm used to turn slabs into paragraphs has a good grasp on the spatial statistics of
-  what it is trying to achieve (as in 'most lines contain between x and y English slabs, and each CJK
-  codepoint is worth around 0.8 English slabs on average'). You can't partition a long text with confidence
-  using these estimates and call it a day, but one can use these numbers as a starting point to estimate how
-  many of a given sequence of slabs will probably fit into a given line.
+  what it is trying to achieve (as in *'most lines contain between x and y English slabs, and each CJK
+  codepoint is worth around 0.8 English slabs on average'*). You can't partition a long text in one go from
+  end to end with confidence using these estimates, but one can use such numbers as a starting point to
+  estimate how many of a given sequence of slabs will probably fit into a given line.
 
 * In advanced typesetting, and maybe even when outputting to the console or typesetting a technical manual
   in all-monospace, using hanging punctuation may result in a more balanced look. One will then have to
   adjust the right edge (and maybe the left one, too) depending on the last (and first) characters of each
   candidate line.
+
+* CSS properties like `word-spacing` and `letter-spacing` as well as [variable
+  fonts](https://www.axis-praxis.org) provide an opportunity to typeset material (almost) imperceptibly
+  denser or to distribute excessive whitespace among spaces proper, inter-letter spacing, and streched
+  letters. This means that depending on preferences, it may be allowable to put material into a single line
+  that is just a teeny bit too long by condensing letter shapes or tracking just a teeeeeny bit.
 
 * Some writing systems (Arabic, Hebrew) allow or call for elongated letters that depend on available space;
   others may not use hyphens when breaking words.

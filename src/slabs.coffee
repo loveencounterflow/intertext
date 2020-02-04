@@ -103,18 +103,4 @@ LineBreaker               = null
   return R
 
 
-############################################################################################################
-if module is require.main then do =>
-  # @demo_linebreak()
-  # @demo_hyphenation()
-  html = """<p><strong>Letterpress</strong> printing is a <em>technique of relief printing using a printing
-  press,</em> a process by which many copies are produced by <em>repeated direct impression of an inked,
-  raised surface</em> against sheets or a continuous roll of paper.</p> <p>A worker composes and locks
-  movable type into the ‘bed’ or ‘chase’ of a press, inks it, and presses paper against it to transfer the
-  ink from the type which creates an impression on the paper.</p>"""
-  text = """Letterpress printing is a technique of relief printing using a printing press."""
-  html = """<p>#{text}</p>"""
-  # urge @slabs_from_paragraph html
-  urge @slabs_from_text text
-
 

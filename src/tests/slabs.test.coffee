@@ -113,7 +113,16 @@ INTERTEXT                 = require '../..'
     "a very fine day for a cromulent solution"
     ]
   slb     = INTERTEXT.SLABS.slabs_from_text probe
+  info slb
   result  = ( INTERTEXT.SLABS.assemble slb, 0, idx for idx in [ 0 ... slb.slabs.length ] )
+  for line, idx in result
+    echo ( CND.white line.padEnd 50 ), idx, line.length
+  idx_1 = 11
+  for idx_2 in [ idx_1 ... slb.slabs.length ]
+    line = INTERTEXT.SLABS.assemble slb, idx_1, idx_2
+    idx_1_txt = ( "#{idx_1}".padEnd 5 )
+    idx_2_txt = ( "#{idx_2}".padEnd 5 )
+    echo ( CND.yellow line.padEnd 50 ), idx_1_txt, idx_2_txt, line.length
   help jr result
   T.eq result, matcher
   done()

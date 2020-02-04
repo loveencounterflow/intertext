@@ -51,6 +51,15 @@ LineBreaker               = null
 #
 #-----------------------------------------------------------------------------------------------------------
 @slabs_from_text = ( text ) ->
+  ### NOTE
+
+  Currently we use three single-character `end` markers:
+
+  * `x`—'none': nothing (empty string) whether non-final or final
+  * `_`—'space': space (U+0020) when non-final, nothing (empty string) when final
+  * `|`—'hyphen': nothing when non-final, add hyphen (U+002d) when final
+
+  ###
   ### TAINT why doesn't import in top level work? ###
   INTERTEXT    ?= require '..'
   ### TAINT benchmark against https://github.com/hfour/linebreak-ts ###

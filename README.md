@@ -117,14 +117,14 @@ Passing the hyphenated text to InterText `SLABS.slabs_from_text()` returns this 
 }
 ```
 
-> As it stands, `SLABS` `slb` objects uses three different single-character markers in the `ends` string
-> to indicate how to treat the corresponding slab (text portion):
+> As it stands, `SLABS` `slb` objects use three different single-character markers in the `ends` string
+> to indicate how to treat the corresponding slab with the same index:
 >
-> * `x`—'none': insert nothing (empty string) whether non-final or final
-> * `_`—'space': insert space (U+0020) when non-final, insert nothing (empty string) when final
-> * `|`—'hyphen': insert nothing when non-final, add hyphen (U+002d) when final
+> * `x` indicates 'none': insert nothing (empty string) whether non-final or final
+> * `_` indicates 'space': insert space (U+0020) when non-final, insert nothing (empty string) when final
+> * `|` indicates 'hyphen': insert nothing when non-final, add hyphen (U+002d) when final
 >
-> These are purely conventional and may change in the future.
+> These may change in the future.
 
 One can then use `( INTERTEXT.SLABS.assemble slb, 0, idx for idx in [ 0 ... slb.slabs.length ] )` to
 re-assemble all possible initial lines:
@@ -173,7 +173,7 @@ are not limited to the following considersations:
 
 * When the output is indeed monspaced as shown here, we still have to take care of wide glyphs (e.g. Chinese
   characters); InterText `?TBL?` will provide solutions for that. Generally speaking, using JavaScript
-  `String::length` as a proxy for display is generally a bad idea and has only been done for presentation.
+  `String#length` as a proxy for display is generally a bad idea and has only been done for presentation.
 
 * When lines are considerably longer than the average slab width, a lot of unnecessary computations are
   performed. In real life situations, it will probably be more performant to estimate how man slabs will fit
@@ -185,6 +185,12 @@ are not limited to the following considersations:
   application (e.g. a web browser) and retrieve the resulting text lengths; this will exacerbate performance
   considerations.
 
+* If text with mixed styles (different fonts, italic, bold, subscripts) is taken into consideration, one can
+  easily see that instead of 'let's just reconstruct font metrics of this TTF font so we can add all the
+  character widths', all of a sudden the task shifts to 'let's write a full fledged universal font rendering
+  engine that takes account of all the OpenType features and all the scripts and languages of the world'.
+  In other words, don't. Even. Try. Instead, use an existing piece of software.
+
 * In advanced typesetting, and maybe even when outputting to the console or typesetting a technical manual
   in all-monospace, using hanging puntuation may result in a more balanced look. One will then have to
   adjust the right edge (and maybe the left one, too) depending on the last (and first) characters of each
@@ -193,13 +199,10 @@ are not limited to the following considersations:
 * Some writing systems (Arabic, Hebrew) allow or call for elongated letters that depend on available space;
   others may not use hyphens when breaking words.
 
-* If text with mixed styles (different fonts, italic, bold, subscripts) is taken into consideration, one can
-  easily see that instead of 'let's just reconstruct font metrics of this TTF font so we can add all the
-  character widths', all of a sudden the task shifts to 'let's write a full fledged universal font rendering
-  engine that takes account of all the OpenType features and all the scripts and languages of the world'.
-  In other words, don't. Even. Try. Instead, use an existing piece of software.
-
-
+* When scripts are mixed, boundaries between two different system require our attention. This is a
+  considerably more vexing problem when mixing LTR (left-to-right) and RTL (right-to-left) scripts than in,
+  say, mixing Latin and CJK in a paragraph, but this is not to say the latter isn't blessed with a good
+  number of <strike>problems</strike> interesting questions that do not necessarily have unique answers.
 
 ### Terminology
 

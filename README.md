@@ -191,6 +191,14 @@ are not limited to the following considersations:
   all the OpenType features and all the scripts and languages of the world"*. In other words, don't. Even.
   Try. Instead, use an existing piece of software.
 
+  I still believe that under many circumstances, hyphenation paired with 'slabification' gives a good enough
+  approximation to cut down the number of line candidates in a meaningful way, especially when the
+  typesetting algorithm used to turn slabs into paragraphs has a good grasp on the spatial statistics of
+  what it is trying to achieve (as in 'most lines contain between x and y English slabs, and each CJK
+  codepoint is worth around 0.8 English slabs on average'). You can't partition a long text with confidence
+  using these estimates and call it a day, but one can use these numbers as a starting point to estimate how
+  many of a given sequence of slabs will probably fit into a given line.
+
 * In advanced typesetting, and maybe even when outputting to the console or typesetting a technical manual
   in all-monospace, using hanging punctuation may result in a more balanced look. One will then have to
   adjust the right edge (and maybe the left one, too) depending on the last (and first) characters of each

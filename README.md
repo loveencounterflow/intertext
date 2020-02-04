@@ -6,8 +6,12 @@
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [InterText: Services for Recurrent Text-related Tasks](#intertext-services-for-recurrent-text-related-tasks)
-- [Hyphenation](#hyphenation)
-- [Turning Texts into "Slabs"](#turning-texts-into-slabs)
+- [InterText HYPH: Hyphenation](#intertext-hyph-hyphenation)
+- [InterText SLABS: Finding Linebreak Opportunities](#intertext-slabs-finding-linebreak-opportunities)
+  - [API](#api)
+  - [`slb` Objects](#slb-objects)
+  - [A Practical Example](#a-practical-example)
+  - [Terminology](#terminology)
 - [HTML](#html)
   - [HTML Parsing](#html-parsing)
   - [HTML Generation](#html-generation)
@@ -42,7 +46,16 @@ for the future include:
   for running text. So far, ASCII spaces (U+0020), Soft Hyphens (U+00ad) and implicit CJK Inter-Character
   Breaks work.
 
-## Hyphenation
+* [x] **InterText HTML** for parsing and generating HTML markup.
+
+* [ ] **InterText ?ANSI?** for colorizing console output.
+
+* [ ] **InterText ?TBL?** for tabulating console output; includes facilities to determing display width of
+  individual characters and running text, taking into account 'wide' and 'narrow' characters.
+
+* [ ] **InterText ?FMT?** for formatting numbers.
+
+## InterText HYPH: Hyphenation
 
 Implemented with [`mnater/hyphenopoly`](https://github.com/mnater/Hyphenopoly).
 
@@ -56,10 +69,43 @@ Implemented with [`mnater/hyphenopoly`](https://github.com/mnater/Hyphenopoly).
   `replacement`.
 
 
-## Turning Texts into "Slabs"
+## InterText SLABS: Finding Linebreak Opportunities
 
-What to call the part of a word that is separated from others by breakpoints
+### API
 
+* `@slabs_from_text = ( text ) ->`—Given a `text`, return an `slb` object as described below that describes
+  all the UAX#14-compliant linebreak opportunities (LBOs) in that text.
+
+* `@assemble = ( slb, first_idx = null, last_idx = null ) ->`—Given an `slb` object and, optionally, two
+  slab indices, return a line of text, honoring the intermediate and final LBOs as needed for typesetting.
+
+### `slb` Objects
+
+An `slb` is a plain JS object with two attributes:
+* `slb.slabs` is a list of strings containing the individual subparts of the original text;
+* `slb.ends` ends is string of codepoints (in the range `U+0021..U+ffff`, excluding surrogates,
+  non-printables, specials, and whitespace) of the same length as `slb.slabs`, each code unit using one of a
+  number of codes to describe how the end (right edge in the case of LTR scripts, left edge in the case of
+  RTL scripts) is to be treated when re-assembling lines from slabs.
+
+### A Practical Example
+
+Given a text that one would like to break into properly hyphenated lines of approximately equal length of,
+say, up to 10 characters each:
+
+```
+a very fine day for a cromulent solution
+```
+
+The first step is to hyphenate the text; using InterText `HYPH.hyphenate()`, that will insert Soft Hyphen
+characters (U+00ad) into the text, here symbolized with verticals:
+
+```
+a very fine day for a cro|mu|lent so|lu|tion
+```
+
+
+### Terminology
 
 > The addressable unit of memory on the NCR 315 series is a "slab", short for "syllable", consisting of 12
 > data bits and a parity bit. Its size falls between a byte and a typical word (hence the name, 'syllable').

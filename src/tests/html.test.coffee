@@ -357,6 +357,62 @@ INTERTEXT                 = require '../..'
   return null
 
 #-----------------------------------------------------------------------------------------------------------
+@[ "HTML.$html_as_datoms" ] = ( T, done ) ->
+  SP                        = require 'steampipes'
+  # SP                        = require '../../apps/steampipes'
+  { $
+    $async
+    $drain
+    $watch
+    $show  }                = SP.export()
+  #.........................................................................................................
+  probe         = """
+    <p>A <em>concise</em> introduction to the things discussed below.</p>
+    """
+  matcher = [{"$key":"<p"},{"text":"A ","$key":"^text"},{"$key":"<em"},{"text":"concise","$key":"^text"},{"$key":">em"},{"text":" introduction to the things discussed below.","$key":"^text"},{"$key":">p"}]
+  #.........................................................................................................
+  pipeline      = []
+  pipeline.push [ ( Buffer.from probe ), ]
+  pipeline.push SP.$split()
+  pipeline.push HTML.$html_as_datoms()
+  pipeline.push $show()
+  pipeline.push $drain ( result ) =>
+    help jr result
+    T.eq result, matcher
+    done()
+  SP.pull pipeline...
+  #.........................................................................................................
+  return null
+
+#-----------------------------------------------------------------------------------------------------------
+@[ "HTML.$mkts_html_as_datoms" ] = ( T, done ) ->
+  SP                        = require 'steampipes'
+  # SP                        = require '../../apps/steampipes'
+  { $
+    $async
+    $drain
+    $watch
+    $show  }                = SP.export()
+  #.........................................................................................................
+  probe         = """
+    <p>A <em>concise</em> introduction to the things discussed below.</p>
+    """
+  matcher = [{"$key":"<p"},{"text":"A ","$key":"^text"},{"$key":"<em"},{"text":"concise","$key":"^text"},{"$key":">em"},{"text":" introduction to the things discussed below.","$key":"^text"},{"$key":">p"}]
+  #.........................................................................................................
+  pipeline      = []
+  pipeline.push [ ( Buffer.from probe ), ]
+  pipeline.push SP.$split()
+  pipeline.push HTML.$mkts_html_as_datoms()
+  pipeline.push $show()
+  pipeline.push $drain ( result ) =>
+    help jr result
+    T.eq result, matcher
+    done()
+  SP.pull pipeline...
+  #.........................................................................................................
+  return null
+
+#-----------------------------------------------------------------------------------------------------------
 @[ "demo" ] = ( T, done ) ->
   text = """<!DOCTYPE html>
   <h1><strong>CHAPTER VI.</strong> <name ref=hd553>Humpty Dumpty</h1>
@@ -396,10 +452,11 @@ INTERTEXT                 = require '../..'
 ############################################################################################################
 if module is require.main then do => # await do =>
   # await @_demo()
-  # test @
+  test @
   help 'ok'
   # test @[ "demo" ]
-  test @[ "demo (buffer)" ]
+  # test @[ "demo (buffer)" ]
+  # test @[ "HTML.$html_as_datoms" ]
 
   # test @[ "must quote attribute value" ]
   # test @[ "DATOM.HTML._as_attribute_literal" ]

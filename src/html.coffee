@@ -184,6 +184,23 @@ find_next_tag = ( text, prv_idx = 0 ) ->
   return R
 
 
+#===========================================================================================================
+# PARSING
+#-----------------------------------------------------------------------------------------------------------
+@$html_as_datoms = ->
+  { $, } = ( require 'steampipes' ).export()
+  return $ ( buffer_or_text, send ) =>
+    send d for d in @html_as_datoms buffer_or_text
+    return null
+
+#-----------------------------------------------------------------------------------------------------------
+@$mkts_html_as_datoms = ->
+  { $, } = ( require 'steampipes' ).export()
+  return $ ( buffer_or_text, send ) =>
+    send d for d in @mkts_html_as_datoms buffer_or_text
+    return null
+
+
 ############################################################################################################
 if module is require.main then do => # await do =>
   help 'ok'

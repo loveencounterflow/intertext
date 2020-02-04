@@ -199,7 +199,7 @@ are not limited to the following considersations:
 * Some writing systems (Arabic, Hebrew) allow or call for elongated letters that depend on available space;
   others may not use hyphens when breaking words.
 
-* When scripts are mixed, boundaries between two different system require our attention. This is a
+* When scripts are mixed, boundaries between two different scripts require our attention. This is a
   considerably more vexing problem when mixing LTR (left-to-right) and RTL (right-to-left) scripts than in,
   say, mixing Latin and CJK in a paragraph, but this is not to say the latter isn't blessed with a good
   number of <strike>problems</strike> interesting questions that do not necessarily have unique answers.

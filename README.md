@@ -267,12 +267,12 @@ Both methods work pretty much the same and are the inverse operations to `HTML.d
   the `text` property.
 * Whitespace will be preserved.
 
-For [SteamPipe](https://github.com/loveencounterflow/steampipes) streams, use
+In [SteamPipe](https://github.com/loveencounterflow/steampipes) streams, use the transforms returned by
 
 * `$html_as_datoms()`
 * `$mkts_html_as_datoms()`
 
-for the same functionality; both transforms accept texts or buffers.
+for the same functionality; both transforms accept texts and buffers as inputs.
 
 ### HTML Generation
 

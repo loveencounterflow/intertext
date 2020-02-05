@@ -24,11 +24,11 @@ L                         = @
     "x is a text":                   					( x ) -> @isa.text                      x
     "x ends with soft hyphen":       					( x ) -> x[ x.length - 1 ] is '\u00ad'
 
-#-----------------------------------------------------------------------------------------------------------
-@declare 'intertext_template_name',
-  tests:
-    "x is a nonempty_text":                   ( x ) -> @isa.nonempty_text                      x
-    "x is name of template":                  ( x ) -> @isa.function ( require './templates' )[ x ]
+# #-----------------------------------------------------------------------------------------------------------
+# @declare 'intertext_template_name',
+#   tests:
+#     "x is a nonempty_text":                   ( x ) -> @isa.nonempty_text                      x
+#     "x is name of template":                  ( x ) -> @isa.function ( require './templates' )[ x ]
 
 #-----------------------------------------------------------------------------------------------------------
 ### TAINT consider to use JS regex unicode properties:

@@ -28,6 +28,7 @@
   },
   "homepage": "https://github.com/loveencounterflow/intertext#readme",
   "dependencies": {
+    "atlas-html-stream": "^1.2.0",
     "cnd": "^5.3.0",
     "datom": "^3.0.1",
     "hyphenopoly": "^4.0.0",

@@ -1,6 +1,6 @@
 {
   "name": "intertext",
-  "version": "0.5.4",
+  "version": "0.5.5",
   "description": "Services for Recurrent Text-related Tasks",
   "main": "lib/main.js",
   "scripts": {

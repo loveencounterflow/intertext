@@ -29,12 +29,14 @@
   "homepage": "https://github.com/loveencounterflow/intertext#readme",
   "dependencies": {
     "cnd": "^5.3.0",
-    "datom": "^3.0.0",
-    "guy-test": "^1.4.1",
+    "datom": "^3.0.1",
     "hyphenopoly": "^4.0.0",
-    "intertype": "^3.1.0",
+    "intertype": "^3.1.1",
     "linebreak": "^1.0.2",
-    "multimix": "^2.1.1",
-    "steampipes": "^4.1.0"
+    "multimix": "^2.1.2",
+    "steampipes": "^4.1.1"
+  },
+  "devDependencies": {
+    "guy-test": "^1.4.1"
   }
 }

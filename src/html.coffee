@@ -205,3 +205,63 @@ find_next_tag = ( text, prv_idx = 0 ) ->
 if module is require.main then do => # await do =>
   help 'ok'
 
+
+###
+
+# #-----------------------------------------------------------------------------------------------------------
+# @html5_block_level_tagnames = new Set """address article aside blockquote dd details dialog div dl dt
+# fieldset figcaption figure footer form h1 h2 h3 h4 h5 h6 header hgroup hr li main nav ol p pre section table
+# td th ul""".split /\s+/
+
+# #-----------------------------------------------------------------------------------------------------------
+# @_new_datom = ( name, data, text ) ->
+#   return new_datom '^text', { text, } if text?
+#   #.........................................................................................................
+#   is_block = @html5_block_level_tagnames.has name
+#   unless data?
+#     return new_datom '>' + name unless is_block
+#     return new_datom '>' + name, { is_block, }
+#   #.........................................................................................................
+#   has_keys = false
+#   for key, value of data
+#     has_keys    = true
+#     data[ key ] = true if value is ''
+#   #.........................................................................................................
+#   unless has_keys
+#     return new_datom '<' + name unless is_block
+#     return new_datom '<' + name, { is_block, }
+#   #.........................................................................................................
+#   return new_datom '<' + name, { data, } unless is_block
+#   return new_datom '<' + name, { data, is_block, }
+
+#-----------------------------------------------------------------------------------------------------------
+# @_new_parse_method = ( piecemeal ) ->
+#   R       = null
+#   parser  = new HtmlParser { preserveWS: true, }
+#   #.........................................................................................................
+#   parser.on 'data', ( { name, data, text, } ) => R.push @_new_datom name, data, text
+#   parser.on 'error', ( error ) -> throw error
+#   # parser.on 'end', -> R.push new_datom '^stop'
+#   #.........................................................................................................
+#   R = ( html ) =>
+#     R = []
+#     parser.write html
+#     unless piecemeal
+#       parser.flushText()
+#       parser.reset()
+#     return R
+#   #.........................................................................................................
+#   R.flush = -> parser.flushText()
+#   R.reset = -> parser.reset()
+#   return R
+
+#-----------------------------------------------------------------------------------------------------------
+class Htmlparser extends Multimix
+  # @extend   object_with_class_properties
+  @include L
+
+  #---------------------------------------------------------------------------------------------------------
+  constructor: ( @settings = null ) ->
+    super()
+
+###

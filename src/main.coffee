@@ -48,6 +48,7 @@ class Intertext extends Multimix
   constructor: ( target = null ) ->
     super()
     @HTML   = require './html'
+    @MKTS   = require './mkts'
     @HYPH   = require './hyphenation'
     @SLABS  = require './slabs'
     @export target if target?

@@ -48,13 +48,13 @@ types                     = require '../types'
 #...........................................................................................................
 test                      = require 'guy-test'
 INTERTEXT                 = require '../..'
-{ HTML, }                 = INTERTEXT
+{ MKTS, }                 = INTERTEXT
 
 
 #===========================================================================================================
 # TESTS
 #-----------------------------------------------------------------------------------------------------------
-@[ "HTML.mkts_html_as_datoms" ] = ( T, done ) ->
+@[ "MKTS.html_as_datoms" ] = ( T, done ) ->
   probes_and_matchers = [
     ["line A<br/>line B",[{"text":"line A","$key":"^text"},{"$key":"^br"},{"text":"line B","$key":"^text"}],null]
     ["<p>|here and|<br>",[{"$key":"<p"},{"text":"|here and|","$key":"^text"},{"$key":"<br"}],null]
@@ -81,29 +81,28 @@ INTERTEXT                 = require '../..'
   for [ probe, matcher, error, ] in probes_and_matchers
     await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
       text      = probe
-      resolve HTML.mkts_html_as_datoms text
+      resolve MKTS.html_as_datoms text
   #.........................................................................................................
   done()
   return null
 
 #-----------------------------------------------------------------------------------------------------------
-@[ "HTML.mkts_html_as_datoms (compact syntax)" ] = ( T, done ) ->
+@[ "MKTS.html_as_datoms (compact syntax)" ] = ( T, done ) ->
   probes_and_matchers = [
     # [ '<columns =2 =3>' ]
     ["<div>",[{"$key":"<div"}]]
-    ["<div#c432.foo.bar>",[{"$key":"<div","id":"c432","clasz":"foo bar"}]]
-    ["<p.noindent>",[{"$key":"<p","clasz":"noindent"}]]
+    ["<div#c432.foo.bar>",[{"$key":"<div","id":"c432","class":"foo bar"}]]
+    ["<p.noindent>",[{"$key":"<p","class":"noindent"}]]
     ]
-  debug '^3443^', key, ( type_of value ) for key, value of HTML
   for [ probe, matcher, error, ] in probes_and_matchers
     await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
-      resolve HTML.mkts_html_as_datoms probe
+      resolve MKTS.html_as_datoms probe
   #.........................................................................................................
   done()
   return null
 
 #-----------------------------------------------------------------------------------------------------------
-@[ "HTML.$mkts_html_as_datoms" ] = ( T, done ) ->
+@[ "MKTS.$html_as_datoms" ] = ( T, done ) ->
   SP                        = require 'steampipes'
   # SP                        = require '../../apps/steampipes'
   { $
@@ -120,7 +119,7 @@ INTERTEXT                 = require '../..'
   pipeline      = []
   pipeline.push [ ( Buffer.from probe ), ]
   pipeline.push SP.$split()
-  pipeline.push HTML.$mkts_html_as_datoms()
+  pipeline.push MKTS.$html_as_datoms()
   pipeline.push $show()
   pipeline.push $drain ( result ) =>
     help jr result
@@ -136,7 +135,7 @@ INTERTEXT                 = require '../..'
     ### TAINT these edge cases should be solved by an appropriate (MKTScript) pre-processor; NB that in
     MKTScript stray pointy brackets in ordinary text (but not in `<code>` blocks) are forbidden and must
     be escaped as entities wherever they appear in attribute values; these rules, however, do not
-    necessarily apply when parsing general HTML sources. ###
+    necessarily apply when parsing general MKTS sources. ###
     ###
     ["< >",[{"text":"< >","$key":"^text"}],null]          # !!! silent failure
     ["< x >",[{"text":"< x >","$key":"^text"}],null]      # !!! silent failure
@@ -144,15 +143,15 @@ INTERTEXT                 = require '../..'
     ["<",[{"text":"<","$key":"^text"}],null]              # !!! silent failure
     ["<tag",[{"text":"<tag","$key":"^text"}],null]        # !!! silent failure
     ###
-    ["if <math> a > b </math> then",[{"text":"if ","$key":"^text"},{"$key":"<math"},{"text":" a > b ","$key":"^text"},{"$key":">math"},{"text":" then","$key":"^text"}],null]
-    [">",[{"text":">","$key":"^text"}],null]
+    ["if <math> a > b </math> then",[{"text":"if ","$key":"^text"},{"$key":"<math"},{"message":"Syntax error: closing before opening bracket: \" a > b </math> then\"","type":"mkts-syntax-html","source":" a > b </math> then","$key":"~error"}],null]
+    [">",[{"message":"Syntax error: closing but no opening bracket: \">\"","type":"mkts-syntax-html","source":">","$key":"~error"}],null]
     ["&",[{"text":"&","$key":"^text"}],null]
     ["&amp;",[{"text":"&amp;","$key":"^text"}],null]
-    ["<tag a='<'>",[{"a":"<","$key":"<tag"}],null]
+    ["<tag a='<'>",[{"message":"Syntax error: additional opening bracket: \"<tag a='<'>\"","type":"mkts-syntax-html","source":"<tag a='<'>","$key":"~error"}],null]
     ]
   for [ probe, matcher, error, ] in probes_and_matchers
     await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
-      resolve HTML.html_as_datoms probe
+      resolve MKTS.html_as_datoms probe
   #.........................................................................................................
   done()
   return null
@@ -174,13 +173,13 @@ INTERTEXT                 = require '../..'
   ‘I’m as certain of it, as if his name were written all over his face.’
 
   """
-  for d in datoms = HTML.html_as_datoms text
+  for d in datoms = MKTS.html_as_datoms text
     echo jr d
   echo '-'.repeat 108
-  echo result = ( HTML.datom_as_html d for d in datoms ).join ''
+  echo result = ( MKTS.datom_as_html d for d in datoms ).join ''
   # debug '^2228^', jr result
-  T.eq result, "<!DOCTYPE html>\n<h1#s4451><strong>CHAPTER VI.</strong> \
-    <name ref=hd553>Humpty Dumpty</h1>\n\n<p#p227.noindent>However, the egg only got larger and larger, \
+  T.eq result, "<!DOCTYPE html>\n<h1 id=s4451><strong>CHAPTER VI.</strong> \
+    <name ref=hd553>Humpty Dumpty</h1>\n\n<p class=noindent id=p227>However, the egg only got larger and larger, \
     and <em>more and more human</em>:<br>\n\nwhen she had come within a few yards of it, she saw that it \
     had eyes and a nose and mouth; and when she\nhad come close to it, she saw clearly that it was \
     <name ref=hd556>HUMPTY DUMPTY</name> himself. ‘It can’t\nbe anybody else!’ she said to herself.\
@@ -195,12 +194,12 @@ INTERTEXT                 = require '../..'
   <h1#c4443><strong.myclass>CHAPTER VI.</strong> <name ref=hd553>Humpty Dumpty</h1>"""
   buffer  = Buffer.from text
   # debug '^80009^', buffer
-  # for d in datoms = HTML.html_as_datoms buffer
-  for d in datoms = HTML.mkts_html_as_datoms buffer
+  # for d in datoms = MKTS.html_as_datoms buffer
+  for d in datoms = MKTS.html_as_datoms buffer
     echo jr d
   echo '-'.repeat 108
-  echo result = ( HTML.datom_as_html d for d in datoms ).join ''
-  T.eq result, "<!DOCTYPE html>\n<h1 id=c4443><strong clasz=myclass>CHAPTER VI.</strong> <name ref=hd553>Humpty Dumpty</h1>"
+  echo result = ( MKTS.datom_as_html d for d in datoms ).join ''
+  T.eq result, "<!DOCTYPE html>\n<h1 id=c4443><strong class=myclass>CHAPTER VI.</strong> <name ref=hd553>Humpty Dumpty</h1>"
   #.........................................................................................................
   done()
   return null
@@ -210,9 +209,9 @@ INTERTEXT                 = require '../..'
 if module is require.main then do => # await do =>
   # await @_demo()
   await test @
+  # await test @[ "MKTS.html_as_datoms" ]
+  # await test @[ "MKTS.html_as_datoms (compact syntax)" ]
+  # await test @[ "MKTS.$html_as_datoms" ]
+  # await test @[ "MKTS.html_as_datoms (dubious)" ]
   # await test @[ "MKTS demo" ]
   # await test @[ "MKTS demo (buffer)" ]
-  # await @[ "MKTS demo (buffer)" ]()
-  # await test @[ "HTML.mkts_html_as_datoms (compact syntax)" ]
-
-

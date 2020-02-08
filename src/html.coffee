@@ -33,7 +33,7 @@ types                     = require './types'
   type_of }               = types
 #...........................................................................................................
 HtmlParser                = require 'atlas-html-stream'
-
+assign                    = Object.assign
 
 
 #===========================================================================================================
@@ -92,6 +92,13 @@ HtmlParser                = require 'atlas-html-stream'
   return "<#{tagname}>#{slash}#{x_sys_key}" if atxt is ''
   return "<#{tagname}#{atxt}>#{x_sys_key}#{slash}"
 
+#-----------------------------------------------------------------------------------------------------------
+@$datom_as_html = ( d ) =>
+  { $, } = ( require 'steampipes' ).export()
+  return $ ( d, send ) =>
+    send @datom_as_html d
+    return null
+
 
 #===========================================================================================================
 # PARSING
@@ -149,6 +156,22 @@ find_next_tag = ( text, prv_idx = 0 ) ->
   return [ idx_0, idx_1, ]
 
 #-----------------------------------------------------------------------------------------------------------
+@_analyze_mkts_compact_syntax = ( datoms ) ->
+  for d, idx in datoms
+    { $key, attributes, } = ( d.$key.match /^(?<$key>[^#.]+)(?<attributes>.*)$/ ).groups
+    continue if attributes is ''
+    update = { $key, }
+    for attribute in attributes.split /([#.][^#.]+)/
+      continue if attribute is ''
+      avalue          = attribute[ 1 .. ]
+      if attribute[ 0 ] is '#' then update.id = avalue
+      else                          ( update.clasz ?= [] ).push avalue
+    # debug '^3388^', attributes
+    update.clasz = update.clasz.join ' ' if update.clasz?
+    datoms[ idx ] = lets d, ( d ) -> assign d, update
+  return datoms
+
+#-----------------------------------------------------------------------------------------------------------
 @mkts_html_as_datoms = ( text ) ->
   R         = []
   prv_idx   = 0
@@ -168,9 +191,9 @@ find_next_tag = ( text, prv_idx = 0 ) ->
       return R
     #.......................................................................................................
     if idx_0 > prv_idx_1 + 1
-      R.push new_datom '^text', { text: text[ prv_idx_1 + 1 ... idx_0 ], }
+      R.push new_datom '^text', { text: text[ prv_idx_1 + 1 ... idx_0 ].toString(), }
     break unless idx_0?
-    tags = @html_as_datoms text[ idx_0 .. idx_1 ]
+    tags = @_analyze_mkts_compact_syntax @html_as_datoms text[ idx_0 .. idx_1 ]
     if text[ idx_1 - 1 ] is '/'
       R.push d = lets tags[ 0 ], ( d ) -> d.$key = '^' + d.$key[ 1 .. ]
     else
@@ -180,9 +203,24 @@ find_next_tag = ( text, prv_idx = 0 ) ->
   #.........................................................................................................
   # debug '7776^', rpr { prv_idx, prv_idx_1, idx_0, idx_1, length: text.length, }
   if prv_idx < text.length
-      R.push new_datom '^text', { text: text[ prv_idx_1 + 1 .. ], }
+      R.push new_datom '^text', { text: text[ prv_idx_1 + 1 .. ].toString(), }
   return R
 
+###
+====================================================================================
+compact names for MKTScript:
+
+`<div#c432.foo.bar>...</div>` => `<div id=c432 class='foo bar'>...</div>`
+`<p.noindent>...</p>` => `<p class=noindent>...</p>`
+
+positional arguments:
+`<columns:2>` => `<columns count=2/>` => `<columns count=2></columns>` ?=> `<mkts-columns count=2></mkts-columns>`
+
+NB Svelte uses capitalized names, allows self-closing tags(!): `<Mytag/>`
+
+
+
+###
 
 #===========================================================================================================
 # PARSING

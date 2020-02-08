@@ -31,7 +31,7 @@ do ->
     for key, value of module
       continue if key.startsWith '_'
       # debug '39838', path, key
-      throw new Error "duplicate key #{rpr key}" if L[ key ]?
+      throw new Error "duplicate key #{rpr key} in #{path}" if L[ key ]?
       L[ key ] = value.bind L
   test L, { timeout: 5000, }
 

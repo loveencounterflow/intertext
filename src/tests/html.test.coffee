@@ -363,39 +363,6 @@ show = ( html, datoms ) ->
   return null
 
 #-----------------------------------------------------------------------------------------------------------
-@[ "HTML.mkts_html_as_datoms" ] = ( T, done ) ->
-  probes_and_matchers = [
-    ["line A<br/>line B",[{"text":"line A","$key":"^text"},{"$key":"^br"},{"text":"line B","$key":"^text"}],null]
-    ["<p>|here and|<br>",[{"$key":"<p"},{"text":"|here and|","$key":"^text"},{"$key":"<br"}],null]
-    ["|foo |<p>|here and|<br>|there|",[{"text":"|foo |","$key":"^text"},{"$key":"<p"},{"text":"|here and|","$key":"^text"},{"$key":"<br"},{"text":"|there|","$key":"^text"}],null]
-    ["< >",[{"message":"Syntax error: whitespace not allowed here: \"< >\"","type":"mkts-syntax-html","source":"< >","$key":"~error"}],null]
-    ["< x >",[{"message":"Syntax error: whitespace not allowed here: \"< x >\"","type":"mkts-syntax-html","source":"< x >","$key":"~error"}],null]
-    ["<>",[{"message":"Syntax error: closing bracket too close to opening bracket: \"<>\"","type":"mkts-syntax-html","source":"<>","$key":"~error"}],null]
-    ["<",[{"message":"Syntax error: opening but no closing bracket: \"<\"","type":"mkts-syntax-html","source":"<","$key":"~error"}],null]
-    ["<tag",[{"message":"Syntax error: opening but no closing bracket: \"<tag\"","type":"mkts-syntax-html","source":"<tag","$key":"~error"}],null]
-    ["tag>",[{"message":"Syntax error: closing but no opening bracket: \"tag>\"","type":"mkts-syntax-html","source":"tag>","$key":"~error"}],null]
-    [">",[{"message":"Syntax error: closing but no opening bracket: \">\"","type":"mkts-syntax-html","source":">","$key":"~error"}],null]
-    ["<",[{"message":"Syntax error: opening but no closing bracket: \"<\"","type":"mkts-syntax-html","source":"<","$key":"~error"}],null]
-    ["x",[{"text":"x","$key":"^text"}],null]
-    ["&",[{"text":"&","$key":"^text"}],null]
-    ["&;",[{"text":"&;","$key":"^text"}],null]
-    ["&&",[{"text":"&&","$key":"^text"}],null]
-    ["max & moritz",[{"text":"max & moritz","$key":"^text"}],null]
-    ["&amp;",[{"text":"&amp;","$key":"^text"}],null]
-    ["<tag>\n \n\t\n</p>",[{"$key":"<tag"},{"text":"\n \n\t\n","$key":"^text"},{"$key":">p"}],null]
-    ["<tag a='<'>",[{"message":"Syntax error: additional opening bracket: \"<tag a='<'>\"","type":"mkts-syntax-html","source":"<tag a='<'>","$key":"~error"}],null]
-    ["<tag a='>'>",[{"text":">","$key":"^text"},{"message":"Syntax error: closing but no opening bracket: \"'>\"","type":"mkts-syntax-html","source":"'>","$key":"~error"}],null]
-    ["if <math> a > b </math> then",[{"text":"if ","$key":"^text"},{"$key":"<math"},{"message":"Syntax error: closing before opening bracket: \" a > b </math> then\"","type":"mkts-syntax-html","source":" a > b </math> then","$key":"~error"}],null]
-    ]
-  for [ probe, matcher, error, ] in probes_and_matchers
-    await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
-      text      = probe
-      resolve HTML.mkts_html_as_datoms text
-  #.........................................................................................................
-  done()
-  return null
-
-#-----------------------------------------------------------------------------------------------------------
 @[ "HTML.html_as_datoms (2)" ] = ( T, done ) ->
   probes_and_matchers = [
     ["<!DOCTYPE html>","<!DOCTYPE html>",null]
@@ -447,35 +414,7 @@ show = ( html, datoms ) ->
   return null
 
 #-----------------------------------------------------------------------------------------------------------
-@[ "HTML.$mkts_html_as_datoms" ] = ( T, done ) ->
-  SP                        = require 'steampipes'
-  # SP                        = require '../../apps/steampipes'
-  { $
-    $async
-    $drain
-    $watch
-    $show  }                = SP.export()
-  #.........................................................................................................
-  probe         = """
-    <p>A <em>concise</em> introduction to the things discussed below.</p>
-    """
-  matcher = [{"$key":"<p"},{"text":"A ","$key":"^text"},{"$key":"<em"},{"text":"concise","$key":"^text"},{"$key":">em"},{"text":" introduction to the things discussed below.","$key":"^text"},{"$key":">p"}]
-  #.........................................................................................................
-  pipeline      = []
-  pipeline.push [ ( Buffer.from probe ), ]
-  pipeline.push SP.$split()
-  pipeline.push HTML.$mkts_html_as_datoms()
-  pipeline.push $show()
-  pipeline.push $drain ( result ) =>
-    help jr result
-    T.eq result, matcher
-    done()
-  SP.pull pipeline...
-  #.........................................................................................................
-  return null
-
-#-----------------------------------------------------------------------------------------------------------
-@[ "demo" ] = ( T, done ) ->
+@[ "HTML demo" ] = ( T, done ) ->
   text = """<!DOCTYPE html>
   <h1><strong>CHAPTER VI.</strong> <name ref=hd553>Humpty Dumpty</h1>
 
@@ -497,7 +436,7 @@ show = ( html, datoms ) ->
   return null
 
 #-----------------------------------------------------------------------------------------------------------
-@[ "demo (buffer)" ] = ( T, done ) ->
+@[ "HTML demo (buffer)" ] = ( T, done ) ->
   text    = """<!DOCTYPE html>
   <h1><strong>CHAPTER VI.</strong> <name ref=hd553>Humpty Dumpty</h1>"""
   buffer  = Buffer.from text
@@ -517,23 +456,3 @@ if module is require.main then do => # await do =>
   test @
   help 'ok'
   # test @[ "demo" ]
-  # test @[ "demo (buffer)" ]
-  # test @[ "HTML.$html_as_datoms" ]
-
-  # test @[ "must quote attribute value" ]
-  # test @[ "DATOM.HTML._as_attribute_literal" ]
-  # test @[ "isa.intertext_html_tagname" ]
-  # test @[ "HTML.datom_as_html (singular tags)" ]
-  # test @[ "HTML.datom_as_html (closing tags)" ]
-  # test @[ "HTML.datom_as_html (opening tags)" ]
-  # test @[ "HTML.datom_as_html (texts)" ]
-  # test @[ "HTML.datom_as_html (opening tags w/ $value)" ]
-  # test @[ "HTML.datom_as_html (system tags)" ]
-  # test @[ "HTML.datom_as_html (raw pseudo-tag)" ]
-  # test @[ "HTML.datom_as_html (doctype)" ]
-  # test @[ "HTML.html_as_datoms (1)" ]
-  # test @[ "HTML.html_as_datoms (dubious 2)" ]
-  # test @[ "HTML.html_as_datoms (dubious w/ pre-processor)" ]
-
-
-

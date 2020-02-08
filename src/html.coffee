@@ -93,7 +93,7 @@ assign                    = Object.assign
   return "<#{tagname}#{atxt}>#{x_sys_key}#{slash}"
 
 #-----------------------------------------------------------------------------------------------------------
-@$datom_as_html = ( d ) =>
+@$datom_as_html = =>
   { $, } = ( require 'steampipes' ).export()
   return $ ( d, send ) =>
     send @datom_as_html d

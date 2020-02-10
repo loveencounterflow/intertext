@@ -159,9 +159,8 @@ tagname_head_pattern = ///
   \ufdf0-\ufffd
   \u{10000}-\u{effff} ///u
 tagname_tail_pattern = ///
-  \.-
   0-9
-  \xb7
+  \.\x2d\xb7
   \u0300-\u036f
   \u203f-\u2040 ///u
 tagname_pattern = /// ^

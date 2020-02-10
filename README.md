@@ -15,6 +15,8 @@
 - [HTML](#html)
   - [HTML Parsing](#html-parsing)
   - [HTML Generation](#html-generation)
+    - [HTML Generation from Datoms](#html-generation-from-datoms)
+    - [HTML Generation from Method Calls](#html-generation-from-method-calls)
   - [Example: HTML Parsing and HTML Generation](#example-html-parsing-and-html-generation)
 - [Benchmarks](#benchmarks)
   - [Hyphenators](#hyphenators)
@@ -276,7 +278,7 @@ for the same functionality; both transforms accept texts and buffers as inputs.
 
 ### HTML Generation
 
-<!-- Successor to `coffeenode-teacup`? -->
+#### HTML Generation from Datoms
 
 `{ HTML, } = require 'intertext'`
 
@@ -306,6 +308,23 @@ for the same functionality; both transforms accept texts and buffers as inputs.
     * as prefixed/namespaced tags?
   * how to treat datom keys that contain hyphens, underscores?
     * turn underscores into hyphens?
+
+#### HTML Generation from Method Calls
+
+compact syntax for HTML tags:
+
+* `HTML.parse_compact_tagname = ( compact_tagname ) ->`: Given a string with tagname followed by using CSS
+  selector syntax, return an obkject with `tagname`, `id`, `class`
+* `HTML.datoms_as_html = ( ds ) ->`
+
+* `HTML.h = ( compact_tagname, attributes, content... ) ->`
+
+`<div#c432.foo.bar>...</div>` => `<div id=c432 class='foo bar'>...</div>`
+`<p.noindent>...</p>` => `<p class=noindent>...</p>`
+
+
+
+
 
 ### Example: HTML Parsing and HTML Generation
 

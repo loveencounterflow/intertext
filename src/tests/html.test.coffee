@@ -80,7 +80,7 @@ INTERTEXT                 = require '../..'
   return null
 
 #-----------------------------------------------------------------------------------------------------------
-@[ "isa.intertext_html_tagname" ] = ( T, done ) ->
+@[ "isa.intertext_html_tagname (1)" ] = ( T, done ) ->
   probes_and_matchers = [
     [ "",             false,  null, ]
     [ "\"",           false,  null, ]
@@ -94,6 +94,25 @@ INTERTEXT                 = require '../..'
     ]
   for [ probe, matcher, error, ] in probes_and_matchers
     await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
+      resolve isa.intertext_html_tagname probe
+  #.........................................................................................................
+  done()
+  return null
+
+#-----------------------------------------------------------------------------------------------------------
+@[ "isa.intertext_html_tagname (2)" ] = ( T, done ) ->
+  probes = """a abbr acronym address applet area article aside audio b base basefont bdi bdo bgsound big
+  blink blockquote body br button canvas caption center cite code col colgroup command datalist dd del
+  details dfn dialog dir div dl dt em embed fieldset figcaption figure font footer form frame frameset h1 h2
+  h3 h4 h5 h6 head header hgroup hr html i iframe img input ins isindex kbd keygen label legend li link
+  listing main map mark marquee menu meta meter multicol nav nextid nobr noembed noframes noscript object ol
+  optgroup option output p param plaintext pre progress q rb rp rt ruby s samp script section select small
+  source spacer span strike strong sub summary sup table tbody td textarea tfoot th thead time title tr
+  track tt u ul video wbr xmp
+  foo:bar foo-bar Foo-bar
+  """.split /\s+/
+  for probe in probes
+    await T.perform probe, true, null, -> return new Promise ( resolve, reject ) ->
       resolve isa.intertext_html_tagname probe
   #.........................................................................................................
   done()
@@ -414,6 +433,136 @@ show = ( html, datoms ) ->
   return null
 
 #-----------------------------------------------------------------------------------------------------------
+@[ "HTML.parse_compact_tagname" ] = ( T, done ) ->
+  INTERTEXT                 = require '../..'
+  { parse_compact_tagname
+    h }                     = INTERTEXT.HTML.export()
+  #.........................................................................................................
+  probes_and_matchers = [
+    ["foo-bar",{"tagname":"foo-bar"},null]
+    ["foo-bar#c55",{"tagname":"foo-bar","id":"c55"},null]
+    ["foo-bar.blah.beep",{"tagname":"foo-bar","class":"blah beep"},null]
+    ["foo-bar#c55.blah.beep",{"tagname":"foo-bar","id":"c55","class":"blah beep"},null]
+    ["#c55",{id:"c55"}]
+    [".blah.beep",{"class":"blah beep"}]
+    ["...#",null,"illegal compact tag syntax"]
+    ]
+  for [ probe, matcher, error, ] in probes_and_matchers
+    await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
+      resolve parse_compact_tagname probe
+  #.........................................................................................................
+  done()
+  return null
+
+#-----------------------------------------------------------------------------------------------------------
+@[ "HTML.h" ] = ( T, done ) ->
+  INTERTEXT                 = require '../..'
+  { parse_compact_tagname
+    h }                     = INTERTEXT.HTML.export()
+  #.........................................................................................................
+  probes_and_matchers = [
+    [["div"],[{"$key":"^div"}],null]
+    [["div#x32"],[{"$key":"^div","id":"x32"}],null]
+    [["div.foo"],[{"$key":"^div","class":"foo"}],null]
+    [["div#x32.foo"],[{"$key":"^div","id":"x32","class":"foo"}],null]
+    [["div#x32",{"alt":"nice guy"}],[{"$key":"^div","id":"x32","alt":"nice guy"}],null]
+    [["div#x32",{"alt":"nice guy"}," a > b & b > c => a > c"],[{"$key":"<div","id":"x32","alt":"nice guy"},{"$key":"^text","text":" a &gt; b &amp; b &gt; c =&gt; a &gt; c"},{"$key":">div"}],null]
+    [["foo-bar"],[{"$key":"^foo-bar"}],null]
+    [["foo-bar#c55"],[{"$key":"^foo-bar","id":"c55"}],null]
+    [["foo-bar.blah.beep"],[{"$key":"^foo-bar","class":"blah beep"}],null]
+    [["foo-bar#c55.blah.beep"],[{"$key":"^foo-bar","id":"c55","class":"blah beep"}],null]
+    [["#c55"],null,"not a valid intertext_html_tagname"]
+    [[".blah.beep"],null,"not a valid intertext_html_tagname"]
+    [["...#"],null,"illegal compact tag syntax"]
+    ]
+  for [ probe, matcher, error, ] in probes_and_matchers
+    await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
+      # urge h probe...
+      resolve h probe...
+  #.........................................................................................................
+  done()
+  return null
+
+#-----------------------------------------------------------------------------------------------------------
+@[ "HTML.datoms_as_html (1)" ] = ( T, done ) ->
+  INTERTEXT                 = require '../..'
+  { datoms_as_html
+    h }                     = INTERTEXT.HTML.export()
+  #.........................................................................................................
+  probes_and_matchers = [
+    [["div"],"<div></div>",null]
+    [["div#x32"],"<div id=x32></div>",null]
+    [["div.foo"],"<div class=foo></div>",null]
+    [["div#x32.foo"],"<div class=foo id=x32></div>",null]
+    [["div#x32",{"alt":"nice guy"}],"<div alt='nice guy' id=x32></div>",null]
+    [["div#x32",{"alt":"nice guy"}," a > b & b > c => a > c"],"<div alt='nice guy' id=x32> a &amp;gt; b &amp;amp; b &amp;gt; c =&amp;gt; a &amp;gt; c</div>",null]
+    [["foo-bar"],"<foo-bar></foo-bar>",null]
+    [["foo-bar#c55"],"<foo-bar id=c55></foo-bar>",null]
+    [["foo-bar.blah.beep"],"<foo-bar class='blah beep'></foo-bar>",null]
+    [["foo-bar#c55.blah.beep"],"<foo-bar class='blah beep' id=c55></foo-bar>",null]
+    [["#c55"],null,"not a valid intertext_html_tagname"]
+    [[".blah.beep"],null,"not a valid intertext_html_tagname"]
+    [["...#"],null,"illegal compact tag syntax"]
+    ]
+  for [ probe, matcher, error, ] in probes_and_matchers
+    await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
+      # urge datoms_as_html h probe...
+      resolve datoms_as_html h probe...
+  #.........................................................................................................
+  done()
+  return null
+
+#-----------------------------------------------------------------------------------------------------------
+@[ "HTML.datoms_as_html (2)" ] = ( T, done ) ->
+  INTERTEXT                 = require '../..'
+  { datoms_as_html
+    h }                     = INTERTEXT.HTML.export()
+  #.........................................................................................................
+  urge dhtml = h 'article#c2', { editable: true, }, ( h 'h1', "A truly curious Coincidence" )
+  T.eq dhtml, [
+    { '$key': '<article', id: 'c2', editable: true },
+    { '$key': '<h1' },
+    { '$key': '^text', text: 'A truly curious Coincidence' },
+    { '$key': '>h1' }
+    { '$key': '>article' }
+    ]
+  #.........................................................................................................
+  done()
+  return null
+
+#-----------------------------------------------------------------------------------------------------------
+@[ "HTML.datoms_as_html (3)" ] = ( T, done ) ->
+  INTERTEXT                 = require '../..'
+  { datoms_as_html
+    h }                     = INTERTEXT.HTML.export()
+  #.........................................................................................................
+  urge dhtml = h 'article#c2', { editable: true, },
+    h 'h1', "A truly curious Coincidence"
+    h 'p.noindent', ( h 'em', "Seriously," ), " he said, ", ( h 'em', "we'd better start cooking now." )
+  #.........................................................................................................
+  whisper jr datoms_as_html dhtml
+  T.eq ( datoms_as_html dhtml ), "<article editable id=c2><h1>A truly curious Coincidence</h1><p class=noindent><em>Seriously,</em> he said, <em>we'd better start cooking now.</em></p></article>"
+  T.eq dhtml, [
+    { '$key': '<article', id: 'c2', editable: true },
+    { '$key': '<h1' },
+    { '$key': '^text', text: 'A truly curious Coincidence' },
+    { '$key': '>h1' },
+    { '$key': '<p', class: 'noindent' },
+    { '$key': '<em' },
+    { '$key': '^text', text: 'Seriously,' },
+    { '$key': '>em' },
+    { '$key': '^text', text: ' he said, ' },
+    { '$key': '<em' },
+    { '$key': '^text', text: "we'd better start cooking now." },
+    { '$key': '>em' },
+    { '$key': '>p' },
+    { '$key': '>article' }
+    ]
+  #.........................................................................................................
+  done()
+  return null
+
+#-----------------------------------------------------------------------------------------------------------
 @[ "HTML demo" ] = ( T, done ) ->
   text = """<!DOCTYPE html>
   <h1><strong>CHAPTER VI.</strong> <name ref=hd553>Humpty Dumpty</h1>
@@ -453,6 +602,15 @@ show = ( html, datoms ) ->
 ############################################################################################################
 if module is require.main then do => # await do =>
   # await @_demo()
-  test @
+  # test @
+  # test @[ "HTML.parse_compact_tagname" ]
+  # test @[ "HTML.h" ]
+  # test @[ "isa.intertext_html_tagname (2)" ]
+  test @[ "HTML.datoms_as_html (3)" ]
   help 'ok'
-  # test @[ "demo" ]
+
+
+
+
+
+

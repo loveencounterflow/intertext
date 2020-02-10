@@ -57,7 +57,54 @@ assign                    = Object.assign
   return R
 
 #-----------------------------------------------------------------------------------------------------------
-@datom_as_html = ( d ) =>
+@parse_compact_tagname = ( compact_tagname ) ->
+  { tagname
+    attributes }  = ( compact_tagname.match /^(?<tagname>[^#.]*)(?<attributes>.*)$/ ).groups
+  R               = {}
+  R.tagname       = tagname unless tagname is ''
+  return R if attributes is ''
+  for attribute in attributes.split /([#.][^#.]*)/
+    continue if attribute is ''
+    avalue = attribute[ 1 .. ]
+    unless avalue.length > 0
+      throw new Error "^intertext/parse_compact_tagname@4422^ illegal compact tag syntax in #{rpr compact_tagname}"
+    if attribute[ 0 ] is '#' then R.id = avalue
+    else                          ( R.class ?= [] ).push avalue
+  R.class = R.class.join ' ' if R.class?
+  return R
+
+#-----------------------------------------------------------------------------------------------------------
+@h = ( compact_tagname, attributes, content... ) ->
+  validate.nonempty_text compact_tagname
+  { tagname, id, class: clasz, }  = @parse_compact_tagname compact_tagname
+  validate.intertext_html_tagname tagname
+  use_attributes                  = false
+  if attributes?
+    if isa.object attributes then use_attributes = true
+    else                          content.unshift attributes
+  if content.length is 0
+    sigil   = '^'
+    end_tag = null
+  else
+    sigil   = '<'
+    end_tag = { $key: ">#{tagname}", }
+    for part, idx in content
+      content[ idx ] = { $key: '^text', text: ( @_escape_text part ), } if isa.text part
+  start_tag       = { $key: "#{sigil}#{tagname}", }
+  start_tag.id    = id    if id?
+  start_tag.class = clasz if clasz?
+  assign start_tag, attributes if use_attributes
+  R               = [ start_tag, content..., ]
+  R.push end_tag if end_tag?
+  return R.flat Infinity
+
+#-----------------------------------------------------------------------------------------------------------
+@datoms_as_html = ( ds ) ->
+  validate.list ds
+  return ( @datom_as_html d for d in ds ).join ''
+
+#-----------------------------------------------------------------------------------------------------------
+@datom_as_html = ( d ) ->
   DATOM.types.validate.datom_datom d
   atxt        = ''
   sigil       = d.$key[ 0 ]
@@ -93,7 +140,7 @@ assign                    = Object.assign
   return "<#{tagname}#{atxt}>#{x_sys_key}#{slash}"
 
 #-----------------------------------------------------------------------------------------------------------
-@$datom_as_html = =>
+@$datom_as_html = ->
   { $, } = ( require 'steampipes' ).export()
   return $ ( d, send ) =>
     send @datom_as_html d

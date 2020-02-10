@@ -35,10 +35,26 @@ format_integer            = ( x ) -> _format '#,##0.',    x
 format_as_percentage      = ( x ) -> _format '#,##0.00',  x * 100
 ###
 
+#-----------------------------------------------------------------------------------------------------------
+class Html extends Multimix
+  @include require './html'
+
+#-----------------------------------------------------------------------------------------------------------
+class Mkts extends Multimix
+  @include require './mkts'
+
+#-----------------------------------------------------------------------------------------------------------
+class Hyph extends Multimix
+  @include require './hyphenation'
+
+#-----------------------------------------------------------------------------------------------------------
+class Slabs extends Multimix
+  @include require './slabs'
+
+
 
 #===========================================================================================================
 #
-#-----------------------------------------------------------------------------------------------------------
 MAIN = @
 class Intertext extends Multimix
   @include MAIN,                              { overwrite: false, }
@@ -47,10 +63,10 @@ class Intertext extends Multimix
   #---------------------------------------------------------------------------------------------------------
   constructor: ( target = null ) ->
     super()
-    @HTML   = require './html'
-    @MKTS   = require './mkts'
-    @HYPH   = require './hyphenation'
-    @SLABS  = require './slabs'
+    @HTML   = new Html()
+    @MKTS   = new Mkts()
+    @HYPH   = new Hyph()
+    @SLABS  = new Slabs()
     @export target if target?
     return @
 

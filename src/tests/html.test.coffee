@@ -16,31 +16,18 @@ urge                      = CND.get_logger 'urge',      badge
 echo                      = CND.echo.bind CND
 { jr, }                   = CND
 #...........................................................................................................
-DATOM                     = new ( require 'datom' ).Datom { dirty: false, }
-{ new_datom
-  lets
-  select }                = DATOM.export()
-types                     = require '../types'
-{ isa
-  validate
-  # cast
-  # declare
-  # declare_cast
-  # check
-  # sad
-  # is_sad
-  # is_happy
-  type_of }               = types
-#...........................................................................................................
 test                      = require 'guy-test'
-INTERTEXT                 = require '../..'
-{ HTML, }                 = INTERTEXT
 
 
 #===========================================================================================================
 # TESTS
 #-----------------------------------------------------------------------------------------------------------
 @[ "must quote attribute value" ] = ( T, done ) ->
+  INTERTEXT                 = require '../..'
+  types                     = require '../types'
+  { isa
+    validate
+    type_of }               = INTERTEXT.types
   probes_and_matchers = [
     [ "",           true,   null, ]
     [ "\"",         true,   null, ]
@@ -61,6 +48,8 @@ INTERTEXT                 = require '../..'
 
 #-----------------------------------------------------------------------------------------------------------
 @[ "DATOM.HTML._as_attribute_literal" ] = ( T, done ) ->
+  INTERTEXT                 = require '../..'
+  { HTML, }                 = INTERTEXT
   probes_and_matchers = [
     [ "",           "''",                       null, ]
     [ '"',          '\'"\'',                    null, ]
@@ -81,6 +70,11 @@ INTERTEXT                 = require '../..'
 
 #-----------------------------------------------------------------------------------------------------------
 @[ "isa.intertext_html_tagname (1)" ] = ( T, done ) ->
+  INTERTEXT                 = require '../..'
+  types                     = require '../types'
+  { isa
+    validate
+    type_of }               = INTERTEXT.types
   probes_and_matchers = [
     [ "",             false,  null, ]
     [ "\"",           false,  null, ]
@@ -101,6 +95,11 @@ INTERTEXT                 = require '../..'
 
 #-----------------------------------------------------------------------------------------------------------
 @[ "isa.intertext_html_tagname (2)" ] = ( T, done ) ->
+  INTERTEXT                 = require '../..'
+  types                     = require '../types'
+  { isa
+    validate
+    type_of }               = INTERTEXT.types
   probes = """a abbr acronym address applet area article aside audio b base basefont bdi bdo bgsound big
   blink blockquote body br button canvas caption center cite code col colgroup command datalist dd del
   details dfn dialog dir div dl dt em embed fieldset figcaption figure font footer form frame frameset h1 h2
@@ -120,6 +119,12 @@ INTERTEXT                 = require '../..'
 
 #-----------------------------------------------------------------------------------------------------------
 @[ "HTML.datoms_as_html (singular tags)" ] = ( T, done ) ->
+  DATOM                     = new ( require 'datom' ).Datom { dirty: false, }
+  { new_datom
+    lets
+    select }                = DATOM.export()
+  INTERTEXT                 = require '../..'
+  { HTML, }                 = INTERTEXT
   probes_and_matchers = [
     [ [ '^foo', ],                                    "<foo></foo>",                                       ]
     [ [ '^foo', { height: 42,               }, ],     "<foo height=42></foo>",                             ]
@@ -141,6 +146,12 @@ INTERTEXT                 = require '../..'
 
 #-----------------------------------------------------------------------------------------------------------
 @[ "HTML.datoms_as_html (closing tags)" ] = ( T, done ) ->
+  DATOM                     = new ( require 'datom' ).Datom { dirty: false, }
+  { new_datom
+    lets
+    select }                = DATOM.export()
+  INTERTEXT                 = require '../..'
+  { HTML, }                 = INTERTEXT
   probes_and_matchers = [
     [ [ '>foo', ],                                    "</foo>",           ]
     [ [ '>foo', { height: 42,               }, ],     "</foo>",           ]
@@ -162,6 +173,12 @@ INTERTEXT                 = require '../..'
 
 #-----------------------------------------------------------------------------------------------------------
 @[ "HTML.datoms_as_html (opening tags)" ] = ( T, done ) ->
+  DATOM                     = new ( require 'datom' ).Datom { dirty: false, }
+  { new_datom
+    lets
+    select }                = DATOM.export()
+  INTERTEXT                 = require '../..'
+  { HTML, }                 = INTERTEXT
   probes_and_matchers = [
     [ [ '<foo', ],                                    "<foo>",                                        ]
     [ [ '<foo', { height: 42,               }, ],     "<foo height=42>",                              ]
@@ -183,6 +200,12 @@ INTERTEXT                 = require '../..'
 
 #-----------------------------------------------------------------------------------------------------------
 @[ "HTML.datoms_as_html (texts)" ] = ( T, done ) ->
+  DATOM                     = new ( require 'datom' ).Datom { dirty: false, }
+  { new_datom
+    lets
+    select }                = DATOM.export()
+  INTERTEXT                 = require '../..'
+  { HTML, }                 = INTERTEXT
   probes_and_matchers = [
     [ [ '^text', ],                                    "",                            ]
     [ [ '^text', { height: 42,               }, ],     "",                            ]
@@ -199,6 +222,12 @@ INTERTEXT                 = require '../..'
 
 #-----------------------------------------------------------------------------------------------------------
 @[ "HTML.datoms_as_html (opening tags w/ $value)" ] = ( T, done ) ->
+  DATOM                     = new ( require 'datom' ).Datom { dirty: false, }
+  { new_datom
+    lets
+    select }                = DATOM.export()
+  INTERTEXT                 = require '../..'
+  { HTML, }                 = INTERTEXT
   probes_and_matchers = [
     [ [ '<foo', ],                                    "<foo>",                                        ]
     [ [ '<foo', { ignored: 'xxx', $value: { height: 42,              }, }, ], "<foo height=42>",                              ]
@@ -220,6 +249,12 @@ INTERTEXT                 = require '../..'
 
 #-----------------------------------------------------------------------------------------------------------
 @[ "HTML.datoms_as_html (system tags)" ] = ( T, done ) ->
+  DATOM                     = new ( require 'datom' ).Datom { dirty: false, }
+  { new_datom
+    lets
+    select }                = DATOM.export()
+  INTERTEXT                 = require '../..'
+  { HTML, }                 = INTERTEXT
   probes_and_matchers = [
     [["~foo"],"<x-sys x-key=foo><x-sys-key>foo</x-sys-key></x-sys>",null]
     [["~foo",{"height":42}],"<x-sys x-key=foo height=42><x-sys-key>foo</x-sys-key></x-sys>",null]
@@ -241,6 +276,12 @@ INTERTEXT                 = require '../..'
 
 #-----------------------------------------------------------------------------------------------------------
 @[ "HTML.datoms_as_html (raw pseudo-tag)" ] = ( T, done ) ->
+  DATOM                     = new ( require 'datom' ).Datom { dirty: false, }
+  { new_datom
+    lets
+    select }                = DATOM.export()
+  INTERTEXT                 = require '../..'
+  { HTML, }                 = INTERTEXT
   probes_and_matchers = [
     [ [ '^raw', ],                                    "",                                       ]
     [ [ '^raw', { height: 42,               }, ],     "",                                       ]
@@ -256,6 +297,12 @@ INTERTEXT                 = require '../..'
 
 #-----------------------------------------------------------------------------------------------------------
 @[ "HTML.datoms_as_html (doctype)" ] = ( T, done ) ->
+  DATOM                     = new ( require 'datom' ).Datom { dirty: false, }
+  { new_datom
+    lets
+    select }                = DATOM.export()
+  INTERTEXT                 = require '../..'
+  { HTML, }                 = INTERTEXT
   probes_and_matchers = [
     [ [ '^doctype', ],                  "<!DOCTYPE html>",        ]
     [ [ '^doctype', { height: 42, }, ], "<!DOCTYPE html>",        ]
@@ -271,6 +318,8 @@ INTERTEXT                 = require '../..'
 
 #-----------------------------------------------------------------------------------------------------------
 @[ "HTML.html_as_datoms (1)" ] = ( T, done ) ->
+  INTERTEXT                 = require '../..'
+  { HTML, }                 = INTERTEXT
   probes_and_matchers = [
     ["<!DOCTYPE html>",[{"$value":"html","$key":"^doctype"}],null]
     ["<!DOCTYPE obvious>",[{"$value":"obvious","$key":"^doctype"}],null]
@@ -356,6 +405,8 @@ show = ( html, datoms ) ->
 
 #-----------------------------------------------------------------------------------------------------------
 @[ "HTML.html_as_datoms (dubious)" ] = ( T, done ) ->
+  INTERTEXT                 = require '../..'
+  { HTML, }                 = INTERTEXT
   probes_and_matchers = [
     ### TAINT these edge cases should be solved by an appropriate (MKTScript) pre-processor; NB that in
     MKTScript stray pointy brackets in ordinary text (but not in `<code>` blocks) are forbidden and must
@@ -383,6 +434,8 @@ show = ( html, datoms ) ->
 
 #-----------------------------------------------------------------------------------------------------------
 @[ "HTML.html_as_datoms (2)" ] = ( T, done ) ->
+  INTERTEXT                 = require '../..'
+  { HTML, }                 = INTERTEXT
   probes_and_matchers = [
     ["<!DOCTYPE html>","<!DOCTYPE html>",null]
     ["<!DOCTYPE obvious>","<!DOCTYPE obvious>",null]
@@ -406,6 +459,8 @@ show = ( html, datoms ) ->
 
 #-----------------------------------------------------------------------------------------------------------
 @[ "HTML.$html_as_datoms" ] = ( T, done ) ->
+  INTERTEXT                 = require '../..'
+  { HTML, }                 = INTERTEXT
   SP                        = require 'steampipes'
   # SP                        = require '../../apps/steampipes'
   { $
@@ -564,7 +619,7 @@ show = ( html, datoms ) ->
   return null
 
 #-----------------------------------------------------------------------------------------------------------
-@[ "_HTML.datoms_as_html (4)" ] = ( T, done ) ->
+@[ "_HTML dhtml writer" ] = ( T, done ) ->
   INTERTEXT                 = require '../..'
   { datoms_as_html
     dhtml
@@ -619,6 +674,8 @@ show = ( html, datoms ) ->
 
 #-----------------------------------------------------------------------------------------------------------
 @[ "HTML demo" ] = ( T, done ) ->
+  INTERTEXT                 = require '../..'
+  { HTML, }                 = INTERTEXT
   text = """<!DOCTYPE html>
   <h1><strong>CHAPTER VI.</strong> <name ref=hd553>Humpty Dumpty</h1>
 
@@ -641,6 +698,8 @@ show = ( html, datoms ) ->
 
 #-----------------------------------------------------------------------------------------------------------
 @[ "HTML demo (buffer)" ] = ( T, done ) ->
+  INTERTEXT                 = require '../..'
+  { HTML, }                 = INTERTEXT
   text    = """<!DOCTYPE html>
   <h1><strong>CHAPTER VI.</strong> <name ref=hd553>Humpty Dumpty</h1>"""
   buffer  = Buffer.from text
@@ -649,6 +708,43 @@ show = ( html, datoms ) ->
     echo jr d
   echo '-'.repeat 108
   echo ( HTML.datoms_as_html d for d in datoms ).join ''
+  #.........................................................................................................
+  done()
+  return null
+
+#-----------------------------------------------------------------------------------------------------------
+@[ "_HTML demo (layout)" ] = ( T, done ) ->
+  INTERTEXT                 = require '../..'
+  { HTML, }                 = INTERTEXT
+  layout = ->
+    _.DOCTYPE 5
+    _.META charset: 'utf-8'
+    # _.META 'http-equiv': "Content-Security-Policy", content: "default-src 'self'"
+    # _.META 'http-equiv': "Content-Security-Policy", content: "script-src 'unsafe-inline'"
+    _.TITLE settings.title
+    ### ------------------------------------------------------------------------------------------------ ###
+    _.JS  resolve './jquery-3.4.1.js'
+    _.CSS resolve './jquery-ui-1.12.1/jquery-ui.min.css'
+    _.JS  resolve './jquery-ui-1.12.1/jquery-ui.min.js'
+    _.JS  resolve './ops-globals.js'
+    _.JS  resolve './ops.js'
+    _.JS  resolve './intertext.js'
+    _.CSS resolve './reset.css'
+    _.CSS resolve './styles.css'
+    ### ------------------------------------------------------------------------------------------------ ###
+    ### LIBRARIES                                                                                       ###
+    # _.JS  'http://d3js.org/d3.v4.js'
+    # _.JS  'http://d3js.org/d3.v5.js'
+    # _.JS   './d3.v5.js'
+    # _.JS   'https://cdn.jsdelivr.net/npm/taucharts@2/dist/taucharts.min.js'
+    # _.CSS  'https://cdn.jsdelivr.net/npm/taucharts@2/dist/taucharts.min.css'
+    # _.CSS './c3-0.6.14/c3.css'
+    # _.JS  './c3-0.6.14/c3.min.js'
+    #=======================================================================================================
+    _.BODY settings.body_def, ->
+      _.RAW '\n\n%content%\n\n'
+      _.SPAN '#page-ready'
+    return null
   #.........................................................................................................
   done()
   return null
@@ -662,7 +758,7 @@ if module is require.main then do => # await do =>
   # test @[ "HTML.dhtml" ]
   # test @[ "isa.intertext_html_tagname (2)" ]
   # test @[ "HTML.datoms_as_html (4)" ]
-  # @[ "HTML.datoms_as_html (4)" ]()
+  # @[ "HTML dhtml writer" ]()
   # test @[ "HTML specials" ]
   help 'ok'
 

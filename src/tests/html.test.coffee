@@ -119,7 +119,7 @@ INTERTEXT                 = require '../..'
   return null
 
 #-----------------------------------------------------------------------------------------------------------
-@[ "HTML.datom_as_html (singular tags)" ] = ( T, done ) ->
+@[ "HTML.datoms_as_html (singular tags)" ] = ( T, done ) ->
   probes_and_matchers = [
     [ [ '^foo', ],                                    "<foo></foo>",                                       ]
     [ [ '^foo', { height: 42,               }, ],     "<foo height=42></foo>",                             ]
@@ -134,13 +134,13 @@ INTERTEXT                 = require '../..'
   for [ probe, matcher, error, ] in probes_and_matchers
     await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
       d = new_datom probe...
-      resolve HTML.datom_as_html d
+      resolve HTML.datoms_as_html d
   #.........................................................................................................
   done()
   return null
 
 #-----------------------------------------------------------------------------------------------------------
-@[ "HTML.datom_as_html (closing tags)" ] = ( T, done ) ->
+@[ "HTML.datoms_as_html (closing tags)" ] = ( T, done ) ->
   probes_and_matchers = [
     [ [ '>foo', ],                                    "</foo>",           ]
     [ [ '>foo', { height: 42,               }, ],     "</foo>",           ]
@@ -155,13 +155,13 @@ INTERTEXT                 = require '../..'
   for [ probe, matcher, error, ] in probes_and_matchers
     await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
       d = new_datom probe...
-      resolve HTML.datom_as_html d
+      resolve HTML.datoms_as_html d
   #.........................................................................................................
   done()
   return null
 
 #-----------------------------------------------------------------------------------------------------------
-@[ "HTML.datom_as_html (opening tags)" ] = ( T, done ) ->
+@[ "HTML.datoms_as_html (opening tags)" ] = ( T, done ) ->
   probes_and_matchers = [
     [ [ '<foo', ],                                    "<foo>",                                        ]
     [ [ '<foo', { height: 42,               }, ],     "<foo height=42>",                              ]
@@ -176,13 +176,13 @@ INTERTEXT                 = require '../..'
   for [ probe, matcher, error, ] in probes_and_matchers
     await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
       d = new_datom probe...
-      resolve HTML.datom_as_html d
+      resolve HTML.datoms_as_html d
   #.........................................................................................................
   done()
   return null
 
 #-----------------------------------------------------------------------------------------------------------
-@[ "HTML.datom_as_html (texts)" ] = ( T, done ) ->
+@[ "HTML.datoms_as_html (texts)" ] = ( T, done ) ->
   probes_and_matchers = [
     [ [ '^text', ],                                    "",                            ]
     [ [ '^text', { height: 42,               }, ],     "",                            ]
@@ -192,13 +192,13 @@ INTERTEXT                 = require '../..'
   for [ probe, matcher, error, ] in probes_and_matchers
     await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
       d = new_datom probe...
-      resolve HTML.datom_as_html d
+      resolve HTML.datoms_as_html d
   #.........................................................................................................
   done()
   return null
 
 #-----------------------------------------------------------------------------------------------------------
-@[ "HTML.datom_as_html (opening tags w/ $value)" ] = ( T, done ) ->
+@[ "HTML.datoms_as_html (opening tags w/ $value)" ] = ( T, done ) ->
   probes_and_matchers = [
     [ [ '<foo', ],                                    "<foo>",                                        ]
     [ [ '<foo', { ignored: 'xxx', $value: { height: 42,              }, }, ], "<foo height=42>",                              ]
@@ -213,13 +213,13 @@ INTERTEXT                 = require '../..'
   for [ probe, matcher, error, ] in probes_and_matchers
     await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
       d = new_datom probe...
-      resolve HTML.datom_as_html d
+      resolve HTML.datoms_as_html d
   #.........................................................................................................
   done()
   return null
 
 #-----------------------------------------------------------------------------------------------------------
-@[ "HTML.datom_as_html (system tags)" ] = ( T, done ) ->
+@[ "HTML.datoms_as_html (system tags)" ] = ( T, done ) ->
   probes_and_matchers = [
     [["~foo"],"<x-sys x-key=foo><x-sys-key>foo</x-sys-key></x-sys>",null]
     [["~foo",{"height":42}],"<x-sys x-key=foo height=42><x-sys-key>foo</x-sys-key></x-sys>",null]
@@ -234,13 +234,13 @@ INTERTEXT                 = require '../..'
   for [ probe, matcher, error, ] in probes_and_matchers
     await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
       d = new_datom probe...
-      resolve HTML.datom_as_html d
+      resolve HTML.datoms_as_html d
   #.........................................................................................................
   done()
   return null
 
 #-----------------------------------------------------------------------------------------------------------
-@[ "HTML.datom_as_html (raw pseudo-tag)" ] = ( T, done ) ->
+@[ "HTML.datoms_as_html (raw pseudo-tag)" ] = ( T, done ) ->
   probes_and_matchers = [
     [ [ '^raw', ],                                    "",                                       ]
     [ [ '^raw', { height: 42,               }, ],     "",                                       ]
@@ -249,13 +249,13 @@ INTERTEXT                 = require '../..'
   for [ probe, matcher, error, ] in probes_and_matchers
     await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
       d = new_datom probe...
-      resolve HTML.datom_as_html d
+      resolve HTML.datoms_as_html d
   #.........................................................................................................
   done()
   return null
 
 #-----------------------------------------------------------------------------------------------------------
-@[ "HTML.datom_as_html (doctype)" ] = ( T, done ) ->
+@[ "HTML.datoms_as_html (doctype)" ] = ( T, done ) ->
   probes_and_matchers = [
     [ [ '^doctype', ],                  "<!DOCTYPE html>",        ]
     [ [ '^doctype', { height: 42, }, ], "<!DOCTYPE html>",        ]
@@ -264,7 +264,7 @@ INTERTEXT                 = require '../..'
   for [ probe, matcher, error, ] in probes_and_matchers
     await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
       d = new_datom probe...
-      resolve HTML.datom_as_html d
+      resolve HTML.datoms_as_html d
   #.........................................................................................................
   done()
   return null
@@ -399,7 +399,7 @@ show = ( html, datoms ) ->
     ]
   for [ probe, matcher, error, ] in probes_and_matchers
     await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
-      resolve ( HTML.datom_as_html d for d in  HTML.html_as_datoms probe ).join '|'
+      resolve ( HTML.datoms_as_html d for d in  HTML.html_as_datoms probe ).join '|'
   #.........................................................................................................
   done()
   return null
@@ -567,26 +567,29 @@ show = ( html, datoms ) ->
 @[ "_HTML.datoms_as_html (4)" ] = ( T, done ) ->
   INTERTEXT                 = require '../..'
   { datoms_as_html
-    datom_as_html
+    dhtml
+    text
+    datoms_as_html
     new_dhtml_writer }      = INTERTEXT.HTML.export()
   #.........................................................................................................
-  dhtml = new_dhtml_writer()
   # debug '^2223^', dhtml.text "R&B"
   # debug '^2223^', dhtml
-  debug '^7778^', INTERTEXT.HTML.dhtml 'one', ( INTERTEXT.HTML.dhtml 'two', 'here' )
-  debug '^7778^', datoms_as_html INTERTEXT.HTML.dhtml 'one', ( INTERTEXT.HTML.dhtml 'two', 'here' )
+  debug '^7778^',                dhtml 'one', ( text 'between' ), ( dhtml 'two', 'here' )
+  debug '^7778^', datoms_as_html dhtml 'one', ( text 'between' ), ( dhtml 'two', 'here' )
+  h = new_dhtml_writer()
   whisper '^7778^', '------------------------------------------'
-  dhtml 'one', ( dhtml 'between' ), ->
-    dhtml 'two', 'here'
-      # dhtml 'three' # , ->
-  # dhtml 'article#c2', { editable: true, }, ->
-  #   dhtml 'h1', "A truly curious Coincidence"
-  #   dhtml 'p.noindent', ->
-  #     dhtml 'em', "Seriously,"
-  #     dhtml.text " he said, "
-  #     dhtml 'em', "we'd better start cooking now."
+  h = new_dhtml_writer()
+  h 'one', ( text 'between' ), ->
+    h 'two', 'here'
+      # h 'three' # , ->
+  # h 'article#c2', { editable: true, }, ->
+  #   h 'h1', "A truly curious Coincidence"
+  #   h 'p.noindent', ->
+  #     h 'em', "Seriously,"
+  #     h.text " he said, "
+  #     h 'em', "we'd better start cooking now."
   #.........................................................................................................
-  info dhtml.expand()
+  info h.expand()
   #.........................................................................................................
   done() if done?
   return null
@@ -631,7 +634,7 @@ show = ( html, datoms ) ->
   for d in datoms = HTML.html_as_datoms text
     echo jr d
   echo '-'.repeat 108
-  echo ( HTML.datom_as_html d for d in datoms ).join ''
+  echo ( HTML.datoms_as_html d for d in datoms ).join ''
   #.........................................................................................................
   done()
   return null
@@ -645,7 +648,7 @@ show = ( html, datoms ) ->
   for d in datoms = HTML.html_as_datoms buffer
     echo jr d
   echo '-'.repeat 108
-  echo ( HTML.datom_as_html d for d in datoms ).join ''
+  echo ( HTML.datoms_as_html d for d in datoms ).join ''
   #.........................................................................................................
   done()
   return null

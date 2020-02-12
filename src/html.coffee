@@ -147,13 +147,13 @@ excluded_content_parts    = [ '', null, undefined, ]
 #     xxx                     = dhtml.collector[ .. ]
 #     dhtml.collector.length  = 0
 #     debug '^2223^', 'xxx', CND.blue xxx
-#     for d in xxx
-#       if select d, '~ff'
-#         # R[ R.length .. ] = @_dhtml d.$value...
-#         help '^7776^', "_dhtml call:    ", @_dhtml d.$value...
-#         urge '^7776^', "dhtml.collector:", dhtml.collector
-#       else
-#         R.push d
+#     # for d in xxx
+#     #   if select d, '~ff'
+#     #     # R[ R.length .. ] = @_dhtml d.$value...
+#     #     help '^7776^', "_dhtml call:    ", @_dhtml d.$value...
+#     #     urge '^7776^', "dhtml.collector:", dhtml.collector
+#     #   else
+#     #     R.push d
 #     # debug '^2223^', CND.yellow xxx
 #     # debug '^2223^', CND.orange dhtml.collector
 #     # debug '^2223^', CND.lime R
@@ -166,12 +166,10 @@ excluded_content_parts    = [ '', null, undefined, ]
 #   return dhtml
 
 #-----------------------------------------------------------------------------------------------------------
-@datoms_as_html = ( ds ) ->
-  validate.list ds
-  return ( @datom_as_html d for d in ds ).join ''
+@datoms_as_html = ( ds... ) -> return ( @_datom_as_html d for d in ds.flat Infinity ).join ''
 
 #-----------------------------------------------------------------------------------------------------------
-@datom_as_html = ( d ) ->
+@_datom_as_html = ( d ) ->
   DATOM.types.validate.datom_datom d
   atxt        = ''
   sigil       = d.$key[ 0 ]
@@ -210,7 +208,14 @@ excluded_content_parts    = [ '', null, undefined, ]
 @$datom_as_html = ->
   { $, } = ( require 'steampipes' ).export()
   return $ ( d, send ) =>
-    send @datom_as_html d
+    send @_datom_as_html d
+    return null
+
+#-----------------------------------------------------------------------------------------------------------
+@$datoms_as_html = ->
+  { $, } = ( require 'steampipes' ).export()
+  return $ ( d, send ) =>
+    send @datoms_as_html d
     return null
 
 

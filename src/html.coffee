@@ -19,6 +19,9 @@ echo                      = CND.echo.bind CND
 DATOM                     = new ( require 'datom' ).Datom { dirty: false, }
 { new_datom
   lets
+  freeze
+  thaw
+  is_frozen
   select }                = DATOM.export()
 types                     = require './types'
 { isa
@@ -34,6 +37,7 @@ types                     = require './types'
 #...........................................................................................................
 HtmlParser                = require 'atlas-html-stream'
 assign                    = Object.assign
+excluded_content_parts    = [ '', null, undefined, ]
 
 
 #===========================================================================================================
@@ -67,36 +71,99 @@ assign                    = Object.assign
     continue if attribute is ''
     avalue = attribute[ 1 .. ]
     unless avalue.length > 0
-      throw new Error "^intertext/parse_compact_tagname@4422^ illegal compact tag syntax in #{rpr compact_tagname}"
+      throw new Error "^intertext/parse_compact_tagname@1234^ illegal compact tag syntax in #{rpr compact_tagname}"
     if attribute[ 0 ] is '#' then R.id = avalue
     else                          ( R.class ?= [] ).push avalue
   R.class = R.class.join ' ' if R.class?
   return R
 
 #-----------------------------------------------------------------------------------------------------------
-@h = ( compact_tagname, attributes, content... ) ->
+@dhtml = ( compact_tagname, attributes, content... ) ->
+  { start, content, end, } = @_dhtml compact_tagname, attributes, content
+  return [ start, content..., end, ] if end?
+  return [ start, content..., ]
+
+#-----------------------------------------------------------------------------------------------------------
+@_dhtml = ( compact_tagname, attributes, content, settings ) ->
   validate.nonempty_text compact_tagname
   { tagname, id, class: clasz, }  = @parse_compact_tagname compact_tagname
   validate.intertext_html_tagname tagname
   use_attributes                  = false
+  processed_content               = []
+  call_functions                  = settings?.call_functions ? true
+  content                         = thaw content if ( Object.isFrozen content )
+  #.........................................................................................................
   if attributes?
     if isa.object attributes then use_attributes = true
     else                          content.unshift attributes
+  #.........................................................................................................
   if content.length is 0
     sigil   = '^'
     end_tag = null
+  #.........................................................................................................
   else
     sigil   = '<'
-    end_tag = { $key: ">#{tagname}", }
-    for part, idx in content
-      content[ idx ] = { $key: '^text', text: ( @_escape_text part ), } if isa.text part
-  start_tag       = { $key: "#{sigil}#{tagname}", }
-  start_tag.id    = id    if id?
-  start_tag.class = clasz if clasz?
-  assign start_tag, attributes if use_attributes
-  R               = [ start_tag, content..., ]
-  R.push end_tag if end_tag?
-  return R.flat Infinity
+    end_tag = new_datom ">#{tagname}"
+    for part in content
+      continue if part in excluded_content_parts
+      switch type_of part
+        when 'text'     then  processed_content.push new_datom '^text', { text: part, }
+        when 'function'
+          if call_functions then  processed_content.push x unless ( x = part() ) in excluded_content_parts
+          else                    processed_content.push part
+        else                  processed_content.push part
+  #.........................................................................................................
+  if id? or clasz?
+    idclass         = {}
+    idclass.id      = id    if id?
+    idclass.class   = clasz if clasz?
+    if use_attributes
+      attributes = assign idclass, attributes
+    else
+      use_attributes  = true
+      attributes      = idclass
+  #.........................................................................................................
+  if use_attributes then  start_tag = new_datom "#{sigil}#{tagname}", attributes
+  else                    start_tag = new_datom "#{sigil}#{tagname}"
+  #.........................................................................................................
+  processed_content = processed_content.flat Infinity
+  return { start: start_tag, content: processed_content, end: end_tag, } if end_tag?
+  return { start: start_tag, content: processed_content, }
+
+# #-----------------------------------------------------------------------------------------------------------
+# @new_dhtml_writer = ->
+#   dhtml = ( compact_tagname, attributes, content... ) =>
+#     # XXX = @_dhtml compact_tagname, attributes, content, { call_functions: false, }
+#     dhtml.collector.push new_datom '~ff', { $value: [ compact_tagname, attributes, content, ], }
+#     return null
+#   #.........................................................................................................
+#   dhtml.text = ( text ) =>
+#     dhtml.collector.push new_datom '^text', { text, }
+#     return null
+#   #.........................................................................................................
+#   dhtml.as_html   = =>
+#   dhtml.expand = =>
+#     R                       = []
+#     xxx                     = dhtml.collector[ .. ]
+#     dhtml.collector.length  = 0
+#     debug '^2223^', 'xxx', CND.blue xxx
+#     for d in xxx
+#       if select d, '~ff'
+#         # R[ R.length .. ] = @_dhtml d.$value...
+#         help '^7776^', "_dhtml call:    ", @_dhtml d.$value...
+#         urge '^7776^', "dhtml.collector:", dhtml.collector
+#       else
+#         R.push d
+#     # debug '^2223^', CND.yellow xxx
+#     # debug '^2223^', CND.orange dhtml.collector
+#     # debug '^2223^', CND.lime R
+#     # { collector, } =  dhtml
+#     # dhtml.collector = []
+#     @datoms_as_html dhtml.collector
+#     dhtml.collector.length = 0
+#   #.........................................................................................................
+#   dhtml.collector = []
+#   return dhtml
 
 #-----------------------------------------------------------------------------------------------------------
 @datoms_as_html = ( ds ) ->
@@ -148,6 +215,66 @@ assign                    = Object.assign
 
 
 #===========================================================================================================
+# HTML SPECIALS
+#-----------------------------------------------------------------------------------------------------------
+@raw = ( text ) ->
+  unless ( arity = arguments.length ) is 1
+    throw new Error "^intertext/raw@1801^ expected 1 argument, got #{arity}"
+  validate.text text
+  return [ ( new_datom '^raw', { text, } ), ]
+
+#-----------------------------------------------------------------------------------------------------------
+@text = ( text ) ->
+  unless ( arity = arguments.length ) is 1
+    throw new Error "^intertext/text@2368^ expected 1 argument, got #{arity}"
+  validate.text text
+  return [ ( new_datom '^text', { text, } ), ]
+
+#-----------------------------------------------------------------------------------------------------------
+@css = ( href ) ->
+  ### Creates a list with one datom representing a stylesheet link: `<link rel=stylesheet
+  href="../reset.css"/>`
+  ###
+  unless ( arity = arguments.length ) is 1
+    throw new Error "^intertext/css@2935^ expected 1 argument, got #{arity}"
+  validate.nonempty_text href
+  return [ ( new_datom '^link', { rel: 'stylesheet', href, } ), ]
+
+#-----------------------------------------------------------------------------------------------------------
+@script = ( x ) ->
+  unless ( arity = arguments.length ) is 1
+    throw new Error "^intertext/script@3502^ expected 1 argument, got #{arity}"
+  return switch type = type_of x
+    when 'text'     then @_script_src     x
+    when 'function' then @_script_literal x
+  throw new Error "^intertext/script@4069^ expected a text or a function, got a #{type}"
+
+#-----------------------------------------------------------------------------------------------------------
+@_script_src = ( src ) ->
+  ### Creates a list with one datom representing a script tag: `<script type="text/javascript"
+  src="../jquery-3.4.1.js">`
+  ###
+  validate.nonempty_text src
+  return [ ( new_datom '^script', { src, } ), ]
+
+#-----------------------------------------------------------------------------------------------------------
+@_script_literal = ( f ) ->
+  ### Creates a list with three datoms representing a script tag with embedded JavaScript source text:
+  ```
+  <script type="text/javascript">
+    var a, b;
+    a = 42;
+    b = a * 2;
+    </script>`
+  ###
+  return [ ( new_datom '<script' ), ( @_as_iife f ), ( new_datom '>script' ), ]
+
+#-----------------------------------------------------------------------------------------------------------
+@_as_iife = ( f ) ->
+  R = "(#{f.toString()})();"
+  return ( @raw R )[ 0 ]
+
+#===========================================================================================================
 # PARSING
 #-----------------------------------------------------------------------------------------------------------
 # @new_parse_method = ( settings ) ->
@@ -193,6 +320,9 @@ assign                    = Object.assign
   return $ ( buffer_or_text, send ) =>
     send d for d in @html_as_datoms buffer_or_text
     return null
+
+
+
 
 
 ############################################################################################################

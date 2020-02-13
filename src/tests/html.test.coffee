@@ -630,7 +630,7 @@ probes_and_matchers = [
   probes_and_matchers = [
     [["script",( -> square = ( ( x ) -> x ** 2 ); console.log square 42 )],[[{"$key":"<script"},{"text":"(function() {\n            var square;\n            square = (function(x) {\n              return x ** 2;\n            });\n            return console.log(square(42));\n          })();","$key":"^raw"},{"$key":">script"}],"<script>(function() {\n            var square;\n            square = (function(x) {\n              return x ** 2;\n            });\n            return console.log(square(42));\n          })();</script>"],null]
     [["script","path to app.js"],[[{"src":"path to app.js","$key":"^script"}],"<script src='path to app.js'></script>"],null]
-    [["css","path/to/styles.css"],[[{"rel":"stylesheet","href":"path/to/styles.css","$key":"^link"}],"<link href=path/to/styles.css rel=stylesheet></link>"],null]
+    [["css","path/to/styles.css"],[[{"rel":"stylesheet","href":"path/to/styles.css","$key":"^link"}],"<link href=path/to/styles.css rel=stylesheet>"],null]
     [["text","a b c < & >"],[[{"text":"a b c < & >","$key":"^text"}],"a b c &lt; &amp; &gt;"],null]
     [["raw","a b c < & >"],[[{"text":"a b c < & >","$key":"^raw"}],"a b c < & >"],null]
     ]

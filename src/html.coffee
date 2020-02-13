@@ -171,10 +171,11 @@ excluded_content_parts    = [ '', null, undefined, ]
 #-----------------------------------------------------------------------------------------------------------
 @_datom_as_html = ( d ) ->
   DATOM.types.validate.datom_datom d
-  atxt        = ''
-  sigil       = d.$key[ 0 ]
-  tagname     = d.$key[ 1 .. ]
-  x_key       = null
+  atxt          = ''
+  sigil         = d.$key[ 0 ]
+  tagname       = d.$key[ 1 .. ]
+  is_empty_tag  = isa._intertext_html_empty_element_tagname tagname
+  x_key         = null
   #.........................................................................................................
   ### TAINT simplistic solution; namespace might already be taken? ###
   if sigil in '[~]'
@@ -199,7 +200,7 @@ excluded_content_parts    = [ '', null, undefined, ]
     else                                    atxt += " #{key}=#{@_as_attribute_literal value}"
   #.........................................................................................................
   ### TAINT make self-closing elements configurable, depend on HTML5 type ###
-  slash     = if sigil is '<' then '' else "</#{tagname}>"
+  slash     = if ( sigil is '<' ) or is_empty_tag then '' else "</#{tagname}>"
   x_sys_key = if x_key? then "<x-sys-key>#{x_key}</x-sys-key>" else ''
   return "<#{tagname}>#{slash}#{x_sys_key}" if atxt is ''
   return "<#{tagname}#{atxt}>#{x_sys_key}#{slash}"

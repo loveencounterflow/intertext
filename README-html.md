@@ -36,7 +36,6 @@
   > `param`, `source`, `track`, `wbr`. This list is fixed for now, but may conceivably become configurable
   > in the future.
 
-<!-- * When generating HTML from datoms, a straightforward algorithm is followed: -->
 
 
 
@@ -110,6 +109,9 @@ for the same functionality; both transforms accept texts and buffers as inputs.
     * as prefixed/namespaced tags?
   * how to treat datom keys that contain hyphens, underscores?
     * turn underscores into hyphens?
+
+Experimental method: `HTML.datoms_as_nlhtml = ( ds... ) ->` to add a newline befor each [HTML5 Block-Level
+Tag](https://developer.mozilla.org/en-US/docs/Web/HTML/Block-level_elements).
 
 #### HTML Generation from Method Calls
 

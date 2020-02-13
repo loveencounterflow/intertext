@@ -1,17 +1,18 @@
+
+## InterText Planned Features
+
+
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-- [Planned Features](#planned-features)
-  - [Ansi Colors (??? or keep in CND)](#ansi-colors--or-keep-in-cnd)
-  - [Number Formatting](#number-formatting)
-  - [Tabulation, `width_of`](#tabulation-width_of)
-  - [Codepoint Characterization](#codepoint-characterization)
+- [Ansi Colors (??? or keep in CND)](#ansi-colors--or-keep-in-cnd)
+- [Number Formatting](#number-formatting)
+- [Tabulation, `width_of`](#tabulation-width_of)
+- [Codepoint Characterization](#codepoint-characterization)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-
-## Planned Features
 
 ### Ansi Colors (??? or keep in CND)
 

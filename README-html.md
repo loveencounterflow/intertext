@@ -1,3 +1,16 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [HTML](#html)
+  - [HTML Parsing](#html-parsing)
+  - [HTML Generation](#html-generation)
+    - [HTML Generation from Datoms](#html-generation-from-datoms)
+    - [HTML Generation from Method Calls](#html-generation-from-method-calls)
+  - [Example: HTML Parsing and HTML Generation](#example-html-parsing-and-html-generation)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 
 ## HTML
 

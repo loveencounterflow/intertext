@@ -1,3 +1,15 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [InterText SLABS: Finding Linebreak Opportunities](#intertext-slabs-finding-linebreak-opportunities)
+  - [API](#api)
+  - [`slb` Objects](#slb-objects)
+  - [A Practical Example](#a-practical-example)
+  - [Terminology](#terminology)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 
 ## InterText SLABS: Finding Linebreak Opportunities
 

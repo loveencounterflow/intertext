@@ -6,28 +6,6 @@
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [InterText: Services for Recurrent Text-related Tasks](#intertext-services-for-recurrent-text-related-tasks)
-- [InterText HYPH: Hyphenation](#intertext-hyph-hyphenation)
-- [InterText SLABS: Finding Linebreak Opportunities](#intertext-slabs-finding-linebreak-opportunities)
-  - [API](#api)
-  - [`slb` Objects](#slb-objects)
-  - [A Practical Example](#a-practical-example)
-  - [Terminology](#terminology)
-- [HTML](#html)
-  - [HTML Parsing](#html-parsing)
-  - [HTML Generation](#html-generation)
-    - [HTML Generation from Datoms](#html-generation-from-datoms)
-    - [HTML Generation from Method Calls](#html-generation-from-method-calls)
-  - [Example: HTML Parsing and HTML Generation](#example-html-parsing-and-html-generation)
-- [Benchmarks](#benchmarks)
-  - [Hyphenators](#hyphenators)
-    - [Speed](#speed)
-    - [Quality](#quality)
-    - [Verdict](#verdict)
-- [Planned Features](#planned-features)
-  - [Ansi Colors (??? or keep in CND)](#ansi-colors--or-keep-in-cnd)
-  - [Number Formatting](#number-formatting)
-  - [Tabulation, `width_of`](#tabulation-width_of)
-  - [Codepoint Characterization](#codepoint-characterization)
 - [Links](#links)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->

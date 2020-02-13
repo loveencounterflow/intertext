@@ -828,8 +828,8 @@ probes_and_matchers = [
   pipeline.push $trim()
   pipeline.push $remove_empty_tags()
   # pipeline.push $show()
-  pipeline.push $watch ( d ) -> urge d.text if select d, '^text'
-  pipeline.push $drain()
+  pipeline.push SP.$filter ( d ) -> select d, '^text'
+  pipeline.push $drain ( ds ) -> urge ( d.text for d in ds ).join ''
   SP.pull pipeline...
   #.........................................................................................................
   done() if done?
@@ -839,11 +839,11 @@ probes_and_matchers = [
 ############################################################################################################
 if module is require.main then do => # await do =>
   # await @_demo()
-  # test @
+  test @
   # test @[ "HTML.parse_compact_tagname" ]
   # test @[ "HTML.dhtml" ]
   # test @[ "isa.intertext_html_tagname (2)" ]
-  test @[ "HTML.html_as_datoms (2)" ]
+  # test @[ "HTML.html_as_datoms (2)" ]
   # @[ "HTML dhtml writer" ]()
   # test @[ "HTML specials" ]
   # @[ "_HTML demo (layout)" ]()

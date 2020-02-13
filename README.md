@@ -314,10 +314,11 @@ for the same functionality; both transforms accept texts and buffers as inputs.
 compact syntax for HTML tags:
 
 * `HTML.parse_compact_tagname = ( compact_tagname ) ->`: Given a string with tagname followed by using CSS
-  selector syntax, return an obkject with `tagname`, `id`, `class`
+  selector syntax, return an object with `tagname`, `id`, `class`
+
 * `HTML.datoms_as_html = ( ds ) ->`
 
-* `HTML.h = ( compact_tagname, attributes, content... ) ->`
+* `HTML.dhtml = ( compact_tagname, attributes, content... ) ->`
 
 `<div#c432.foo.bar>...</div>` => `<div id=c432 class='foo bar'>...</div>`
 `<p.noindent>...</p>` => `<p class=noindent>...</p>`

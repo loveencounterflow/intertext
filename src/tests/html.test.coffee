@@ -324,13 +324,14 @@ test                      = require 'guy-test'
     ["<!DOCTYPE html>",[{"$value":"html","$key":"^doctype"}],null]
     ["<!DOCTYPE obvious>",[{"$value":"obvious","$key":"^doctype"}],null]
     ["<p contenteditable>",[{"contenteditable":true,"$key":"<p"}],null]
-    ["<img width=200>",[{"width":"200","$key":"<img"}],null]
+    ["<img width=200>",[{"width":"200","$key":"^img"}],null]
     ["<foo/>",[{"$key":"<foo"},{"$key":">foo"}],null]
     ["<foo></foo>",[{"$key":"<foo"},{"$key":">foo"}],null]
-    ["<p>here and<br>there",[{"$key":"<p"},{"text":"here and","$key":"^text"},{"$key":"<br"},{"text":"there","$key":"^text"}],null]
-    ["<p>here and<br>there</p>",[{"$key":"<p"},{"text":"here and","$key":"^text"},{"$key":"<br"},{"text":"there","$key":"^text"},{"$key":">p"}],null]
-    ["<p>here and<br>there</p>",[{"$key":"<p"},{"text":"here and","$key":"^text"},{"$key":"<br"},{"text":"there","$key":"^text"},{"$key":">p"}],null]
-    ["<p>here and<br/>there</p>",[{"$key":"<p"},{"text":"here and","$key":"^text"},{"$key":"<br"},{"$key":">br"},{"text":"there","$key":"^text"},{"$key":">p"}],null]
+    ["<p>here and<br></br>there</p>",[{"$key":"<p"},{"text":"here and","$key":"^text"},{"$key":"^br"},{"text":"there","$key":"^text"},{"$key":">p"}],null]
+    ["<p>here and<br>there",[{"$key":"<p"},{"text":"here and","$key":"^text"},{"$key":"^br"},{"text":"there","$key":"^text"}],null]
+    ["<p>here and<br>there</p>",[{"$key":"<p"},{"text":"here and","$key":"^text"},{"$key":"^br"},{"text":"there","$key":"^text"},{"$key":">p"}],null]
+    ["<p>here and<br x=42/>there</p>",[{"$key":"<p"},{"text":"here and","$key":"^text"},{"x":"42","$key":"^br"},{"text":"there","$key":"^text"},{"$key":">p"}],null]
+    ["<p>here and<br/>there</p>",[{"$key":"<p"},{"text":"here and","$key":"^text"},{"$key":"^br"},{"text":"there","$key":"^text"},{"$key":">p"}],null]
     ["just some plain text",[{"$key":"^text","text":"just some plain text"},],null]
     ["<p>one<p>two",[{"$key":"<p"},{"text":"one","$key":"^text"},{"$key":"<p"},{"text":"two","$key":"^text"}],null]
     ]
@@ -348,18 +349,18 @@ probes_and_matchers = [
   ["<title>MKTS</title>",[{"$key":"<title"},{"text":"MKTS","$key":"^text"},{"$key":">title"}],null]
   ["<document/>",[{"$key":"<document"},{"$key":">document"}],null]
   ["<foo bar baz=42>",[{"data":{"bar":true,"baz":"42"},"$key":"<foo"}],null]
-  ["<br/>",[{"$key":"<br"},{"$key":">br"}],null]
+  ["<br/>",[{"$key":"^br"}],null]
   ["</thing>",[{"$key":">thing"}],null]
   ["</foo>",[{"$key":">foo"}],null]
   ["</document>",[{"$key":">document"}],null]
   ["<title>MKTS</title>",[{"$key":"<title"},{"text":"MKTS","$key":"^text"},{"$key":">title"}],null]
   ["<p foo bar=42>omg</p>",[{"data":{"foo":true,"bar":"42"},"is_block":true,"$key":"<p"},{"text":"omg","$key":"^text"},{"is_block":true,"$key":">p"}],null]
-  ["<document/><foo bar baz=42>something<br/>else</thing></foo>",[{"$key":"<document"},{"$key":">document"},{"data":{"bar":true,"baz":"42"},"$key":"<foo"},{"text":"something","$key":"^text"},{"$key":"<br"},{"$key":">br"},{"text":"else","$key":"^text"},{"$key":">thing"},{"$key":">foo"}],null]
+  ["<document/><foo bar baz=42>something<br/>else</thing></foo>",[{"$key":"<document"},{"$key":">document"},{"data":{"bar":true,"baz":"42"},"$key":"<foo"},{"text":"something","$key":"^text"},{"$key":"^br"},{"text":"else","$key":"^text"},{"$key":">thing"},{"$key":">foo"}],null]
   ["<!DOCTYPE html><html lang=en><head><title>x</title></head><p data-x='<'>helo</p></html>",[{"data":{"html":true},"$key":"<!DOCTYPE"},{"data":{"lang":"en"},"$key":"<html"},{"$key":"<head"},{"$key":"<title"},{"text":"x","$key":"^text"},{"$key":">title"},{"$key":">head"},{"data":{"data-x":"<"},"is_block":true,"$key":"<p"},{"text":"helo","$key":"^text"},{"is_block":true,"$key":">p"},{"$key":">html"}],null]
   ["<p foo bar=42><em>Yaffir stood high</em></p>",[{"data":{"foo":true,"bar":"42"},"is_block":true,"$key":"<p"},{"$key":"<em"},{"text":"Yaffir stood high","$key":"^text"},{"$key":">em"},{"is_block":true,"$key":">p"}],null]
   ["<p foo bar=42><em><xxxxxxxxxxxxxxxxxxx>Yaffir stood high</p>",[{"data":{"foo":true,"bar":"42"},"is_block":true,"$key":"<p"},{"$key":"<em"},{"$key":"<xxxxxxxxxxxxxxxxxxx"},{"text":"Yaffir stood high","$key":"^text"},{"is_block":true,"$key":">p"}],null]
   ["<p föö bär=42><em>Yaffir stood high</p>",[{"data":{"föö":true,"bär":"42"},"is_block":true,"$key":"<p"},{"$key":"<em"},{"text":"Yaffir stood high","$key":"^text"},{"is_block":true,"$key":">p"}],null]
-  ["<document 文=zh/><foo bar baz=42>something<br/>else</thing></foo>",[{"data":{"文":"zh"},"$key":"<document"},{"$key":">document"},{"data":{"bar":true,"baz":"42"},"$key":"<foo"},{"text":"something","$key":"^text"},{"$key":"<br"},{"$key":">br"},{"text":"else","$key":"^text"},{"$key":">thing"},{"$key":">foo"}],null]
+  ["<document 文=zh/><foo bar baz=42>something<br/>else</thing></foo>",[{"data":{"文":"zh"},"$key":"<document"},{"$key":">document"},{"data":{"bar":true,"baz":"42"},"$key":"<foo"},{"text":"something","$key":"^text"},{"$key":"^br"},{"text":"else","$key":"^text"},{"$key":">thing"},{"$key":">foo"}],null]
   ["<p foo bar=<>yeah</p>",[{"data":{"foo":true,"bar":"<"},"is_block":true,"$key":"<p"},{"text":"yeah","$key":"^text"},{"is_block":true,"$key":">p"}],null]
   ["<p foo bar='<'>yeah</p>",[{"data":{"foo":true,"bar":"<"},"is_block":true,"$key":"<p"},{"text":"yeah","$key":"^text"},{"is_block":true,"$key":">p"}],null]
   ["<p foo bar='&lt;'>yeah</p>",[{"data":{"foo":true,"bar":"&lt;"},"is_block":true,"$key":"<p"},{"text":"yeah","$key":"^text"},{"is_block":true,"$key":">p"}],null]
@@ -369,36 +370,6 @@ probes_and_matchers = [
   ["<p>dangling",[{"is_block":true,"$key":"<p"},{"text":"dangling","$key":"^text"}],null]
   ["𦇻𦑛𦖵𦩮𦫦𧞈",[{"text":"𦇻𦑛𦖵𦩮𦫦𧞈","$key":"^text"}],null]
   ]
-
-#-----------------------------------------------------------------------------------------------------------
-show = ( html, datoms ) ->
-  help CND.red html
-  for d in datoms
-    if d.text?
-      info d.$key, ( CND.white jr d.text )
-    else
-      if d.data? # and ( Object.keys d.data ).length > 0
-        info d.$key, ( CND.yellow jr d.data )
-      else
-        info d.$key
-  return null
-
-#-----------------------------------------------------------------------------------------------------------
-@[ "parse html to list (onepiece)" ] = ( T, done ) ->
-  SP = require '../..'
-  T.eq ( type_of SP.HTML.new_onepiece_parser ), 'function'
-  parse = SP.HTML.new_onepiece_parser()
-  #.........................................................................................................
-  for [ probe, matcher, error, ] in probes_and_matchers
-    await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
-      html    = probe
-      result  = parse html
-      # show html, result
-      resolve result
-      return null
-  #.........................................................................................................
-  done()
-  return null
 
 ###
 
@@ -440,15 +411,16 @@ show = ( html, datoms ) ->
     ["<!DOCTYPE html>","<!DOCTYPE html>",null]
     ["<!DOCTYPE obvious>","<!DOCTYPE obvious>",null]
     ["<p contenteditable>","<p contenteditable>",null]
-    ["<img width=200>","<img width=200>",null]
     ["<dang z=Z a=A>","<dang a=A z=Z>",null]
     ["<foo/>","<foo>|</foo>",null]
     ["<foo></foo>","<foo>|</foo>",null]
-    ["<p>here and<br>there","<p>|here and|<br>|there",null]
-    ["<p>here and<br>there</p>","<p>|here and|<br>|there|</p>",null]
-    ["<p>here and<br/>there</p>","<p>|here and|<br>|</br>|there|</p>",null]
     ["just some plain text","just some plain text",null]
     ["<p>one<p>two","<p>|one|<p>|two",null]
+    ["<p>here and</br>there","<p>|here and|there",null]
+    ["<img width=200>","<img width=200>",null]
+    ["<p>here and<br>there","<p>|here and|<br>|there",null]
+    ["<p>here and<br>there</p>","<p>|here and|<br>|there|</p>",null]
+    ["<p>here and<br/>there</p>","<p>|here and|<br>|there|</p>",null]
     ]
   for [ probe, matcher, error, ] in probes_and_matchers
     await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
@@ -714,54 +686,178 @@ show = ( html, datoms ) ->
 
 #-----------------------------------------------------------------------------------------------------------
 @[ "_HTML demo (layout)" ] = ( T, done ) ->
-  INTERTEXT                 = require '../..'
-  { HTML, }                 = INTERTEXT
-  layout = ->
-    _.DOCTYPE 5
-    _.META charset: 'utf-8'
-    # _.META 'http-equiv': "Content-Security-Policy", content: "default-src 'self'"
-    # _.META 'http-equiv': "Content-Security-Policy", content: "script-src 'unsafe-inline'"
-    _.TITLE settings.title
-    ### ------------------------------------------------------------------------------------------------ ###
-    _.JS  resolve './jquery-3.4.1.js'
-    _.CSS resolve './jquery-ui-1.12.1/jquery-ui.min.css'
-    _.JS  resolve './jquery-ui-1.12.1/jquery-ui.min.js'
-    _.JS  resolve './ops-globals.js'
-    _.JS  resolve './ops.js'
-    _.JS  resolve './intertext.js'
-    _.CSS resolve './reset.css'
-    _.CSS resolve './styles.css'
-    ### ------------------------------------------------------------------------------------------------ ###
-    ### LIBRARIES                                                                                       ###
-    # _.JS  'http://d3js.org/d3.v4.js'
-    # _.JS  'http://d3js.org/d3.v5.js'
-    # _.JS   './d3.v5.js'
-    # _.JS   'https://cdn.jsdelivr.net/npm/taucharts@2/dist/taucharts.min.js'
-    # _.CSS  'https://cdn.jsdelivr.net/npm/taucharts@2/dist/taucharts.min.css'
-    # _.CSS './c3-0.6.14/c3.css'
-    # _.JS  './c3-0.6.14/c3.min.js'
-    #=======================================================================================================
-    _.BODY settings.body_def, ->
-      _.RAW '\n\n%content%\n\n'
-      _.SPAN '#page-ready'
+  DATOM                     = new ( require 'datom' ).Datom { dirty: false, }
+  { new_datom
+    lets
+    select }                = DATOM.export()
+  { dhtml
+    datoms_as_html
+    raw
+    text
+    script
+    css }                   = ( require '../..' ).HTML.export()
+  layout = ( settings ) ->
+    defaults  = { title: "My App", content: ( new_datom '~content' ), }
+    settings  = { defaults..., settings..., }
+    # Doctype   = ( P... ) -> dhtml 'doctype',    P...
+    # Div       = ( P... ) -> dhtml 'div',        P...
+    # div       = ( P... ) -> dhtml 'div',        P...
+    H = dhtml
+    return [
+      ( H 'doctype'                                             )
+      H 'head', [
+        ( H 'meta', charset: 'utf-8'                              )
+        ( H 'title', settings.title                               )
+        ( script    './jquery-3.4.1.js'                           )
+        ( css       './jquery-ui-1.12.1/jquery-ui.min.css'        ) ]
+      H 'body', [
+        settings.content
+        H 'article', [
+          H 'h3', "Greetings"
+          H 'p', "helo world!"
+          ]
+        H 'span#page-ready' ] ]
+    # dhtml 'meta', 'http-equiv': "Content-Security-Policy", content: "default-src 'self'"
+    # dhtml 'meta', 'http-equiv': "Content-Security-Policy", content: "script-src 'unsafe-inline'"
     return null
   #.........................................................................................................
-  done()
+  info datoms_as_html layout { title: "Beautiful HTML" }
+  done() if done?
+  return null
+
+#-----------------------------------------------------------------------------------------------------------
+@[ "《现代常用独体字规范》" ] = ( T, done ) ->
+  SP                        = require 'steampipes'
+  # SP                        = require '../../apps/steampipes'
+  { $
+    $async
+    $drain
+    $watch
+    $split
+    $show  }                = SP.export()
+  DATOM                     = new ( require 'datom' ).Datom { dirty: false, }
+  { new_datom
+    lets
+    select }                = DATOM.export()
+  { dhtml
+    html_as_datoms
+    $html_as_datoms
+    datoms_as_html
+    raw
+    text
+    script
+    css }                   = ( require '../..' ).HTML.export()
+  html_source = """<div class="ie-fix"><span class="wkwm5edb3638">来自</span><style type="text/css">.wkwm5edb3638{display: none; font-size: 12px;}</style><p class="reader-word-layer reader-word-s1-1" style="width:144px;height:288px;line-height:288px;top:1260px;left:2890px;z-index:0;font-family:simsun;">&nbsp;
+</p><span class="wkwm5edb3638">百度</span><p class="reader-word-layer reader-word-s1-0" style="width:3184px;height:288px;line-height:288px;top:1760px;left:2890px;z-index:1;font-family:'黑体','42c2b43eeefdc8d376ee32f60020001','黑体';letter-spacing:1.1300000000000001px;false">《现代常用独体字规范》</p><p class="reader-word-layer reader-word-s1-1" style="width:144px;height:288px;line-height:288px;top:1760px;left:6078px;z-index:2;font-family:simsun;">&nbsp;
+</p><p class="reader-word-layer reader-word-s1-4" style="width:835px;height:258px;line-height:258px;top:2282px;left:2644px;z-index:3;false">CF&nbsp;0013</p><p class="reader-word-layer reader-word-s1-6" style="width:480px;height:258px;line-height:258px;top:2282px;left:3481px;z-index:4;false">——</p><p class="reader-word-layer reader-word-s1-4" style="width:479px;height:258px;line-height:258px;top:2282px;left:3962px;z-index:5;letter-spacing:-0.37px;false">2009</p><p class="reader-word-layer reader-word-s1-6" style="width:721px;height:258px;line-height:258px;top:2282px;left:4441px;z-index:6;false">，一共</p><p class="reader-word-layer reader-word-s1-4" style="width:362px;height:258px;line-height:258px;top:2282px;left:5221px;z-index:7;letter-spacing:0.8999999999999999px;false">256</p><p class="reader-word-layer reader-word-s1-6" style="width:480px;height:258px;line-height:258px;top:2282px;left:5644px;z-index:8;false">个字</p><p class="reader-word-layer reader-word-s1-4" style="width:60px;height:258px;line-height:258px;top:2282px;left:6124px;z-index:9;font-family:simsun;">&nbsp;
+</p><p class="reader-word-layer reader-word-s1-9" style="width:48px;height:206px;line-height:206px;top:2681px;left:1442px;z-index:10;font-family:simsun;">&nbsp;
+</p><p class="reader-word-layer reader-word-s1-10" style="width:384px;height:192px;line-height:192px;top:2994px;left:1442px;z-index:11;false">音序</p><p class="reader-word-layer reader-word-s1-9" style="width:192px;height:192px;line-height:192px;top:2994px;left:1827px;z-index:12;false">&nbsp;&nbsp;&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-10" style="width:384px;height:192px;line-height:192px;top:2994px;left:2019px;z-index:13;false">字数</p><p class="reader-word-layer reader-word-s1-9" style="width:577px;height:192px;line-height:192px;top:2994px;left:2403px;z-index:14;false">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-10" style="width:576px;height:192px;line-height:192px;top:2994px;left:2981px;z-index:15;false">独体字</p><p class="reader-word-layer reader-word-s1-9" style="width:48px;height:192px;line-height:192px;top:2994px;left:3558px;z-index:16;font-family:simsun;">&nbsp;</p><p class="reader-word-layer reader-word-s1-9" style="width:96px;height:206px;line-height:206px;top:3369px;left:1442px;z-index:17;false">&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-9" style="width:319px;height:206px;line-height:206px;top:3369px;left:1586px;z-index:18;letter-spacing:-2.8000000000000003px;false">A&nbsp;&nbsp;&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-9" style="width:480px;height:206px;line-height:206px;top:3369px;left:1954px;z-index:19;false">1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-10" style="width:192px;height:206px;line-height:206px;top:3369px;left:2434px;z-index:20;">凹</p><p class="reader-word-layer reader-word-s1-9" style="width:48px;height:206px;line-height:206px;top:3369px;left:2629px;z-index:21;font-family:simsun;">&nbsp;
+</p><p class="reader-word-layer reader-word-s1-9" style="width:96px;height:206px;line-height:206px;top:3744px;left:1442px;z-index:22;false">&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-9" style="width:319px;height:206px;line-height:206px;top:3744px;left:1586px;z-index:23;letter-spacing:-0.32px;false">B&nbsp;&nbsp;&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-9" style="width:576px;height:206px;line-height:206px;top:3744px;left:1954px;z-index:24;false">14&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-10 reader-word-s1-11" style="width:2693px;height:206px;line-height:206px;top:3744px;left:2530px;z-index:25;font-family:'宋体','42c2b43eeefdc8d376ee32f60040001','宋体';false">八巴白百办半贝本匕必丙秉卜不</p><p class="reader-word-layer reader-word-s1-9" style="width:48px;height:206px;line-height:206px;top:3744px;left:5225px;z-index:26;font-family:simsun;">&nbsp;
+</p><p class="reader-word-layer reader-word-s1-9" style="width:96px;height:206px;line-height:206px;top:4119px;left:1442px;z-index:27;false">&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-9 reader-word-s1-11" style="width:321px;height:206px;line-height:206px;top:4119px;left:1586px;z-index:28;font-family:'Times New Roman','42c2b43eeefdc8d376ee32f60030001','Times New Roman';false">C&nbsp;&nbsp;&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-9" style="width:576px;height:206px;line-height:206px;top:4119px;left:1955px;z-index:29;false">20&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-10" style="width:3845px;height:206px;line-height:206px;top:4119px;left:2532px;z-index:30;false">才册叉产长厂车臣承尺斥虫丑出川串垂匆囱寸</p><p class="reader-word-layer reader-word-s1-9" style="width:48px;height:206px;line-height:206px;top:4119px;left:6379px;z-index:31;font-family:simsun;">&nbsp;</p><p class="reader-word-layer reader-word-s1-9" style="width:96px;height:206px;line-height:206px;top:4494px;left:1442px;z-index:32;false">&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-12" style="width:330px;height:206px;line-height:206px;top:4494px;left:1586px;z-index:33;false">D&nbsp;&nbsp;&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-9" style="width:576px;height:206px;line-height:206px;top:4494px;left:1965px;z-index:34;false">10&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-10" style="width:1922px;height:206px;line-height:206px;top:4494px;left:2542px;z-index:35;false">大歹丹刀弟电刁丁东斗</p><p class="reader-word-layer reader-word-s1-9" style="width:48px;height:206px;line-height:206px;top:4494px;left:4466px;z-index:36;font-family:simsun;">&nbsp;</p><p class="reader-word-layer reader-word-s1-9" style="width:96px;height:206px;line-height:206px;top:4869px;left:1442px;z-index:37;false">&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-9" style="width:309px;height:206px;line-height:206px;top:4869px;left:1586px;z-index:38;false">E&nbsp;&nbsp;&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-9" style="width:480px;height:206px;line-height:206px;top:4869px;left:1944px;z-index:39;false">4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-10" style="width:769px;height:206px;line-height:206px;top:4869px;left:2425px;z-index:40;false">儿而耳二</p><p class="reader-word-layer reader-word-s1-9" style="width:48px;height:206px;line-height:206px;top:4869px;left:3194px;z-index:41;font-family:simsun;">&nbsp;</p><p class="reader-word-layer reader-word-s1-9" style="width:96px;height:206px;line-height:206px;top:5244px;left:1442px;z-index:42;false">&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-9" style="width:297px;height:206px;line-height:206px;top:5244px;left:1586px;z-index:43;letter-spacing:-0.28px;false">F&nbsp;&nbsp;&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-9" style="width:480px;height:206px;line-height:206px;top:5244px;left:1932px;z-index:44;false">8&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-10" style="width:1540px;height:206px;line-height:206px;top:5244px;left:2413px;z-index:45;letter-spacing:0.22999999999999998px;false">凡方飞丰夫弗甫父</p><p class="reader-word-layer reader-word-s1-9" style="width:48px;height:206px;line-height:206px;top:5244px;left:3954px;z-index:46;font-family:simsun;">&nbsp;
+</p><p class="reader-word-layer reader-word-s1-9" style="width:96px;height:206px;line-height:206px;top:5619px;left:1442px;z-index:47;false">&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-12" style="width:330px;height:206px;line-height:206px;top:5619px;left:1586px;z-index:48;false">G&nbsp;&nbsp;&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-9" style="width:576px;height:206px;line-height:206px;top:5619px;left:1965px;z-index:49;false">13&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-10" style="width:2499px;height:206px;line-height:206px;top:5619px;left:2542px;z-index:50;false">丐干甘戈革个更工弓瓜广鬼果</p><p class="reader-word-layer reader-word-s1-9" style="width:48px;height:206px;line-height:206px;top:5619px;left:5043px;z-index:51;font-family:simsun;">&nbsp;</p><p class="reader-word-layer reader-word-s1-9" style="width:96px;height:206px;line-height:206px;top:5994px;left:1442px;z-index:52;false">&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-12" style="width:330px;height:206px;line-height:206px;top:5994px;left:1586px;z-index:53;false">H&nbsp;&nbsp;&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-9" style="width:480px;height:206px;line-height:206px;top:5994px;left:1965px;z-index:54;false">6&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-10" style="width:1153px;height:206px;line-height:206px;top:5994px;left:2446px;z-index:55;false">亥禾乎互户火</p><p class="reader-word-layer reader-word-s1-9" style="width:48px;height:206px;line-height:206px;top:5994px;left:3600px;z-index:56;font-family:simsun;">&nbsp;
+</p><p class="reader-word-layer reader-word-s1-9" style="width:96px;height:206px;line-height:206px;top:6369px;left:1442px;z-index:57;false">&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-9" style="width:269px;height:206px;line-height:206px;top:6369px;left:1586px;z-index:58;letter-spacing:0.47px;false">J&nbsp;&nbsp;&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-9" style="width:576px;height:206px;line-height:206px;top:6369px;left:1904px;z-index:59;false">16&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-10" style="width:3074px;height:206px;line-height:206px;top:6369px;left:2480px;z-index:60;letter-spacing:-0.10999999999999999px;false">击及几己夹甲兼柬见巾斤井九久臼巨</p><p class="reader-word-layer reader-word-s1-9" style="width:48px;height:206px;line-height:206px;top:6369px;left:5556px;z-index:61;font-family:simsun;">&nbsp;</p><p class="reader-word-layer reader-word-s1-9" style="width:96px;height:206px;line-height:206px;top:6744px;left:1442px;z-index:62;false">&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-12" style="width:330px;height:206px;line-height:206px;top:6744px;left:1586px;z-index:63;false">K&nbsp;&nbsp;&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-9" style="width:480px;height:206px;line-height:206px;top:6744px;left:1965px;z-index:64;false">3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-10" style="width:576px;height:206px;line-height:206px;top:6744px;left:2446px;z-index:65;false">卡开口</p><p class="reader-word-layer reader-word-s1-9" style="width:48px;height:206px;line-height:206px;top:6744px;left:3023px;z-index:66;font-family:simsun;">&nbsp;
+</p><p class="reader-word-layer reader-word-s1-9" style="width:96px;height:206px;line-height:206px;top:7120px;left:1442px;z-index:67;false">&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-9" style="width:297px;height:206px;line-height:206px;top:7120px;left:1588px;z-index:68;letter-spacing:-2.75px;false">L&nbsp;&nbsp;&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-9" style="width:576px;height:206px;line-height:206px;top:7120px;left:1934px;z-index:69;false">12&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-10" style="width:2309px;height:206px;line-height:206px;top:7120px;left:2511px;z-index:70;letter-spacing:0.14px;false">来乐里力立吏隶两了六龙卤</p><p class="reader-word-layer reader-word-s1-9" style="width:48px;height:206px;line-height:206px;top:7120px;left:4821px;z-index:71;font-family:simsun;">&nbsp;</p><p class="reader-word-layer reader-word-s1-9" style="width:96px;height:206px;line-height:206px;top:7495px;left:1442px;z-index:72;false">&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-9" style="width:363px;height:206px;line-height:206px;top:7495px;left:1586px;z-index:73;false">M&nbsp;&nbsp;&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-9" style="width:576px;height:206px;line-height:206px;top:7495px;left:1998px;z-index:74;false">13&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-10" style="width:2499px;height:206px;line-height:206px;top:7495px;left:2575px;z-index:75;false">马毛矛么门米面民皿末母木目</p><p class="reader-word-layer reader-word-s1-9" style="width:48px;height:206px;line-height:206px;top:7495px;left:5075px;z-index:76;font-family:simsun;">&nbsp;</p><p class="reader-word-layer reader-word-s1-9" style="width:96px;height:206px;line-height:206px;top:7869px;left:1442px;z-index:77;false">&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-12" style="width:330px;height:206px;line-height:206px;top:7869px;left:1586px;z-index:78;false">N&nbsp;&nbsp;&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-9" style="width:480px;height:206px;line-height:206px;top:7869px;left:1965px;z-index:79;false">7&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-10" style="width:1346px;height:206px;line-height:206px;top:7869px;left:2446px;z-index:80;false">乃内年鸟牛农女</p><p class="reader-word-layer reader-word-s1-9" style="width:48px;height:206px;line-height:206px;top:7869px;left:3792px;z-index:81;font-family:simsun;">&nbsp;</p><p class="reader-word-layer reader-word-s1-9" style="width:96px;height:206px;line-height:206px;top:8244px;left:1442px;z-index:82;false">&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-9" style="width:292px;height:206px;line-height:206px;top:8244px;left:1586px;z-index:83;letter-spacing:-1.6300000000000001px;false">P&nbsp;&nbsp;&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-9" style="width:480px;height:206px;line-height:206px;top:8244px;left:1927px;z-index:84;false">2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-10" style="width:384px;height:206px;line-height:206px;top:8244px;left:2407px;z-index:85;false">片平</p><p class="reader-word-layer reader-word-s1-9" style="width:48px;height:206px;line-height:206px;top:8244px;left:2792px;z-index:86;font-family:simsun;">&nbsp;
+</p><p class="reader-word-layer reader-word-s1-9" style="width:96px;height:206px;line-height:206px;top:8619px;left:1442px;z-index:87;false">&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-12" style="width:330px;height:206px;line-height:206px;top:8619px;left:1586px;z-index:88;false">Q&nbsp;&nbsp;&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-9" style="width:480px;height:206px;line-height:206px;top:8619px;left:1965px;z-index:89;false">9&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-10" style="width:1730px;height:206px;line-height:206px;top:8619px;left:2446px;z-index:90;false">七气千羌且丘求曲犬</p><p class="reader-word-layer reader-word-s1-9" style="width:48px;height:206px;line-height:206px;top:8619px;left:4177px;z-index:91;font-family:simsun;">&nbsp;</p><p class="reader-word-layer reader-word-s1-9" style="width:417px;height:206px;line-height:206px;top:8994px;left:1442px;z-index:92;false">&nbsp;&nbsp;R&nbsp;&nbsp;&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-9" style="width:480px;height:206px;line-height:206px;top:8994px;left:1907px;z-index:93;false">7&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-10" style="width:1346px;height:206px;line-height:206px;top:8994px;left:2388px;z-index:94;false">冉人王刃日肉人</p><p class="reader-word-layer reader-word-s1-9" style="width:48px;height:206px;line-height:206px;top:8994px;left:3735px;z-index:95;font-family:simsun;">&nbsp;
+</p><p class="reader-word-layer reader-word-s1-9" style="width:96px;height:206px;line-height:206px;top:9369px;left:1442px;z-index:96;false">&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-9" style="width:299px;height:206px;line-height:206px;top:9369px;left:1586px;z-index:97;letter-spacing:0.16px;false">S&nbsp;&nbsp;&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-9" style="width:576px;height:206px;line-height:206px;top:9369px;left:1934px;z-index:98;false">29&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-10" style="width:5576px;height:206px;line-height:206px;top:9369px;left:2511px;z-index:99;false">三山上少申身升生尸失十石史矢土氏世事手首书鼠术束甩水巳四肃</p><p class="reader-word-layer reader-word-s1-9" style="width:48px;height:206px;line-height:206px;top:9369px;left:8089px;z-index:100;font-family:simsun;">&nbsp;</p><p class="reader-word-layer reader-word-s1-9" style="width:96px;height:206px;line-height:206px;top:9744px;left:1442px;z-index:101;false">&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-9" style="width:305px;height:206px;line-height:206px;top:9744px;left:1586px;z-index:102;letter-spacing:-0.96px;false">T&nbsp;&nbsp;&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-9" style="width:480px;height:206px;line-height:206px;top:9744px;left:1940px;z-index:103;false">7&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-10" style="width:1346px;height:206px;line-height:206px;top:9744px;left:2421px;z-index:104;false">太天田头凸土屯</p><p class="reader-word-layer reader-word-s1-9" style="width:48px;height:206px;line-height:206px;top:9744px;left:3767px;z-index:105;font-family:simsun;">&nbsp;
+</p><p class="reader-word-layer reader-word-s1-9" style="width:96px;height:206px;line-height:206px;top:10120px;left:1442px;z-index:106;false">&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-9" style="width:371px;height:206px;line-height:206px;top:10120px;left:1586px;z-index:107;letter-spacing:-0.64px;false">W&nbsp;&nbsp;&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-9" style="width:480px;height:206px;line-height:206px;top:10120px;left:2005px;z-index:108;false">16&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-10" style="width:3076px;height:206px;line-height:206px;top:10120px;left:2486px;z-index:109;false">瓦丸万亡王为卫未文我乌无五午勿戊</p><p class="reader-word-layer reader-word-s1-9" style="width:48px;height:206px;line-height:206px;top:10120px;left:5564px;z-index:110;font-family:simsun;">&nbsp;</p><p class="reader-word-layer reader-word-s1-9" style="width:96px;height:206px;line-height:206px;top:10495px;left:1442px;z-index:111;false">&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-12" style="width:330px;height:206px;line-height:206px;top:10495px;left:1586px;z-index:112;false">X&nbsp;&nbsp;&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-9" style="width:480px;height:206px;line-height:206px;top:10495px;left:1965px;z-index:113;false">10&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-10" style="width:1922px;height:206px;line-height:206px;top:10495px;left:2446px;z-index:114;false">夕西习下乡象小心囟血</p><p class="reader-word-layer reader-word-s1-9" style="width:48px;height:206px;line-height:206px;top:10495px;left:4370px;z-index:115;font-family:simsun;">&nbsp;
+</p><p class="reader-word-layer reader-word-s1-9" style="width:96px;height:206px;line-height:206px;top:10870px;left:1442px;z-index:116;false">&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-9" style="width:322px;height:206px;line-height:206px;top:10870px;left:1588px;z-index:117;letter-spacing:-1.9px;false">Y&nbsp;&nbsp;&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-9" style="width:482px;height:206px;line-height:206px;top:10870px;left:1961px;z-index:118;letter-spacing:0.25px;false">33&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-10" style="width:5646px;height:206px;line-height:206px;top:10870px;left:2446px;z-index:119;letter-spacing:2.3200000000000003px;false">丫牙亚严言央羊夭也业页一衣夷乙已义亦永用尤由酉又于予与雨禹</p><p class="reader-word-layer reader-word-s1-10" style="width:769px;height:192px;line-height:192px;top:11245px;left:1442px;z-index:120;false">玉曰月云</p><p class="reader-word-layer reader-word-s1-9" style="width:48px;height:192px;line-height:192px;top:11245px;left:2211px;z-index:121;font-family:simsun;">&nbsp;
+</p><p class="reader-word-layer reader-word-s1-9" style="width:96px;height:206px;line-height:206px;top:11620px;left:1442px;z-index:122;false">&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-9" style="width:307px;height:206px;line-height:206px;top:11620px;left:1586px;z-index:123;letter-spacing:-0.51px;false">Z&nbsp;&nbsp;&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-9" style="width:576px;height:206px;line-height:206px;top:11620px;left:1942px;z-index:124;false">16&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p><p class="reader-word-layer reader-word-s1-10" style="width:3078px;height:206px;line-height:206px;top:11620px;left:2519px;z-index:125;letter-spacing:0.1px;false">再乍丈正之止中重舟州朱主爪专子自</p><p class="reader-word-layer reader-word-s1-9" style="width:48px;height:206px;line-height:206px;top:11620px;left:5598px;z-index:126;font-family:simsun;">&nbsp;
+</p><p class="reader-word-layer reader-word-s1-5" style="width:42px;height:182px;line-height:182px;top:12005px;left:1442px;z-index:127;font-size:169px;font-family:simsun;">&nbsp;
+</p><span class="wkwm5edb3638">文库</span></div>"""
+  # html_source = """<p>helo</p><p></p><p></p>     <p>    </p><p>over</p>"""
+  #.........................................................................................................
+  $resolve_entities = -> $ ( d, send ) =>
+    return send d unless select d, '^text'
+    send lets d, ( d ) => d.text = d.text.replace /&nbsp;/g, ' '
+  #.........................................................................................................
+  $remove_styles_and_classes = -> $ ( d, send ) =>
+    return if select d, '<span'
+    return if select d, '>span'
+    return send d unless d.style? or d.class?
+    send lets d, ( d ) =>
+      delete d.style
+      delete d.class
+  #.........................................................................................................
+  $skip_styles = ->
+    within_style = false
+    return $ ( d, send ) =>
+      if select d, '<style'
+        within_style = true
+        return
+      if select d, '>style'
+        within_style = false
+        return
+      return if within_style
+      send d
+  #.........................................................................................................
+  $trim = -> $ ( d, send ) =>
+    return send d unless select d, '^text'
+    d = lets d, ( d ) => d.text = d.text.trim()
+    send d unless d.text is ''
+  #.........................................................................................................
+  $remove_empty_tags = ->
+    width     = 2
+    fallback  = Symbol 'fallback'
+    skip_next = false
+    #.......................................................................................................
+    return SP.window { width, fallback, }, $ ( ds, send ) ->
+      if skip_next
+        skip_next = false
+        return
+      #.....................................................................................................
+      [ this_d, next_d, ] = ds
+      # return send next_d  if this_d  is fallback
+      return              if this_d is fallback
+      return send this_d  if next_d is fallback
+      this_sigil    = this_d.$key[ 0 ]
+      return send this_d unless this_sigil is '<'
+      this_tagname  = this_d.$key[ 1 .. ]
+      next_sigil    = next_d.$key[ 0 ]
+      return send this_d unless next_sigil is '>'
+      next_tagname  = next_d.$key[ 1 .. ]
+      return send this_d unless this_tagname is next_tagname
+      skip_next     = true
+  #.........................................................................................................
+  pipeline  = []
+  pipeline.push [ ( Buffer.from html_source ), ] ### TAINT fix `$split()` to accept string ###
+  pipeline.push $split()
+  pipeline.push $html_as_datoms()
+  pipeline.push $resolve_entities()
+  pipeline.push $remove_styles_and_classes()
+  pipeline.push $skip_styles()
+  pipeline.push $trim()
+  pipeline.push $remove_empty_tags()
+  # pipeline.push $show()
+  pipeline.push $watch ( d ) -> urge d.text if select d, '^text'
+  pipeline.push $drain()
+  SP.pull pipeline...
+  #.........................................................................................................
+  done() if done?
   return null
 
 
 ############################################################################################################
 if module is require.main then do => # await do =>
   # await @_demo()
-  test @
+  # test @
   # test @[ "HTML.parse_compact_tagname" ]
   # test @[ "HTML.dhtml" ]
   # test @[ "isa.intertext_html_tagname (2)" ]
-  # test @[ "HTML.datoms_as_html (4)" ]
+  test @[ "HTML.html_as_datoms (2)" ]
   # @[ "HTML dhtml writer" ]()
   # test @[ "HTML specials" ]
+  # @[ "_HTML demo (layout)" ]()
+  # @[ "《现代常用独体字规范》" ]()
+  # { dhtml
+  #   html_as_datoms
+  #   $html_as_datoms
+  #   datoms_as_html
+  #   raw
+  #   text
+  #   script
+  #   css }                   = ( require '../..' ).HTML.export()
+  # info html_as_datoms "<p>one<p>two"
   help 'ok'
-
 
 
 

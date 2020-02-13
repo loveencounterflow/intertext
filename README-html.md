@@ -1,18 +1,32 @@
+
+## InterText HTML: Parse and Generate HTML5
+
+
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-- [HTML](#html)
-  - [HTML Parsing](#html-parsing)
-  - [HTML Generation](#html-generation)
-    - [HTML Generation from Datoms](#html-generation-from-datoms)
-    - [HTML Generation from Method Calls](#html-generation-from-method-calls)
-  - [Example: HTML Parsing and HTML Generation](#example-html-parsing-and-html-generation)
+- [General Considerations](#general-considerations)
+- [HTML Parsing](#html-parsing)
+- [HTML Generation](#html-generation)
+  - [HTML Generation from Datoms](#html-generation-from-datoms)
+  - [HTML Generation from Method Calls](#html-generation-from-method-calls)
+- [Example: HTML Parsing and HTML Generation](#example-html-parsing-and-html-generation)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
+### General Considerations
 
-## HTML
+* Parsing takes a single text (or a stream of texts) as input and generates a list of (or a stream of)
+  [datoms](https://github.com/loveencounterflow/datom) as output.
+
+* In HTML5 parsing, no errors will be thrown; in principle, any text is fair game; however, there may
+  be warning elements interspersed with the output.
+
+* [HTML5 empty tags](https://developer.mozilla.org/en-US/docs/Glossary/empty_element) will be honored: when
+  parsing HTML, tags like `<br>`, `<img>`, `<hr>` are considered complete without being explicitly closed;
+  their self-closing versions `<br/>`, `<img/>`, `<hr/>` will be parsed like the unslashed versions, and
+  their closing counterparts `</br>`, `</img>`, `</hr>` will be silently ignored.
 
 ### HTML Parsing
 

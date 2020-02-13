@@ -285,6 +285,10 @@ excluded_content_parts    = [ '', null, undefined, ]
 # @new_parse_method = ( settings ) ->
 #   validate.parse_html_settings settings = { types.defaults.parse_html_settings..., settings..., }
 @_new_parse_method = ( settings ) ->
+  ### NOTE strangely, throwing an error from inside the `data` handler seems to throw off the parser;
+  even when both `parser.flushText()` and `parser.reset()` were called prior to throwing the error, all
+  subsequent parsing calls will return empty lists. We therefore construct a new parser instance for
+  each call to `html_as_datoms()`. ###
   R         = null
   parser    = new HtmlParser { preserveWS: true, }
   #.........................................................................................................

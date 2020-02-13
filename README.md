@@ -6,7 +6,7 @@
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [InterText: Services for Recurrent Text-related Tasks](#intertext-services-for-recurrent-text-related-tasks)
-- [Links](#links)
+- [Related Links](#related-links)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -35,7 +35,18 @@ for the future include:
 
 * [ ] **InterText ?FMT?** for formatting numbers.
 
-## Links
+
+
+* [benchmarks](./README-benchmarks.md)
+* [html](./README-html.md)
+* [hyphenation](./README-hyphenation.md)
+* [planned](./README-planned.md)
+* [slabs](./README-slabs.md)
+
+
+
+
+## Related Links
 
 * [regexpu-core/property-escapes.md at master · mathiasbynens/regexpu-core](https://github.com/mathiasbynens/regexpu-core/blob/master/property-escapes.md)
 * [Unicode property escapes in JavaScript regular expressions · Mathias Bynens](https://mathiasbynens.be/notes/es-unicode-property-escapes)

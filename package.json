@@ -36,7 +36,7 @@
     "intertype": "^3.1.1",
     "linebreak": "^1.0.2",
     "multimix": "^2.1.4",
-    "steampipes": "^5.0.0"
+    "steampipes": "^5.1.0"
   },
   "devDependencies": {
     "guy-test": "^1.4.2"

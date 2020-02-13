@@ -14,35 +14,20 @@
 ## InterText: Services for Recurrent Text-related Tasks
 
 InterText provides pre-packaged solutioons for a number of tasks in text formatting and typesetting that
-tend to show up frequently. I'm aiming at conducing comparative benchmarks and soundness checks for all
-solutions (see [Benchmarks](#benchmarks), below, for available data). The areas covered so far and planned
-for the future include:
-
-* [x] **InterText HYPH** for hyphenating text in multiple languages (only en-US covered so far, but
-  underlying software is multilingual and configurable).
-
-* [x] **InterText SLABS** for segmenting and re-assembling text according to *Unicode Standard Annex #14:
-  Unicode Line Breaking Algorithm* (UAX#14); this is useful to determine line breaking opportunities (LBOs)
-  for running text. So far, ASCII spaces (U+0020), Soft Hyphens (U+00ad) and implicit CJK Inter-Character
-  Breaks work.
-
-* [x] [**InterText HTML** for parsing and generating HTML markup.](./README-html.md)
-
-* [ ] **InterText ?ANSI?** for colorizing console output.
-
-* [ ] **InterText ?TBL?** for tabulating console output; includes facilities to determing display width of
-  individual characters and running text, taking into account 'wide' and 'narrow' characters.
-
-* [ ] **InterText ?FMT?** for formatting numbers.
+tend to show up frequently. I'm aiming at conducing comparative [benchmarks](./README-benchmarks.md) and
+soundness checks for all solutions. Areas covered so far include:
 
 
+* [**InterText HTML**](./README-html.md): parse, generate HTML markup.
 
-* [html](./README-html.md)
-* [hyphenation](./README-hyphenation.md)
-* [slabs](./README-slabs.md)
+* [**InterText HYPH**](./README-hyphenation.md) for hyphenating text in multiple languages (only en-US
+  covered so far, but underlying software is multilingual and configurable).
 
-* [benchmarks](./README-benchmarks.md)
-* [planned](./README-planned.md)
+* [**InterText SLABS**](./README-slabs.md) for segmenting and re-assembling text according to *Unicode
+  Standard Annex #14: Unicode Line Breaking Algorithm* (UAX#14); this is useful to determine line breaking
+  opportunities (LBOs) for running text.
+
+See also the (rough) [list of planned features](./README-planned.md).
 
 
 

@@ -2,6 +2,13 @@
 ## InterText Planned Features
 
 
+* [ ] **InterText ?ANSI?** for colorizing console output.
+
+* [ ] **InterText ?TBL?** for tabulating console output; includes facilities to determing display width of
+  individual characters and running text, taking into account 'wide' and 'narrow' characters.
+
+* [ ] **InterText ?FMT?** for formatting numbers.
+
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*

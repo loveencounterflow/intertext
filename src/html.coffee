@@ -131,6 +131,18 @@ excluded_content_parts    = [ '', null, undefined, ]
   return { start: start_tag, content: processed_content, }
 
 #-----------------------------------------------------------------------------------------------------------
+@datoms_as_nlhtml = ( ds... ) ->
+  R = ''
+  for d in ds.flat Infinity
+    html    = @_datom_as_html d
+    sigil   = d.$key[ 0 ]
+    tagname = d.$key[ 1 .. ]
+    R      += '\n' if sigil is '<' and isa._intertext_html_block_level_tagname tagname
+    R      += html
+    # R      += '\n' if
+  return R
+
+#-----------------------------------------------------------------------------------------------------------
 @datoms_as_html = ( ds... ) -> return ( @_datom_as_html d for d in ds.flat Infinity ).join ''
 
 #-----------------------------------------------------------------------------------------------------------

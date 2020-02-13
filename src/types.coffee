@@ -211,6 +211,20 @@ empty_element_tagnames = new Set """area base br col embed hr img input link met
 #-----------------------------------------------------------------------------------------------------------
 @declare '_intertext_html_empty_element_tagname', ( x ) -> empty_element_tagnames.has x
 
+### thx to https://developer.mozilla.org/en-US/docs/Web/HTML/Block-level_elements ###
+#-----------------------------------------------------------------------------------------------------------
+html5_block_level_tagnames = new Set """address article aside blockquote dd details dialog div dl dt
+  fieldset figcaption figure footer form h1 h2 h3 h4 h5 h6 header hgroup hr li main nav ol p pre section table
+  td th ul""".split /\s+/
+
+#-----------------------------------------------------------------------------------------------------------
+@declare 'intertext_html_block_level_tagname',
+  tests:
+    "x is a text":                            ( x ) -> @isa.text x
+    "x is name of an empty HTML element":     ( x ) -> @isa._intertext_html_block_level_tagname x
+
+#-----------------------------------------------------------------------------------------------------------
+@declare '_intertext_html_block_level_tagname', ( x ) -> html5_block_level_tagnames.has x
 
 
 

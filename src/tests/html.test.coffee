@@ -591,34 +591,17 @@ probes_and_matchers = [
   return null
 
 #-----------------------------------------------------------------------------------------------------------
-@[ "_HTML dhtml writer" ] = ( T, done ) ->
+@[ "HTML.datoms_as_nlhtml (1)" ] = ( T, done ) ->
   INTERTEXT                 = require '../..'
-  { datoms_as_html
-    dhtml
-    text
-    datoms_as_html
-    new_dhtml_writer }      = INTERTEXT.HTML.export()
+  { datoms_as_nlhtml
+    html_as_datoms }        = INTERTEXT.HTML.export()
   #.........................................................................................................
-  # debug '^2223^', dhtml.text "R&B"
-  # debug '^2223^', dhtml
-  debug '^7778^',                dhtml 'one', ( text 'between' ), ( dhtml 'two', 'here' )
-  debug '^7778^', datoms_as_html dhtml 'one', ( text 'between' ), ( dhtml 'two', 'here' )
-  h = new_dhtml_writer()
-  whisper '^7778^', '------------------------------------------'
-  h = new_dhtml_writer()
-  h 'one', ( text 'between' ), ->
-    h 'two', 'here'
-      # h 'three' # , ->
-  # h 'article#c2', { editable: true, }, ->
-  #   h 'h1', "A truly curious Coincidence"
-  #   h 'p.noindent', ->
-  #     h 'em', "Seriously,"
-  #     h.text " he said, "
-  #     h 'em', "we'd better start cooking now."
+  urge jr ds = html_as_datoms """
+    <h1>A Star is Born</h1><p class=noindent>Stars are born when hydrogen amasses.</p><p>When they are <em>big</em> enough, nuclear fusion starts.</p>
+    """
   #.........................................................................................................
-  info h.expand()
-  #.........................................................................................................
-  done() if done?
+  help datoms_as_nlhtml ds
+  done()
   return null
 
 #-----------------------------------------------------------------------------------------------------------
@@ -839,7 +822,8 @@ probes_and_matchers = [
 ############################################################################################################
 if module is require.main then do => # await do =>
   # await @_demo()
-  test @
+  # test @
+  test @[ "HTML.datoms_as_nlhtml (1)" ]
   # test @[ "HTML.parse_compact_tagname" ]
   # test @[ "HTML.dhtml" ]
   # test @[ "isa.intertext_html_tagname (2)" ]

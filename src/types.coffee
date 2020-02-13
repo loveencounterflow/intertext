@@ -204,9 +204,6 @@ empty_element_tagnames = new Set """area base br col embed hr img input link met
 
 #-----------------------------------------------------------------------------------------------------------
 @declare 'intertext_html_empty_element_tagname',
-  ### thx to https://raw.githubusercontent.com/mathiasbynens/mothereff.in/master/unquoted-attributes/eff.js
-  also see https://mothereff.in/unquoted-attributes,
-  https://mathiasbynens.be/notes/unquoted-attribute-values ###
   tests:
     "x is a text":                            ( x ) -> @isa.text x
     "x is name of an empty HTML element":     ( x ) -> @isa._intertext_html_empty_element_tagname x

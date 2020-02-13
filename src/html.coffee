@@ -303,25 +303,32 @@ excluded_content_parts    = [ '', null, undefined, ]
       return R.push new_datom '^doctype', $value
     #.......................................................................................................
     return R.push new_datom '^text', { text, } if text?
-    return R.push new_datom '>' + name unless data?
+    is_empty_tag = isa._intertext_html_empty_element_tagname name
+    # debug '^7787^', { name, data, text, is_empty_tag, }
+    unless data?
+      return if is_empty_tag
+        # throw new Error "^intertext/_new_parse_method@6069^ found closing tag, but HTML5 <#{name}> is an empty tag"
+      return R.push new_datom '>' + name
     has_keys = false
     for key, value of data
       has_keys    = true
       data[ key ] = true if value is ''
-    return R.push new_datom '<' + name unless has_keys
-    return R.push new_datom '<' + name, data
+    sigil = if is_empty_tag then '^' else '<'
+    return R.push new_datom sigil + name unless has_keys
+    return R.push new_datom sigil + name, data
   parser.on 'error', ( error ) -> throw error
   # parser.on 'end', -> R.push new_datom '^stop'
   #.........................................................................................................
   return ( html ) =>
+    # urge '^7787^', jr html
     R = []
     parser.write html
     parser.flushText()
-    parser.reset()
+    # parser.reset()      # call if parser is to be reused
     return R
 
 #-----------------------------------------------------------------------------------------------------------
-@html_as_datoms = @_new_parse_method()
+@html_as_datoms = ( html ) -> @_new_parse_method() html
 
 #-----------------------------------------------------------------------------------------------------------
 @$html_as_datoms = ->

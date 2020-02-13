@@ -20,13 +20,20 @@
 * Parsing takes a single text (or a stream of texts) as input and generates a list of (or a stream of)
   [datoms](https://github.com/loveencounterflow/datom) as output.
 
+* Conversely, HTML generation works by taking a list (or a stream) of
+  [datoms](https://github.com/loveencounterflow/datom) as input and generating a single text (or a stream of
+  texts) with tags and properly HTML-escaped text content as output.
+
 * In HTML5 parsing, no errors will be thrown; in principle, any text is fair game; however, there may
-  be warning elements interspersed with the output.
+  be system-level datoms with warnings interspersed with the output.
 
 * [HTML5 empty tags](https://developer.mozilla.org/en-US/docs/Glossary/empty_element) will be honored: when
   parsing HTML, tags like `<br>`, `<img>`, `<hr>` are considered complete without being explicitly closed;
   their self-closing versions `<br/>`, `<img/>`, `<hr/>` will be parsed like the unslashed versions, and
   their closing counterparts `</br>`, `</img>`, `</hr>` will be silently ignored.
+
+> List of HTML5 empty tags: `area`, `base`, `br`, `col`, `embed`, `hr`, `img`, `input`, `link`, `meta`,
+  `param`, `source`, `track`, `wbr`.
 
 ### HTML Parsing
 

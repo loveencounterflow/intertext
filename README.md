@@ -26,7 +26,7 @@ for the future include:
   for running text. So far, ASCII spaces (U+0020), Soft Hyphens (U+00ad) and implicit CJK Inter-Character
   Breaks work.
 
-* [x] **InterText HTML** for parsing and generating HTML markup.
+* [x] [**InterText HTML** for parsing and generating HTML markup.](./README-html.md)
 
 * [ ] **InterText ?ANSI?** for colorizing console output.
 
@@ -37,12 +37,12 @@ for the future include:
 
 
 
-* [benchmarks](./README-benchmarks.md)
 * [html](./README-html.md)
 * [hyphenation](./README-hyphenation.md)
-* [planned](./README-planned.md)
 * [slabs](./README-slabs.md)
 
+* [benchmarks](./README-benchmarks.md)
+* [planned](./README-planned.md)
 
 
 

@@ -40,8 +40,32 @@ test                      = require 'guy-test'
 Multimix                  = require 'multimix'
 
 
+# #-----------------------------------------------------------------------------------------------------------
+# get_nesting_level = ( list ) ->
+#   validate.list list
+#   return _get_nesting_level list, -1, -1
+# _get_nesting_level = ( list, level, max_nesting_level ) ->
+#   level            += 1
+#   max_nesting_level = Math.max max_nesting_level, level
+#   for x in list
+#     continue unless isa.list x
+#     max_nesting_level = Math.max max_nesting_level, _get_nesting_level x, level, max_nesting_level
+#   return max_nesting_level
+# urge '^897^', get_nesting_level []
+# urge '^897^', get_nesting_level [ 1, ]
+# urge '^897^', get_nesting_level [[]]
+# urge '^897^', get_nesting_level [ [ 4, ], ]
+# urge '^897^', get_nesting_level [[[]]]
+# urge '^897^', get_nesting_level [ 1, [ 2, 4, [ 5, ], [ 6, ], ], ]
+
+
 #-----------------------------------------------------------------------------------------------------------
-@walk = ( list ) ->
+@expand = ( list ) ->
+  @_expand list
+  return @_unwrap list
+
+#-----------------------------------------------------------------------------------------------------------
+@_expand = ( list ) ->
   idx = -1
   loop
     idx++
@@ -52,31 +76,23 @@ Multimix                  = require 'multimix'
         list.splice idx, 1
         idx--
       when 'list'
-        @walk x
+        @_expand x
       when 'function'
         @target = []
         x()
-        whisper @target
         list[ idx .. idx ] = @target
         idx--
-      else
-        info rpr x
   return null
 
 #-----------------------------------------------------------------------------------------------------------
-@unwrap = ( x ) ->
+@_unwrap = ( x ) ->
   return x unless isa.list x
   return x unless x.length is 1
   return x unless isa.list x[ 0 ]
-  return @unwrap x[ 0 ]
+  return @_unwrap x[ 0 ]
 
 #-----------------------------------------------------------------------------------------------------------
-@render = ( list ) ->
-  @walk list
-  return @unwrap list
-
-#-----------------------------------------------------------------------------------------------------------
-@h = ( x... ) -> @target.push x; return null
+@cram = ( x... ) -> @target.push x; return null
 
 #-----------------------------------------------------------------------------------------------------------
 MAIN = @
@@ -96,33 +112,93 @@ class Xxx extends Multimix
 module.exports = XXX = new Xxx()
 
 #-----------------------------------------------------------------------------------------------------------
-@[ "XXX demo" ] = ( T, done ) ->
-  { h
-    render }  = XXX.export()
+@[ "XXX demo 1" ] = ( T, done ) ->
+  { cram
+    expand }  = XXX.export()
   #.........................................................................................................
-  h null, ->
+  cram null, ->
+    cram 'pre'
+    cram 'one', ->
+      cram 'two', 42
+      cram 'three', ->
+        cram 'four', ->
+          cram 'five', ->
+            cram 'six'
+    cram 'post'
+  # urge rpr XXX.collector
+  ds = expand XXX.collector
+  # urge '^4443^', ds
+  T.eq ds, [
+    [ 'pre' ],
+    [
+      'one',
+      [ 'two', 42 ],
+      [
+        'three',
+        [ 'four', [ 'five', [ 'six' ] ] ]
+      ]
+    ],
+    [ 'post' ]
+  ]
+  info rpr ds
+  #.........................................................................................................
+  done() if done?
+
+#-----------------------------------------------------------------------------------------------------------
+@[ "XXX demo 2" ] = ( T, done ) ->
+  { cram
+    expand }  = XXX.export()
+  #.........................................................................................................
+  h = ( tagname, content... ) ->
+    if content.length is 0
+      d = new_datom "^#{tagname}"
+      return cram d, content...
+    d1 = new_datom "<#{tagname}"
+    d2 = new_datom ">#{tagname}"
+    return cram d1, content..., d2
+  #.........................................................................................................
+  cram null, ->
     h 'pre'
     h 'one', ->
-      h 'two', 42
+      h 'two', ( new_datom '^text', text: '42' )
       h 'three', ->
-        h 'four'
+        h 'four', ->
+          h 'five', ->
+            h 'six', ->
+              cram ( new_datom '^text', text: 'bottom' )
     h 'post'
   urge rpr XXX.collector
-  d = render XXX.collector
-  T.eq d, [
-    [ 'pre' ],
-    [ 'one', [ 'two', 42 ], [ 'three', [ 'four' ] ] ],
-    [ 'post' ] ]
-  info rpr d
+  ds = expand XXX.collector
+  info rpr ds
+  urge html = ( require '../..' ).HTML.datoms_as_html ds
+  T.eq html, "<pre></pre><one><two>42</two><three><four><five><six>bottom</six></five></four></three></one><post></post>"
+  T.eq ds, [
+    [ { '$key': '^pre' } ],
+    [ { '$key': '<one' },
+      [ { '$key': '<two' },
+        { text: '42', '$key': '^text' },
+        { '$key': '>two' } ],
+      [ { '$key': '<three' },
+        [ { '$key': '<four' },
+          [ { '$key': '<five' },
+            [ { '$key': '<six' },
+              [ { text: 'bottom', '$key': '^text' } ],
+              { '$key': '>six' } ],
+            { '$key': '>five' } ],
+          { '$key': '>four' } ],
+        { '$key': '>three' } ],
+      { '$key': '>one' } ],
+    [ { '$key': '^post' } ] ]
   #.........................................................................................................
   done() if done?
 
 
+
 ############################################################################################################
 if module is require.main then do =>
-  test @[ "XXX demo" ]
+  # test @[ "XXX demo 1" ]
+  test @[ "XXX demo 2" ]
   # @[ "XXX demo" ]()
-
 
 # urge @collector; @collector.length = 0
 

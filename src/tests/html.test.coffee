@@ -39,7 +39,7 @@ test                      = require 'guy-test'
     [ "foo\nbar",   true,   null, ]
     ]
   for [ probe, matcher, error, ] in probes_and_matchers
-    await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
+    await T.perform probe, matcher, error, -> new Promise ( resolve ) ->
       must_quote = not isa.intertext_html_naked_attribute_value probe
       resolve must_quote
   #.........................................................................................................
@@ -62,7 +62,7 @@ test                      = require 'guy-test'
     [ "'<>'",       "'&#39;&lt;&gt;&#39;'",     null, ]
     ]
   for [ probe, matcher, error, ] in probes_and_matchers
-    await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
+    await T.perform probe, matcher, error, -> new Promise ( resolve ) ->
       resolve HTML._as_attribute_literal probe
   #.........................................................................................................
   done()
@@ -87,7 +87,7 @@ test                      = require 'guy-test'
     [ "此は何ですか", true,   null, ]
     ]
   for [ probe, matcher, error, ] in probes_and_matchers
-    await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
+    await T.perform probe, matcher, error, -> new Promise ( resolve ) ->
       resolve isa.intertext_html_tagname probe
   #.........................................................................................................
   done()
@@ -111,7 +111,7 @@ test                      = require 'guy-test'
   foo:bar foo-bar Foo-bar
   """.split /\s+/
   for probe in probes
-    await T.perform probe, true, null, -> return new Promise ( resolve, reject ) ->
+    await T.perform probe, true, null, -> new Promise ( resolve ) ->
       resolve isa.intertext_html_tagname probe
   #.........................................................................................................
   done()
@@ -137,7 +137,7 @@ test                      = require 'guy-test'
     [ [ '^something', { z: 'Z', a: 'A',     }, ],     "<something a=A z=Z></something>",                   ]
     ]
   for [ probe, matcher, error, ] in probes_and_matchers
-    await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
+    await T.perform probe, matcher, error, -> new Promise ( resolve ) ->
       d = new_datom probe...
       resolve HTML.datoms_as_html d
   #.........................................................................................................
@@ -164,7 +164,7 @@ test                      = require 'guy-test'
     [ [ '>something', { z: 'Z', a: 'A',     }, ],     "</something>",     ]
     ]
   for [ probe, matcher, error, ] in probes_and_matchers
-    await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
+    await T.perform probe, matcher, error, -> new Promise ( resolve ) ->
       d = new_datom probe...
       resolve HTML.datoms_as_html d
   #.........................................................................................................
@@ -191,7 +191,7 @@ test                      = require 'guy-test'
     [ [ '<something', { z: 'Z', a: 'A',     }, ],     "<something a=A z=Z>",                          ]
     ]
   for [ probe, matcher, error, ] in probes_and_matchers
-    await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
+    await T.perform probe, matcher, error, -> new Promise ( resolve ) ->
       d = new_datom probe...
       resolve HTML.datoms_as_html d
   #.........................................................................................................
@@ -213,7 +213,7 @@ test                      = require 'guy-test'
     [ [ '<text', { z: 'Z', a: 'A',           }, ],     "<text a=A z=Z>",              ]
     ]
   for [ probe, matcher, error, ] in probes_and_matchers
-    await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
+    await T.perform probe, matcher, error, -> new Promise ( resolve ) ->
       d = new_datom probe...
       resolve HTML.datoms_as_html d
   #.........................................................................................................
@@ -240,7 +240,7 @@ test                      = require 'guy-test'
     [ [ '<something', { ignored: 'xxx', $value: { z: 'Z', a: 'A',    }, }, ], "<something a=A z=Z>",                          ]
     ]
   for [ probe, matcher, error, ] in probes_and_matchers
-    await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
+    await T.perform probe, matcher, error, -> new Promise ( resolve ) ->
       d = new_datom probe...
       resolve HTML.datoms_as_html d
   #.........................................................................................................
@@ -267,7 +267,7 @@ test                      = require 'guy-test'
     [["~something",{"z":"Z","a":"A"}],"<x-sys x-key=something a=A z=Z><x-sys-key>something</x-sys-key></x-sys>",null]
     ]
   for [ probe, matcher, error, ] in probes_and_matchers
-    await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
+    await T.perform probe, matcher, error, -> new Promise ( resolve ) ->
       d = new_datom probe...
       resolve HTML.datoms_as_html d
   #.........................................................................................................
@@ -288,7 +288,7 @@ test                      = require 'guy-test'
     [ [ '^raw', { text: '<\n\'"&>',           }, ],   '<\n\'"&>',                               ]
     ]
   for [ probe, matcher, error, ] in probes_and_matchers
-    await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
+    await T.perform probe, matcher, error, -> new Promise ( resolve ) ->
       d = new_datom probe...
       resolve HTML.datoms_as_html d
   #.........................................................................................................
@@ -309,7 +309,7 @@ test                      = require 'guy-test'
     [ [ '^doctype', "obvious", ],       "<!DOCTYPE obvious>",     ]
     ]
   for [ probe, matcher, error, ] in probes_and_matchers
-    await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
+    await T.perform probe, matcher, error, -> new Promise ( resolve ) ->
       d = new_datom probe...
       resolve HTML.datoms_as_html d
   #.........................................................................................................
@@ -336,7 +336,7 @@ test                      = require 'guy-test'
     ["<p>one<p>two",[{"$key":"<p"},{"text":"one","$key":"^text"},{"$key":"<p"},{"text":"two","$key":"^text"}],null]
     ]
   for [ probe, matcher, error, ] in probes_and_matchers
-    await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
+    await T.perform probe, matcher, error, -> new Promise ( resolve ) ->
       resolve HTML.html_as_datoms probe
   #.........................................................................................................
   done()
@@ -397,7 +397,7 @@ probes_and_matchers = [
     ["<tag a='<'>",[{"a":"<","$key":"<tag"}],null]
     ]
   for [ probe, matcher, error, ] in probes_and_matchers
-    await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
+    await T.perform probe, matcher, error, -> new Promise ( resolve ) ->
       resolve HTML.html_as_datoms probe
   #.........................................................................................................
   done()
@@ -423,7 +423,7 @@ probes_and_matchers = [
     ["<p>here and<br/>there</p>","<p>|here and|<br>|there|</p>",null]
     ]
   for [ probe, matcher, error, ] in probes_and_matchers
-    await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
+    await T.perform probe, matcher, error, -> new Promise ( resolve ) ->
       resolve ( HTML.datoms_as_html d for d in  HTML.html_as_datoms probe ).join '|'
   #.........................................................................................................
   done()
@@ -475,7 +475,7 @@ probes_and_matchers = [
     ["...#",null,"illegal compact tag syntax"]
     ]
   for [ probe, matcher, error, ] in probes_and_matchers
-    await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
+    await T.perform probe, matcher, error, -> new Promise ( resolve ) ->
       resolve parse_compact_tagname probe
   #.........................................................................................................
   done()
@@ -504,7 +504,7 @@ probes_and_matchers = [
     [["...#"],null,"illegal compact tag syntax"]
     ]
   for [ probe, matcher, error, ] in probes_and_matchers
-    await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
+    await T.perform probe, matcher, error, -> new Promise ( resolve ) ->
       # urge h probe...
       resolve dhtml probe...
   #.........................................................................................................
@@ -533,7 +533,7 @@ probes_and_matchers = [
     [["...#"],null,"illegal compact tag syntax"]
     ]
   for [ probe, matcher, error, ] in probes_and_matchers
-    await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
+    await T.perform probe, matcher, error, -> new Promise ( resolve ) ->
       # urge datoms_as_html dhtml probe...
       resolve datoms_as_html dhtml probe...
   #.........................................................................................................
@@ -618,7 +618,7 @@ probes_and_matchers = [
     [["raw","a b c < & >"],[[{"text":"a b c < & >","$key":"^raw"}],"a b c < & >"],null]
     ]
   for [ probe, matcher, error, ] in probes_and_matchers
-    await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
+    await T.perform probe, matcher, error, -> new Promise ( resolve ) ->
       [ key, P..., ] = probe
       result  = INTERTEXT.HTML[ key ] P...
       result  = [ result, ( datoms_as_html result ), ]

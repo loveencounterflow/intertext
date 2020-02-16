@@ -235,7 +235,7 @@ that you'd expect.
 ## Legacy
 
 ```
-          Markaby
+         Markaby
             ⇓
          CoffeeKup
             ⇓
@@ -245,5 +245,5 @@ that you'd expect.
             ⇓
      CoffeNode-Teacup
             ⇓
-  InterText HTML XXXXXXXX
+         CupOfJoe
 ```

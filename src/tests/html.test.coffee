@@ -118,7 +118,7 @@ test                      = require 'guy-test'
   return null
 
 #-----------------------------------------------------------------------------------------------------------
-@[ "HTML.datoms_as_html (singular tags)" ] = ( T, done ) ->
+@[ "HTML.html_from_datoms (singular tags)" ] = ( T, done ) ->
   DATOM                     = new ( require 'datom' ).Datom { dirty: false, }
   { new_datom
     lets
@@ -139,13 +139,13 @@ test                      = require 'guy-test'
   for [ probe, matcher, error, ] in probes_and_matchers
     await T.perform probe, matcher, error, -> new Promise ( resolve ) ->
       d = new_datom probe...
-      resolve HTML.datoms_as_html d
+      resolve HTML.html_from_datoms d
   #.........................................................................................................
   done()
   return null
 
 #-----------------------------------------------------------------------------------------------------------
-@[ "HTML.datoms_as_html (closing tags)" ] = ( T, done ) ->
+@[ "HTML.html_from_datoms (closing tags)" ] = ( T, done ) ->
   DATOM                     = new ( require 'datom' ).Datom { dirty: false, }
   { new_datom
     lets
@@ -166,13 +166,13 @@ test                      = require 'guy-test'
   for [ probe, matcher, error, ] in probes_and_matchers
     await T.perform probe, matcher, error, -> new Promise ( resolve ) ->
       d = new_datom probe...
-      resolve HTML.datoms_as_html d
+      resolve HTML.html_from_datoms d
   #.........................................................................................................
   done()
   return null
 
 #-----------------------------------------------------------------------------------------------------------
-@[ "HTML.datoms_as_html (opening tags)" ] = ( T, done ) ->
+@[ "HTML.html_from_datoms (opening tags)" ] = ( T, done ) ->
   DATOM                     = new ( require 'datom' ).Datom { dirty: false, }
   { new_datom
     lets
@@ -193,13 +193,13 @@ test                      = require 'guy-test'
   for [ probe, matcher, error, ] in probes_and_matchers
     await T.perform probe, matcher, error, -> new Promise ( resolve ) ->
       d = new_datom probe...
-      resolve HTML.datoms_as_html d
+      resolve HTML.html_from_datoms d
   #.........................................................................................................
   done()
   return null
 
 #-----------------------------------------------------------------------------------------------------------
-@[ "HTML.datoms_as_html (texts)" ] = ( T, done ) ->
+@[ "HTML.html_from_datoms (texts)" ] = ( T, done ) ->
   DATOM                     = new ( require 'datom' ).Datom { dirty: false, }
   { new_datom
     lets
@@ -215,13 +215,13 @@ test                      = require 'guy-test'
   for [ probe, matcher, error, ] in probes_and_matchers
     await T.perform probe, matcher, error, -> new Promise ( resolve ) ->
       d = new_datom probe...
-      resolve HTML.datoms_as_html d
+      resolve HTML.html_from_datoms d
   #.........................................................................................................
   done()
   return null
 
 #-----------------------------------------------------------------------------------------------------------
-@[ "HTML.datoms_as_html (opening tags w/ $value)" ] = ( T, done ) ->
+@[ "HTML.html_from_datoms (opening tags w/ $value)" ] = ( T, done ) ->
   DATOM                     = new ( require 'datom' ).Datom { dirty: false, }
   { new_datom
     lets
@@ -242,13 +242,13 @@ test                      = require 'guy-test'
   for [ probe, matcher, error, ] in probes_and_matchers
     await T.perform probe, matcher, error, -> new Promise ( resolve ) ->
       d = new_datom probe...
-      resolve HTML.datoms_as_html d
+      resolve HTML.html_from_datoms d
   #.........................................................................................................
   done()
   return null
 
 #-----------------------------------------------------------------------------------------------------------
-@[ "HTML.datoms_as_html (system tags)" ] = ( T, done ) ->
+@[ "HTML.html_from_datoms (system tags)" ] = ( T, done ) ->
   DATOM                     = new ( require 'datom' ).Datom { dirty: false, }
   { new_datom
     lets
@@ -269,13 +269,13 @@ test                      = require 'guy-test'
   for [ probe, matcher, error, ] in probes_and_matchers
     await T.perform probe, matcher, error, -> new Promise ( resolve ) ->
       d = new_datom probe...
-      resolve HTML.datoms_as_html d
+      resolve HTML.html_from_datoms d
   #.........................................................................................................
   done()
   return null
 
 #-----------------------------------------------------------------------------------------------------------
-@[ "HTML.datoms_as_html (raw pseudo-tag)" ] = ( T, done ) ->
+@[ "HTML.html_from_datoms (raw pseudo-tag)" ] = ( T, done ) ->
   DATOM                     = new ( require 'datom' ).Datom { dirty: false, }
   { new_datom
     lets
@@ -290,13 +290,13 @@ test                      = require 'guy-test'
   for [ probe, matcher, error, ] in probes_and_matchers
     await T.perform probe, matcher, error, -> new Promise ( resolve ) ->
       d = new_datom probe...
-      resolve HTML.datoms_as_html d
+      resolve HTML.html_from_datoms d
   #.........................................................................................................
   done()
   return null
 
 #-----------------------------------------------------------------------------------------------------------
-@[ "HTML.datoms_as_html (doctype)" ] = ( T, done ) ->
+@[ "HTML.html_from_datoms (doctype)" ] = ( T, done ) ->
   DATOM                     = new ( require 'datom' ).Datom { dirty: false, }
   { new_datom
     lets
@@ -311,13 +311,13 @@ test                      = require 'guy-test'
   for [ probe, matcher, error, ] in probes_and_matchers
     await T.perform probe, matcher, error, -> new Promise ( resolve ) ->
       d = new_datom probe...
-      resolve HTML.datoms_as_html d
+      resolve HTML.html_from_datoms d
   #.........................................................................................................
   done()
   return null
 
 #-----------------------------------------------------------------------------------------------------------
-@[ "HTML.html_as_datoms (1)" ] = ( T, done ) ->
+@[ "HTML.datoms_from_html (1)" ] = ( T, done ) ->
   INTERTEXT                 = require '../..'
   { HTML, }                 = INTERTEXT
   probes_and_matchers = [
@@ -337,7 +337,7 @@ test                      = require 'guy-test'
     ]
   for [ probe, matcher, error, ] in probes_and_matchers
     await T.perform probe, matcher, error, -> new Promise ( resolve ) ->
-      resolve HTML.html_as_datoms probe
+      resolve HTML.datoms_from_html probe
   #.........................................................................................................
   done()
   return null
@@ -375,7 +375,7 @@ probes_and_matchers = [
 
 
 #-----------------------------------------------------------------------------------------------------------
-@[ "HTML.html_as_datoms (dubious)" ] = ( T, done ) ->
+@[ "HTML.datoms_from_html (dubious)" ] = ( T, done ) ->
   INTERTEXT                 = require '../..'
   { HTML, }                 = INTERTEXT
   probes_and_matchers = [
@@ -398,13 +398,13 @@ probes_and_matchers = [
     ]
   for [ probe, matcher, error, ] in probes_and_matchers
     await T.perform probe, matcher, error, -> new Promise ( resolve ) ->
-      resolve HTML.html_as_datoms probe
+      resolve HTML.datoms_from_html probe
   #.........................................................................................................
   done()
   return null
 
 #-----------------------------------------------------------------------------------------------------------
-@[ "HTML.html_as_datoms (2)" ] = ( T, done ) ->
+@[ "HTML.datoms_from_html (2)" ] = ( T, done ) ->
   INTERTEXT                 = require '../..'
   { HTML, }                 = INTERTEXT
   probes_and_matchers = [
@@ -424,13 +424,13 @@ probes_and_matchers = [
     ]
   for [ probe, matcher, error, ] in probes_and_matchers
     await T.perform probe, matcher, error, -> new Promise ( resolve ) ->
-      resolve ( HTML.datoms_as_html d for d in  HTML.html_as_datoms probe ).join '|'
+      resolve ( HTML.html_from_datoms d for d in  HTML.datoms_from_html probe ).join '|'
   #.........................................................................................................
   done()
   return null
 
 #-----------------------------------------------------------------------------------------------------------
-@[ "HTML.$html_as_datoms" ] = ( T, done ) ->
+@[ "HTML.$datoms_from_html" ] = ( T, done ) ->
   INTERTEXT                 = require '../..'
   { HTML, }                 = INTERTEXT
   SP                        = require 'steampipes'
@@ -449,7 +449,7 @@ probes_and_matchers = [
   pipeline      = []
   pipeline.push [ ( Buffer.from probe ), ]
   pipeline.push SP.$split()
-  pipeline.push HTML.$html_as_datoms()
+  pipeline.push HTML.$datoms_from_html()
   pipeline.push $show()
   pipeline.push $drain ( result ) =>
     help jr result
@@ -460,9 +460,9 @@ probes_and_matchers = [
   return null
 
 #-----------------------------------------------------------------------------------------------------------
-@[ "HTML.parse_compact_tagname" ] = ( T, done ) ->
+@[ "HTML._parse_compact_tagname" ] = ( T, done ) ->
   INTERTEXT                 = require '../..'
-  { parse_compact_tagname
+  { _parse_compact_tagname
     h }                     = INTERTEXT.HTML.export()
   #.........................................................................................................
   probes_and_matchers = [
@@ -476,16 +476,16 @@ probes_and_matchers = [
     ]
   for [ probe, matcher, error, ] in probes_and_matchers
     await T.perform probe, matcher, error, -> new Promise ( resolve ) ->
-      resolve parse_compact_tagname probe
+      resolve _parse_compact_tagname probe
   #.........................................................................................................
   done()
   return null
 
 #-----------------------------------------------------------------------------------------------------------
-@[ "HTML.dhtml" ] = ( T, done ) ->
+@[ "HTML.tag" ] = ( T, done ) ->
   INTERTEXT                 = require '../..'
-  { parse_compact_tagname
-    dhtml }                 = INTERTEXT.HTML.export()
+  { _parse_compact_tagname
+    tag }                 = INTERTEXT.HTML.export()
   #.........................................................................................................
   probes_and_matchers = [
     [["div"],[{"$key":"^div"}],null]
@@ -506,16 +506,16 @@ probes_and_matchers = [
   for [ probe, matcher, error, ] in probes_and_matchers
     await T.perform probe, matcher, error, -> new Promise ( resolve ) ->
       # urge h probe...
-      resolve dhtml probe...
+      resolve tag probe...
   #.........................................................................................................
   done()
   return null
 
 #-----------------------------------------------------------------------------------------------------------
-@[ "HTML.datoms_as_html (1)" ] = ( T, done ) ->
+@[ "HTML.html_from_datoms (1)" ] = ( T, done ) ->
   INTERTEXT                 = require '../..'
-  { datoms_as_html
-    dhtml }                 = INTERTEXT.HTML.export()
+  { html_from_datoms
+    tag }                 = INTERTEXT.HTML.export()
   #.........................................................................................................
   probes_and_matchers = [
     [["div"],"<div></div>",null]
@@ -534,19 +534,19 @@ probes_and_matchers = [
     ]
   for [ probe, matcher, error, ] in probes_and_matchers
     await T.perform probe, matcher, error, -> new Promise ( resolve ) ->
-      # urge datoms_as_html dhtml probe...
-      resolve datoms_as_html dhtml probe...
+      # urge html_from_datoms tag probe...
+      resolve html_from_datoms tag probe...
   #.........................................................................................................
   done()
   return null
 
 #-----------------------------------------------------------------------------------------------------------
-@[ "HTML.datoms_as_html (2)" ] = ( T, done ) ->
+@[ "HTML.html_from_datoms (2)" ] = ( T, done ) ->
   INTERTEXT                 = require '../..'
-  { datoms_as_html
-    dhtml }                 = INTERTEXT.HTML.export()
+  { html_from_datoms
+    tag }                 = INTERTEXT.HTML.export()
   #.........................................................................................................
-  urge ds = dhtml 'article#c2', { editable: true, }, ( dhtml 'h1', "A truly curious Coincidence" )
+  urge ds = tag 'article#c2', { editable: true, }, ( tag 'h1', "A truly curious Coincidence" )
   T.eq ds, [
     { '$key': '<article', id: 'c2', editable: true },
     { '$key': '<h1' },
@@ -559,17 +559,17 @@ probes_and_matchers = [
   return null
 
 #-----------------------------------------------------------------------------------------------------------
-@[ "HTML.datoms_as_html (3)" ] = ( T, done ) ->
+@[ "HTML.html_from_datoms (3)" ] = ( T, done ) ->
   INTERTEXT                 = require '../..'
-  { datoms_as_html
-    dhtml }                 = INTERTEXT.HTML.export()
+  { html_from_datoms
+    tag }                 = INTERTEXT.HTML.export()
   #.........................................................................................................
-  urge ds = dhtml 'article#c2', { editable: true, },
-    dhtml 'h1', "A truly curious Coincidence"
-    dhtml 'p.noindent', ( dhtml 'em', "Seriously," ), " he said, ", ( dhtml 'em', "we'd better start cooking now." )
+  urge ds = tag 'article#c2', { editable: true, },
+    tag 'h1', "A truly curious Coincidence"
+    tag 'p.noindent', ( tag 'em', "Seriously," ), " he said, ", ( tag 'em', "we'd better start cooking now." )
   #.........................................................................................................
-  whisper jr datoms_as_html ds
-  T.eq ( datoms_as_html ds ), "<article editable id=c2><h1>A truly curious Coincidence</h1><p class=noindent><em>Seriously,</em> he said, <em>we'd better start cooking now.</em></p></article>"
+  whisper jr html_from_datoms ds
+  T.eq ( html_from_datoms ds ), "<article editable id=c2><h1>A truly curious Coincidence</h1><p class=noindent><em>Seriously,</em> he said, <em>we'd better start cooking now.</em></p></article>"
   T.eq ds, [
     { '$key': '<article', id: 'c2', editable: true },
     { '$key': '<h1' },
@@ -590,25 +590,25 @@ probes_and_matchers = [
   done()
   return null
 
-#-----------------------------------------------------------------------------------------------------------
-@[ "HTML.datoms_as_nlhtml (1)" ] = ( T, done ) ->
-  INTERTEXT                 = require '../..'
-  { datoms_as_nlhtml
-    html_as_datoms }        = INTERTEXT.HTML.export()
-  #.........................................................................................................
-  urge jr ds = html_as_datoms """
-    <h1>A Star is Born</h1><p class=noindent>Stars are born when hydrogen amasses.</p><p>When they are <em>big</em> enough, nuclear fusion starts.</p>
-    """
-  #.........................................................................................................
-  help datoms_as_nlhtml ds
-  done()
-  return null
+# #-----------------------------------------------------------------------------------------------------------
+# @[ "HTML.datoms_as_nlhtml (1)" ] = ( T, done ) ->
+#   INTERTEXT                 = require '../..'
+#   { datoms_as_nlhtml
+#     datoms_from_html }        = INTERTEXT.HTML.export()
+#   #.........................................................................................................
+#   urge jr ds = datoms_from_html """
+#     <h1>A Star is Born</h1><p class=noindent>Stars are born when hydrogen amasses.</p><p>When they are <em>big</em> enough, nuclear fusion starts.</p>
+#     """
+#   #.........................................................................................................
+#   help datoms_as_nlhtml ds
+#   done()
+#   return null
 
 #-----------------------------------------------------------------------------------------------------------
 @[ "HTML specials" ] = ( T, done ) ->
   INTERTEXT                 = require '../..'
-  { datoms_as_html
-    dhtml }                 = INTERTEXT.HTML.export()
+  { html_from_datoms
+    tag }                 = INTERTEXT.HTML.export()
   #.........................................................................................................
   probes_and_matchers = [
     [["script",( -> square = ( ( x ) -> x ** 2 ); console.log square 42 )],[[{"$key":"<script"},{"text":"(function() {\n            var square;\n            square = (function(x) {\n              return x ** 2;\n            });\n            return console.log(square(42));\n          })();","$key":"^raw"},{"$key":">script"}],"<script>(function() {\n            var square;\n            square = (function(x) {\n              return x ** 2;\n            });\n            return console.log(square(42));\n          })();</script>"],null]
@@ -621,7 +621,7 @@ probes_and_matchers = [
     await T.perform probe, matcher, error, -> new Promise ( resolve ) ->
       [ key, P..., ] = probe
       result  = INTERTEXT.HTML[ key ] P...
-      result  = [ result, ( datoms_as_html result ), ]
+      result  = [ result, ( html_from_datoms result ), ]
       resolve result
   #.........................................................................................................
   done()
@@ -643,10 +643,10 @@ probes_and_matchers = [
   ‘I’m as certain of it, as if his name were written all over his face.’
 
   """
-  for d in datoms = HTML.html_as_datoms text
+  for d in datoms = HTML.datoms_from_html text
     echo jr d
   echo '-'.repeat 108
-  echo ( HTML.datoms_as_html d for d in datoms ).join ''
+  echo ( HTML.html_from_datoms d for d in datoms ).join ''
   #.........................................................................................................
   done()
   return null
@@ -659,10 +659,10 @@ probes_and_matchers = [
   <h1><strong>CHAPTER VI.</strong> <name ref=hd553>Humpty Dumpty</h1>"""
   buffer  = Buffer.from text
   debug '^80009^', buffer
-  for d in datoms = HTML.html_as_datoms buffer
+  for d in datoms = HTML.datoms_from_html buffer
     echo jr d
   echo '-'.repeat 108
-  echo ( HTML.datoms_as_html d for d in datoms ).join ''
+  echo ( HTML.html_from_datoms d for d in datoms ).join ''
   #.........................................................................................................
   done()
   return null
@@ -673,8 +673,8 @@ probes_and_matchers = [
   { new_datom
     lets
     select }                = DATOM.export()
-  { dhtml
-    datoms_as_html
+  { tag
+    html_from_datoms
     raw
     text
     script
@@ -682,10 +682,10 @@ probes_and_matchers = [
   layout = ( settings ) ->
     defaults  = { title: "My App", content: ( new_datom '~content' ), }
     settings  = { defaults..., settings..., }
-    # Doctype   = ( P... ) -> dhtml 'doctype',    P...
-    # Div       = ( P... ) -> dhtml 'div',        P...
-    # div       = ( P... ) -> dhtml 'div',        P...
-    H = dhtml
+    # Doctype   = ( P... ) -> tag 'doctype',    P...
+    # Div       = ( P... ) -> tag 'div',        P...
+    # div       = ( P... ) -> tag 'div',        P...
+    H = tag
     return [
       ( H 'doctype'                                             )
       H 'head', [
@@ -700,11 +700,11 @@ probes_and_matchers = [
           H 'p', "helo world!"
           ]
         H 'span#page-ready' ] ]
-    # dhtml 'meta', 'http-equiv': "Content-Security-Policy", content: "default-src 'self'"
-    # dhtml 'meta', 'http-equiv': "Content-Security-Policy", content: "script-src 'unsafe-inline'"
+    # tag 'meta', 'http-equiv': "Content-Security-Policy", content: "default-src 'self'"
+    # tag 'meta', 'http-equiv': "Content-Security-Policy", content: "script-src 'unsafe-inline'"
     return null
   #.........................................................................................................
-  info datoms_as_html layout { title: "Beautiful HTML" }
+  info html_from_datoms layout { title: "Beautiful HTML" }
   done() if done?
   return null
 
@@ -722,10 +722,10 @@ probes_and_matchers = [
   { new_datom
     lets
     select }                = DATOM.export()
-  { dhtml
-    html_as_datoms
-    $html_as_datoms
-    datoms_as_html
+  { tag
+    datoms_from_html
+    $datoms_from_html
+    html_from_datoms
     raw
     text
     script
@@ -804,7 +804,7 @@ probes_and_matchers = [
   pipeline  = []
   pipeline.push [ ( Buffer.from html_source ), ] ### TAINT fix `$split()` to accept string ###
   pipeline.push $split()
-  pipeline.push $html_as_datoms()
+  pipeline.push $datoms_from_html()
   pipeline.push $resolve_entities()
   pipeline.push $remove_styles_and_classes()
   pipeline.push $skip_styles()
@@ -821,29 +821,66 @@ probes_and_matchers = [
 
 ############################################################################################################
 if module is require.main then do => # await do =>
+  debug ( k for k of ( require '../..' ).HTML ).sort().join ' '
   # await @_demo()
-  # test @
-  test @[ "HTML.datoms_as_nlhtml (1)" ]
-  # test @[ "HTML.parse_compact_tagname" ]
-  # test @[ "HTML.dhtml" ]
+  test @
+  # test @[ "HTML.datoms_as_nlhtml (1)" ]
+  # test @[ "HTML._parse_compact_tagname" ]
+  # test @[ "HTML.tag" ]
   # test @[ "isa.intertext_html_tagname (2)" ]
-  # test @[ "HTML.html_as_datoms (2)" ]
-  # @[ "HTML dhtml writer" ]()
+  # test @[ "HTML.datoms_from_html (2)" ]
+  # @[ "HTML tag writer" ]()
   # test @[ "HTML specials" ]
   # @[ "_HTML demo (layout)" ]()
   # @[ "《现代常用独体字规范》" ]()
-  # { dhtml
-  #   html_as_datoms
-  #   $html_as_datoms
-  #   datoms_as_html
+  # { tag
+  #   datoms_from_html
+  #   $datoms_from_html
+  #   html_from_datoms
   #   raw
   #   text
   #   script
   #   css }                   = ( require '../..' ).HTML.export()
-  # info html_as_datoms "<p>one<p>two"
+  # info datoms_from_html "<p>one<p>two"
   help 'ok'
 
+###
+
+_as_attribute_literal
+_as_iife
+_datom_as_html
+_dhtml
+_escape_text
+_new_parse_method
+_script_literal
+_script_src
+_parse_compact_tagname
 
 
 
+#-----------------------------------------------------------------------------------------------------------
+
+HTML
+  # HTML parser
+    html_from_datoms
+    $html_from_datoms
+  # HTML generator
+    datoms_from_html
+    $datoms_from_html
+    tag
+    css
+    raw
+    script
+    text
+
+CUPOFHTML
+  new INTERTEXT.Cupofhtml { flatten: true, }
+  tag
+  css
+  raw
+  script
+  text
+
+
+###
 

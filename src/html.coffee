@@ -61,7 +61,7 @@ excluded_content_parts    = [ '', null, undefined, ]
   return R
 
 #-----------------------------------------------------------------------------------------------------------
-@parse_compact_tagname = ( compact_tagname ) ->
+@_parse_compact_tagname = ( compact_tagname ) ->
   { tagname
     attributes }  = ( compact_tagname.match /^(?<tagname>[^#.]*)(?<attributes>.*)$/ ).groups
   R               = {}
@@ -71,22 +71,22 @@ excluded_content_parts    = [ '', null, undefined, ]
     continue if attribute is ''
     avalue = attribute[ 1 .. ]
     unless avalue.length > 0
-      throw new Error "^intertext/parse_compact_tagname@1234^ illegal compact tag syntax in #{rpr compact_tagname}"
+      throw new Error "^intertext/_parse_compact_tagname@1234^ illegal compact tag syntax in #{rpr compact_tagname}"
     if attribute[ 0 ] is '#' then R.id = avalue
     else                          ( R.class ?= [] ).push avalue
   R.class = R.class.join ' ' if R.class?
   return R
 
 #-----------------------------------------------------------------------------------------------------------
-@dhtml = ( compact_tagname, attributes, content... ) ->
-  { start, content, end, } = @_dhtml compact_tagname, attributes, content
+@tag = ( compact_tagname, attributes, content... ) ->
+  { start, content, end, } = @_tag compact_tagname, attributes, content
   return [ start, content..., end, ] if end?
   return [ start, content..., ]
 
 #-----------------------------------------------------------------------------------------------------------
-@_dhtml = ( compact_tagname, attributes, content, settings ) ->
+@_tag = ( compact_tagname, attributes, content, settings ) ->
   validate.nonempty_text compact_tagname
-  { tagname, id, class: clasz, }  = @parse_compact_tagname compact_tagname
+  { tagname, id, class: clasz, }  = @_parse_compact_tagname compact_tagname
   validate.intertext_html_tagname tagname
   use_attributes                  = false
   processed_content               = []
@@ -130,20 +130,26 @@ excluded_content_parts    = [ '', null, undefined, ]
   return { start: start_tag, content: processed_content, end: end_tag, } if end_tag?
   return { start: start_tag, content: processed_content, }
 
-#-----------------------------------------------------------------------------------------------------------
-@datoms_as_nlhtml = ( ds... ) ->
-  R = ''
-  for d in ds.flat Infinity
-    html    = @_datom_as_html d
-    sigil   = d.$key[ 0 ]
-    tagname = d.$key[ 1 .. ]
-    R      += '\n' if sigil is '<' and isa._intertext_html_block_level_tagname tagname
-    R      += html
-    # R      += '\n' if
-  return R
+# #-----------------------------------------------------------------------------------------------------------
+# @datoms_as_nlhtml = ( ds... ) ->
+#   R = ''
+#   for d in ds.flat Infinity
+#     html    = @_datom_as_html d
+#     sigil   = d.$key[ 0 ]
+#     tagname = d.$key[ 1 .. ]
+#     R      += '\n' if sigil is '<' and isa._intertext_html_block_level_tagname tagname
+#     R      += html
+#     # R      += '\n' if
+#   return R
 
 #-----------------------------------------------------------------------------------------------------------
-@datoms_as_html = ( ds... ) -> return ( @_datom_as_html d for d in ds.flat Infinity ).join ''
+@html_from_datoms   = ( ds... ) -> return ( @_datom_as_html d for d in ds.flat Infinity ).join ''
+@$html_from_datoms  = ->
+  { $, } = ( require 'steampipes' ).export()
+  return $ ( d, send ) =>
+    return send @_datom_as_html d unless isa.list d
+    send x for x in @html_from_datoms d...
+    return null
 
 #-----------------------------------------------------------------------------------------------------------
 @_datom_as_html = ( d ) ->
@@ -182,19 +188,6 @@ excluded_content_parts    = [ '', null, undefined, ]
   return "<#{tagname}>#{slash}#{x_sys_key}" if atxt is ''
   return "<#{tagname}#{atxt}>#{x_sys_key}#{slash}"
 
-#-----------------------------------------------------------------------------------------------------------
-@$datom_as_html = ->
-  { $, } = ( require 'steampipes' ).export()
-  return $ ( d, send ) =>
-    send @_datom_as_html d
-    return null
-
-#-----------------------------------------------------------------------------------------------------------
-@$datoms_as_html = ->
-  { $, } = ( require 'steampipes' ).export()
-  return $ ( d, send ) =>
-    send @datoms_as_html d
-    return null
 
 
 #===========================================================================================================
@@ -257,6 +250,7 @@ excluded_content_parts    = [ '', null, undefined, ]
   R = "(#{f.toString()})();"
   return ( @raw R )[ 0 ]
 
+
 #===========================================================================================================
 # PARSING
 #-----------------------------------------------------------------------------------------------------------
@@ -266,7 +260,7 @@ excluded_content_parts    = [ '', null, undefined, ]
   ### NOTE strangely, throwing an error from inside the `data` handler seems to throw off the parser;
   even when both `parser.flushText()` and `parser.reset()` were called prior to throwing the error, all
   subsequent parsing calls will return empty lists. We therefore construct a new parser instance for
-  each call to `html_as_datoms()`. ###
+  each call to `datoms_from_html()`. ###
   R         = null
   parser    = new HtmlParser { preserveWS: true, }
   #.........................................................................................................
@@ -306,13 +300,13 @@ excluded_content_parts    = [ '', null, undefined, ]
     return R
 
 #-----------------------------------------------------------------------------------------------------------
-@html_as_datoms = ( html ) -> @_new_parse_method() html
+@datoms_from_html = ( html ) -> @_new_parse_method() html
 
 #-----------------------------------------------------------------------------------------------------------
-@$html_as_datoms = ->
+@$datoms_from_html = ->
   { $, } = ( require 'steampipes' ).export()
   return $ ( buffer_or_text, send ) =>
-    send d for d in @html_as_datoms buffer_or_text
+    send d for d in @datoms_from_html buffer_or_text
     return null
 
 

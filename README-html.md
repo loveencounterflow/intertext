@@ -6,18 +6,44 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-  - [General Considerations](#general-considerations)
-  - [HTML Parsing](#html-parsing)
-  - [HTML Generation](#html-generation)
-    - [HTML Generation from Datoms](#html-generation-from-datoms)
-    - [HTML Generation from Method Calls](#html-generation-from-method-calls)
-  - [Example: HTML Parsing and HTML Generation](#example-html-parsing-and-html-generation)
-  - [Remarks](#remarks)
-- [How's this different from CoffeeCup?](#hows-this-different-from-coffeecup)
-- [How's this different from Teacup?](#hows-this-different-from-teacup)
-- [Legacy](#legacy)
+- [API Overview](#api-overview)
+- [General Considerations](#general-considerations)
+- [HTML Parsing](#html-parsing)
+- [HTML Generation](#html-generation)
+  - [HTML Generation from Datoms](#html-generation-from-datoms)
+  - [HTML Generation from Method Calls](#html-generation-from-method-calls)
+- [Example: HTML Parsing and HTML Generation](#example-html-parsing-and-html-generation)
+- [Remarks](#remarks)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+
+### API Overview
+
+```
+INTERTEXT.HTML
+  # HTML parser
+    html_from_datoms
+    $html_from_datoms
+  # HTML generator
+    datoms_from_html
+    $datoms_from_html
+    tag
+    css
+    raw
+    script
+    text
+
+INTERTEXT.CUPOFHTML
+  new INTERTEXT.Cupofhtml { flatten: true, }
+  tag
+  css
+  raw
+  script
+  text
+```
+
+
 
 ### General Considerations
 
@@ -213,37 +239,4 @@ a future version.
 
 ### Remarks
 
-## How's this different from CoffeeCup?
 
-CoffeeCup is the currently maintained fork of CoffeeKup and is what we were using at Good Eggs before
-switching to Teacup. The problem with CoffeeCup is that it uses some eval magic to put the tag functions in
-scope. This magic breaks closure scope so you can't actually write templates using the functional constructs
-that you'd expect.
-
-## How's this different from Teacup?
-
-* Too old, CoffeeScript sections always preceded by CS v1 headers which are no longer needed
-
-* Needed compatibility with datoms, other methods in InterText HTML
-
-* Teacup uses first argument as short syntax for ID, CSS class when it looks like one, but as content when
-  it does not, so `div '.foo'` becomes `<div class=foo></div>` but `div 'foo'` becomes `<div>foo</div>`
-
-* Emits `<br />` with an extra space that [was deemed advisable for Netscape
-  4](https://stackoverflow.com/a/30880386/7568091) but should really be `<br/>` or `<br>`
-
-## Legacy
-
-```
-         Markaby
-            ⇓
-         CoffeeKup
-            ⇓
-   { CoffeeCup, DryKup, }
-            ⇓
-          Teacup
-            ⇓
-     CoffeNode-Teacup
-            ⇓
-         CupOfJoe
-```

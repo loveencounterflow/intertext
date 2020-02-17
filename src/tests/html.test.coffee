@@ -820,25 +820,23 @@ probes_and_matchers = [
 
 #-----------------------------------------------------------------------------------------------------------
 @[ "HTML Cupofhtml (1)" ] = ( T, done ) ->
-  # cupofjoe = new ( require 'cupofjoe' ).Cupofjoe { flatten: true, }
-  # { cram
-  #   expand } = cupofjoe.export()
   INTERTEXT                 = require '../..'
   HTML                      = INTERTEXT.HTML
   cupofhtml                 = new HTML.Cupofhtml()
   { isa
     type_of }               = INTERTEXT.types
   #.........................................................................................................
-  # debug '^3332^', ( k for k of cupofhtml )
   T.eq cupofhtml.settings.flatten, true
   T.ok isa.list cupofhtml.collector
   T.ok cupofhtml.target is cupofhtml.collector
   T.ok isa.function cupofhtml.cram
-  # T.ok isa.function cupofhtml.tag
-  # T.ok isa.function cupofhtml.css
-  # T.ok isa.function cupofhtml.script
-  # T.ok isa.function cupofhtml.raw
-  # T.ok isa.function cupofhtml.text
+  T.ok isa.function cupofhtml.expand
+  T.ok isa.asyncfunction cupofhtml.expand_async
+  T.ok isa.function cupofhtml.tag
+  T.ok isa.function cupofhtml.css
+  T.ok isa.function cupofhtml.script
+  T.ok isa.function cupofhtml.raw
+  T.ok isa.function cupofhtml.text
   #.........................................................................................................
   { cram
     expand
@@ -851,48 +849,50 @@ probes_and_matchers = [
   T.ok isa.function cram
   T.ok isa.function expand
   T.ok isa.asyncfunction expand_async
-  # T.ok isa.function tag
-  # T.ok isa.function raw
-  # T.ok isa.function text
-  # T.ok isa.function script
-  # T.ok isa.function css
+  T.ok isa.function tag
+  T.ok isa.function raw
+  T.ok isa.function text
+  T.ok isa.function script
+  T.ok isa.function css
   #.........................................................................................................
   done()
 
 #-----------------------------------------------------------------------------------------------------------
 @[ "HTML Cupofhtml (2)" ] = ( T, done ) ->
-  # cupofjoe = new ( require 'cupofjoe' ).Cupofjoe { flatten: true, }
-  # { cram
-  #   expand } = cupofjoe.export()
-  HTML                      = ( require '../..' ).HTML
+  INTERTEXT                 = require '../..'
+  { isa
+    type_of }               = INTERTEXT.types
+  HTML                      = INTERTEXT.HTML
   cupofhtml                 = new HTML.Cupofhtml()
   { cram
+    expand
+    expand_async
     tag
     raw
     text
     script
     css }                   = cupofhtml.export()
+  { datoms_from_html
+    html_from_datoms }      = HTML.export()
   #.........................................................................................................
-  h = ( tagname, content... ) ->
-    return cram content...      if ( not tagname? ) or ( tagname is 'text' )
-    return cram "<#{tagname}/>" if content.length is 0
-    return cram "<#{tagname}>", content..., "</#{tagname}>"
-  #.........................................................................................................
-  h 'paper', ->
-    h 'article', ->
-      h 'title', "Some Thoughts on Nested Data Structures"
-      h 'par', ->
-        h 'text',   "A interesting "
-        h 'em',     "fact"
-        h 'text',   " about CupOfJoe is that you "
-        h 'em',     "can"
-        h 'text',   " nest with both sequences and function calls."
-    h 'conclusion', ->
-      h 'text',   "With CupOfJoe, you don't need brackets."
-  html = expand().join '|'
-  info jr html
-  # info html
-  T.eq html, "<paper>|<article>|<title>|Some Thoughts on Nested Data Structures|</title>|<par>|A interesting |<em>|fact|</em>| about CupOfJoe is that you |<em>|can|</em>| nest with both sequences and function calls.|</par>|</article>|<conclusion>|With CupOfJoe, you don't need brackets.|</conclusion>|</paper>"
+  # debug '^33343^', ( k for k of cupofhtml )
+  # debug '^33343^', ( k for k of cupofhtml.export() )
+  tag 'paper', ->
+    tag 'article', ->
+      tag 'title', "Some Thoughts on Nested Data Structures"
+      tag 'par', ->
+        text        "An interesting "
+        tag   'em', "fact"
+        text        " about CupOfJoe is that you "
+        tag   'em', -> text "can"
+        tag  'strong', " nest", " with both sequences", " and function calls."
+    tag 'conclusion', ->
+      text  "With CupOfJoe, you don't need brackets."
+  datoms = expand()
+  html   = html_from_datoms datoms
+  info datoms
+  urge html
+  T.eq html, "<paper><article><title>Some Thoughts on Nested Data Structures</title><par>An interesting <em>fact</em> about CupOfJoe is that you <em>can</em><strong> nest with both sequences and function calls.</strong></par></article><conclusion>With CupOfJoe, you don't need brackets.</conclusion></paper>"
   #.........................................................................................................
   done() if done?
 
@@ -902,7 +902,8 @@ if module is require.main then do => # await do =>
   # debug ( k for k of ( require '../..' ).HTML ).sort().join ' '
   # await @_demo()
   # test @
-  test @[ "HTML Cupofhtml (1)" ]
+  # test @[ "HTML Cupofhtml (1)" ]
+  test @[ "HTML Cupofhtml (2)" ]
   # test @[ "HTML._parse_compact_tagname" ]
   # test @[ "HTML.tag" ]
   # test @[ "isa.intertext_html_tagname (2)" ]

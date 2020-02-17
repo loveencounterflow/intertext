@@ -135,7 +135,7 @@ excluded_content_parts    = [ '', null, undefined, ]
 # @datoms_as_nlhtml = ( ds... ) ->
 #   R = ''
 #   for d in ds.flat Infinity
-#     html    = @_datom_as_html d
+#     html    = @_html_from_datoms d
 #     sigil   = d.$key[ 0 ]
 #     tagname = d.$key[ 1 .. ]
 #     R      += '\n' if sigil is '<' and isa._intertext_html_block_level_tagname tagname
@@ -144,16 +144,17 @@ excluded_content_parts    = [ '', null, undefined, ]
 #   return R
 
 #-----------------------------------------------------------------------------------------------------------
-@html_from_datoms   = ( ds... ) -> return ( @_datom_as_html d for d in ds.flat Infinity ).join ''
+@html_from_datoms   = ( ds... ) -> return ( @_html_from_datoms d for d in ds.flat Infinity ).join ''
 @$html_from_datoms  = ->
   { $, } = ( require 'steampipes' ).export()
   return $ ( d, send ) =>
-    return send @_datom_as_html d unless isa.list d
+    return send @_html_from_datoms d unless isa.list d
     send x for x in @html_from_datoms d...
     return null
 
 #-----------------------------------------------------------------------------------------------------------
-@_datom_as_html = ( d ) ->
+@_html_from_datoms = ( d ) ->
+  return @_html_from_datoms ( @text d )[ 0 ] if isa.text d
   DATOM.types.validate.datom_datom d
   atxt          = ''
   sigil         = d.$key[ 0 ]
@@ -314,16 +315,27 @@ excluded_content_parts    = [ '', null, undefined, ]
 #===========================================================================================================
 # CUP OF HTML
 #-----------------------------------------------------------------------------------------------------------
-# MAIN = @
+MAIN      = @ ### TAINT won't work with configured instances of HTML ###
+CUPOFHTML = # @
+
+  #---------------------------------------------------------------------------------------------------------
+  tag: ( tagname, content... ) ->
+    return @cram content...      unless tagname?
+    ### TAINT allow extended syntax, attributes ###
+    return @cram new_datom "^#{tagname}" if content.length is 0
+    return @cram ( new_datom "<#{tagname}" ), content..., ( new_datom ">#{tagname}" )
+
+  #---------------------------------------------------------------------------------------------------------
+  text: ( text ) -> @cram MAIN.text text
+
 class @Cupofhtml extends Cupofjoe
-  # @include MAIN, { overwrite: false, }
+  @include CUPOFHTML, { overwrite: false, }
   # @extend MAIN, { overwrite: false, }
 
   #---------------------------------------------------------------------------------------------------------
   constructor: ( settings = null) ->
     super { { flatten: true, }..., settings..., }
     return @
-
 
 
 

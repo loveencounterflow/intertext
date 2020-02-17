@@ -36,6 +36,7 @@ types                     = require './types'
   type_of }               = types
 #...........................................................................................................
 HtmlParser                = require 'atlas-html-stream'
+{ Cupofjoe }              = require 'cupofjoe'
 assign                    = Object.assign
 excluded_content_parts    = [ '', null, undefined, ]
 
@@ -309,6 +310,19 @@ excluded_content_parts    = [ '', null, undefined, ]
     send d for d in @datoms_from_html buffer_or_text
     return null
 
+
+#===========================================================================================================
+# CUP OF HTML
+#-----------------------------------------------------------------------------------------------------------
+# MAIN = @
+class @Cupofhtml extends Cupofjoe
+  # @include MAIN, { overwrite: false, }
+  # @extend MAIN, { overwrite: false, }
+
+  #---------------------------------------------------------------------------------------------------------
+  constructor: ( settings = null) ->
+    super { { flatten: true, }..., settings..., }
+    return @
 
 
 

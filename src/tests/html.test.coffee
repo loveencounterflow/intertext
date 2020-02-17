@@ -818,13 +818,91 @@ probes_and_matchers = [
   done() if done?
   return null
 
+#-----------------------------------------------------------------------------------------------------------
+@[ "HTML Cupofhtml (1)" ] = ( T, done ) ->
+  # cupofjoe = new ( require 'cupofjoe' ).Cupofjoe { flatten: true, }
+  # { cram
+  #   expand } = cupofjoe.export()
+  INTERTEXT                 = require '../..'
+  HTML                      = INTERTEXT.HTML
+  cupofhtml                 = new HTML.Cupofhtml()
+  { isa
+    type_of }               = INTERTEXT.types
+  #.........................................................................................................
+  # debug '^3332^', ( k for k of cupofhtml )
+  T.eq cupofhtml.settings.flatten, true
+  T.ok isa.list cupofhtml.collector
+  T.ok cupofhtml.target is cupofhtml.collector
+  T.ok isa.function cupofhtml.cram
+  # T.ok isa.function cupofhtml.tag
+  # T.ok isa.function cupofhtml.css
+  # T.ok isa.function cupofhtml.script
+  # T.ok isa.function cupofhtml.raw
+  # T.ok isa.function cupofhtml.text
+  #.........................................................................................................
+  { cram
+    expand
+    expand_async
+    tag
+    raw
+    text
+    script
+    css }                   = cupofhtml.export()
+  T.ok isa.function cram
+  T.ok isa.function expand
+  T.ok isa.asyncfunction expand_async
+  # T.ok isa.function tag
+  # T.ok isa.function raw
+  # T.ok isa.function text
+  # T.ok isa.function script
+  # T.ok isa.function css
+  #.........................................................................................................
+  done()
+
+#-----------------------------------------------------------------------------------------------------------
+@[ "HTML Cupofhtml (2)" ] = ( T, done ) ->
+  # cupofjoe = new ( require 'cupofjoe' ).Cupofjoe { flatten: true, }
+  # { cram
+  #   expand } = cupofjoe.export()
+  HTML                      = ( require '../..' ).HTML
+  cupofhtml                 = new HTML.Cupofhtml()
+  { cram
+    tag
+    raw
+    text
+    script
+    css }                   = cupofhtml.export()
+  #.........................................................................................................
+  h = ( tagname, content... ) ->
+    return cram content...      if ( not tagname? ) or ( tagname is 'text' )
+    return cram "<#{tagname}/>" if content.length is 0
+    return cram "<#{tagname}>", content..., "</#{tagname}>"
+  #.........................................................................................................
+  h 'paper', ->
+    h 'article', ->
+      h 'title', "Some Thoughts on Nested Data Structures"
+      h 'par', ->
+        h 'text',   "A interesting "
+        h 'em',     "fact"
+        h 'text',   " about CupOfJoe is that you "
+        h 'em',     "can"
+        h 'text',   " nest with both sequences and function calls."
+    h 'conclusion', ->
+      h 'text',   "With CupOfJoe, you don't need brackets."
+  html = expand().join '|'
+  info jr html
+  # info html
+  T.eq html, "<paper>|<article>|<title>|Some Thoughts on Nested Data Structures|</title>|<par>|A interesting |<em>|fact|</em>| about CupOfJoe is that you |<em>|can|</em>| nest with both sequences and function calls.|</par>|</article>|<conclusion>|With CupOfJoe, you don't need brackets.|</conclusion>|</paper>"
+  #.........................................................................................................
+  done() if done?
+
 
 ############################################################################################################
 if module is require.main then do => # await do =>
-  debug ( k for k of ( require '../..' ).HTML ).sort().join ' '
+  # debug ( k for k of ( require '../..' ).HTML ).sort().join ' '
   # await @_demo()
-  test @
-  # test @[ "HTML.datoms_as_nlhtml (1)" ]
+  # test @
+  test @[ "HTML Cupofhtml (1)" ]
   # test @[ "HTML._parse_compact_tagname" ]
   # test @[ "HTML.tag" ]
   # test @[ "isa.intertext_html_tagname (2)" ]

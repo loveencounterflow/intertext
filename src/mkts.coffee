@@ -37,8 +37,8 @@ assign                    = Object.assign
 HTML                      = null
 
 #-----------------------------------------------------------------------------------------------------------
-@datom_as_html  = ( P... ) => ( HTML ?= ( require '..' ).HTML ).datom_as_html  P...
-@$datom_as_html = ( P... ) => ( HTML ?= ( require '..' ).HTML ).$datom_as_html P...
+@html_from_datoms  = ( P... ) => ( HTML ?= ( require '..' ).HTML ).html_from_datoms  P...
+@$html_from_datoms = ( P... ) => ( HTML ?= ( require '..' ).HTML ).$html_from_datoms P...
 
 
 #===========================================================================================================
@@ -88,7 +88,7 @@ HTML                      = null
   return datoms
 
 #-----------------------------------------------------------------------------------------------------------
-@html_as_datoms = ( text ) ->
+@datoms_from_html = ( text ) ->
   R         = []
   prv_idx   = 0
   prv_idx_1 = -1
@@ -110,7 +110,7 @@ HTML                      = null
     if idx_0 > prv_idx_1 + 1
       R.push new_datom '^text', { text: text[ prv_idx_1 + 1 ... idx_0 ].toString(), }
     break unless idx_0?
-    tags = @_analyze_mkts_compact_syntax HTML.html_as_datoms text[ idx_0 .. idx_1 ]
+    tags = @_analyze_mkts_compact_syntax HTML.datoms_from_html text[ idx_0 .. idx_1 ]
     if text[ idx_1 - 1 ] is '/'
       R.push d = lets tags[ 0 ], ( d ) -> d.$key = '^' + d.$key[ 1 .. ]
     else
@@ -124,10 +124,10 @@ HTML                      = null
   return R
 
 #-----------------------------------------------------------------------------------------------------------
-@$html_as_datoms = ->
+@$datoms_from_html = ->
   { $, } = ( require 'steampipes' ).export()
   return $ ( buffer_or_text, send ) =>
-    send d for d in @html_as_datoms buffer_or_text
+    send d for d in @datoms_from_html buffer_or_text
     return null
 
 

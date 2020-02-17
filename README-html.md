@@ -22,9 +22,11 @@
 
 ```
 INTERTEXT.HTML
+
   # HTML parser
     html_from_datoms
     $html_from_datoms
+
   # HTML generator
     datoms_from_html
     $datoms_from_html
@@ -33,14 +35,13 @@ INTERTEXT.HTML
     raw
     script
     text
-
-INTERTEXT.CUPOFHTML
-  new INTERTEXT.Cupofhtml { flatten: true, }
-  tag
-  css
-  raw
-  script
-  text
+    # CupOfJoe
+      new INTERTEXT.HTML.Cupofhtml { flatten: true, }
+        tag
+        css
+        raw
+        script
+        text
 ```
 
 

@@ -59,6 +59,33 @@ HTML                      = null
   return [ idx_0, idx_1, ]
 
 #-----------------------------------------------------------------------------------------------------------
+@_analyze_compact_tag_syntax = ( datoms ) ->
+  ###
+  compact syntax for HTMLish tags:
+
+  `<div#c432.foo.bar>...</div>` => `<div id=c432 class='foo bar'>...</div>`
+  `<p.noindent>...</p>` => `<p class=noindent>...</p>`
+
+  positional arguments (not yet implemented):
+  `<columns=2>` => `<columns count=2/>` => `<columns count=2></columns>` ?=> `<mkts-columns count=2></mkts-columns>`
+  `<multiply =2 =3>` (???)
+
+  NB Svelte uses capitalized names, allows self-closing tags(!): `<Mytag/>`
+
+  ###
+  HTML ?= ( require '..' ).HTML
+  for d, idx in datoms
+    sigil           = d.$key[ 0 ]
+    compact_tagname = d.$key[ 1 .. ]
+    p               = HTML._parse_compact_tagname compact_tagname
+    continue if ( p.tagname is compact_tagname ) and ( not p.id? ) and ( not p.class? )
+    datoms[ idx ]   = lets d, ( d ) ->
+      d.$key  = "#{sigil}#{p.tagname}"
+      d.id    = p.id    if p.id?
+      d.class = p.class if p.class?
+  return datoms
+
+#-----------------------------------------------------------------------------------------------------------
 @datoms_from_html = ( text ) ->
   R         = []
   prv_idx   = 0
@@ -81,7 +108,7 @@ HTML                      = null
     if idx_0 > prv_idx_1 + 1
       R.push new_datom '^text', { text: text[ prv_idx_1 + 1 ... idx_0 ].toString(), }
     break unless idx_0?
-    tags = HTML._analyze_compact_tag_syntax HTML.datoms_from_html text[ idx_0 .. idx_1 ]
+    tags = @_analyze_compact_tag_syntax HTML.datoms_from_html text[ idx_0 .. idx_1 ]
     if text[ idx_1 - 1 ] is '/'
       R.push d = lets tags[ 0 ], ( d ) -> d.$key = '^' + d.$key[ 1 .. ]
     else

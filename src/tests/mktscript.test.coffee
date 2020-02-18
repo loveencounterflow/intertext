@@ -57,8 +57,8 @@ INTERTEXT                 = require '../..'
 @[ "MKTS.datoms_from_html" ] = ( T, done ) ->
   probes_and_matchers = [
     ["line A<br/>line B",[{"text":"line A","$key":"^text"},{"$key":"^br"},{"text":"line B","$key":"^text"}],null]
-    ["<p>|here and|<br>",[{"$key":"<p"},{"text":"|here and|","$key":"^text"},{"$key":"<br"}],null]
-    ["|foo |<p>|here and|<br>|there|",[{"text":"|foo |","$key":"^text"},{"$key":"<p"},{"text":"|here and|","$key":"^text"},{"$key":"<br"},{"text":"|there|","$key":"^text"}],null]
+    ["<p>|here and|<br>",[{"$key":"<p"},{"text":"|here and|","$key":"^text"},{"$key":"^br"}],null]
+    ["|foo |<p>|here and|<br>|there|",[{"text":"|foo |","$key":"^text"},{"$key":"<p"},{"text":"|here and|","$key":"^text"},{"$key":"^br"},{"text":"|there|","$key":"^text"}],null]
     ["< >",[{"message":"Syntax error: whitespace not allowed here: \"< >\"","type":"mkts-syntax-html","source":"< >","$key":"~error"}],null]
     ["< x >",[{"message":"Syntax error: whitespace not allowed here: \"< x >\"","type":"mkts-syntax-html","source":"< x >","$key":"~error"}],null]
     ["<>",[{"message":"Syntax error: closing bracket too close to opening bracket: \"<>\"","type":"mkts-syntax-html","source":"<>","$key":"~error"}],null]
@@ -183,7 +183,7 @@ INTERTEXT                 = require '../..'
     and <em>more and more human</em>:<br>\n\nwhen she had come within a few yards of it, she saw that it \
     had eyes and a nose and mouth; and when she\nhad come close to it, she saw clearly that it was \
     <name ref=hd556>HUMPTY DUMPTY</name> himself. ‘It can’t\nbe anybody else!’ she said to herself.\
-    <br></br>\n\n‘I’m as certain of it, as if his name were written all over his face.’\n"
+    <br>\n\n‘I’m as certain of it, as if his name were written all over his face.’\n"
   #.........................................................................................................
   done()
   return null

@@ -34,9 +34,9 @@
     "cupofjoe": "0.0.4",
     "datom": "^3.0.1",
     "hyphenopoly": "^4.0.0",
-    "intertype": "^3.1.1",
+    "intertype": "^3.1.2",
     "linebreak": "^1.0.2",
-    "multimix": "^2.1.4",
+    "multimix": "^2.1.6",
     "steampipes": "^5.2.0"
   },
   "devDependencies": {

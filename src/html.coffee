@@ -313,23 +313,44 @@ excluded_content_parts    = [ '', null, undefined, ]
 
 
 #===========================================================================================================
+# COMPACT TAG SYNTAX
+#-----------------------------------------------------------------------------------------------------------
+@_analyze_compact_tag_syntax = ( datoms ) ->
+  ###
+  compact syntax for HTMLish tags:
+
+  `<div#c432.foo.bar>...</div>` => `<div id=c432 class='foo bar'>...</div>`
+  `<p.noindent>...</p>` => `<p class=noindent>...</p>`
+
+  positional arguments (not yet implemented):
+  `<columns=2>` => `<columns count=2/>` => `<columns count=2></columns>` ?=> `<mkts-columns count=2></mkts-columns>`
+  `<multiply =2 =3>` (???)
+
+  NB Svelte uses capitalized names, allows self-closing tags(!): `<Mytag/>`
+
+  ###
+  for d, idx in datoms
+    { $key, attributes, } = ( d.$key.match /^(?<$key>[^#.]+)(?<attributes>.*)$/ ).groups
+    continue if attributes is ''
+    update = { $key, }
+    for attribute in attributes.split /([#.][^#.]+)/
+      continue if attribute is ''
+      avalue          = attribute[ 1 .. ]
+      if attribute[ 0 ] is '#' then update.id = avalue
+      else                          ( update.class ?= [] ).push avalue
+    # debug '^3388^', attributes
+    update.class = update.class.join ' ' if update.class?
+    datoms[ idx ] = lets d, ( d ) -> assign d, update
+  return datoms
+
+
+#===========================================================================================================
 # CUP OF HTML
 #-----------------------------------------------------------------------------------------------------------
-MAIN      = @ ### TAINT won't work with configured instances of HTML ###
-CUPOFHTML = # @
-
-  #---------------------------------------------------------------------------------------------------------
-  tag: ( tagname, content... ) ->
-    return @cram content...      unless tagname?
-    ### TAINT allow extended syntax, attributes ###
-    return @cram new_datom "^#{tagname}" if content.length is 0
-    return @cram ( new_datom "<#{tagname}" ), content..., ( new_datom ">#{tagname}" )
-
-  #---------------------------------------------------------------------------------------------------------
-  text: ( text ) -> @cram MAIN.text text
+MAIN = @ ### TAINT won't work with configured instances of HTML ###
 
 class @Cupofhtml extends Cupofjoe
-  @include CUPOFHTML, { overwrite: false, }
+  # @include CUPOFHTML, { overwrite: false, }
   # @extend MAIN, { overwrite: false, }
 
   #---------------------------------------------------------------------------------------------------------

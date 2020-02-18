@@ -850,8 +850,8 @@ probes_and_matchers = [
   T.ok isa.function expand
   T.ok isa.asyncfunction expand_async
   T.ok isa.function tag
-  T.ok isa.function raw
   T.ok isa.function text
+  T.ok isa.function raw
   T.ok isa.function script
   T.ok isa.function css
   #.........................................................................................................
@@ -878,21 +878,28 @@ probes_and_matchers = [
   # debug '^33343^', ( k for k of cupofhtml )
   # debug '^33343^', ( k for k of cupofhtml.export() )
   tag 'paper', ->
+    css     './styles.css'
+    script  './awesome.js'
+    script ->
+      console.log "pretty darn cool"
     tag 'article', ->
       tag 'title', "Some Thoughts on Nested Data Structures"
-      tag 'par', ->
+      tag 'p', ->
         text        "An interesting "
         tag   'em', "fact"
         text        " about CupOfJoe is that you "
         tag   'em', -> text "can"
         tag  'strong', " nest", " with both sequences", " and function calls."
+      tag 'p', ->
+        text "Text is escaped before output: <&>, "
+        raw  "but can also be included literally with `raw`: <&>."
     tag 'conclusion', ->
       text  "With CupOfJoe, you don't need brackets."
   datoms = expand()
   html   = html_from_datoms datoms
   info datoms
-  urge html
-  T.eq html, "<paper><article><title>Some Thoughts on Nested Data Structures</title><par>An interesting <em>fact</em> about CupOfJoe is that you <em>can</em><strong> nest with both sequences and function calls.</strong></par></article><conclusion>With CupOfJoe, you don't need brackets.</conclusion></paper>"
+  urge jr html
+  T.eq html, "<paper><link href=./styles.css rel=stylesheet><script src=./awesome.js></script><script>(function() {\n        return console.log(\"pretty darn cool\");\n      })();</script><article><title>Some Thoughts on Nested Data Structures</title><p>An interesting <em>fact</em> about CupOfJoe is that you <em>can</em><strong> nest with both sequences and function calls.</strong></p><p>Text is escaped before output: &lt;&amp;&gt;, but can also be included literally with `raw`: <&>.</p></article><conclusion>With CupOfJoe, you don't need brackets.</conclusion></paper>"
   #.........................................................................................................
   done() if done?
 
@@ -901,65 +908,7 @@ probes_and_matchers = [
 if module is require.main then do => # await do =>
   # debug ( k for k of ( require '../..' ).HTML ).sort().join ' '
   # await @_demo()
-  # test @
+  test @
   # test @[ "HTML Cupofhtml (1)" ]
-  test @[ "HTML Cupofhtml (2)" ]
+  # test @[ "HTML Cupofhtml (2)" ]
   # test @[ "HTML._parse_compact_tagname" ]
-  # test @[ "HTML.tag" ]
-  # test @[ "isa.intertext_html_tagname (2)" ]
-  # test @[ "HTML.datoms_from_html (2)" ]
-  # @[ "HTML tag writer" ]()
-  # test @[ "HTML specials" ]
-  # @[ "_HTML demo (layout)" ]()
-  # @[ "《现代常用独体字规范》" ]()
-  # { tag
-  #   datoms_from_html
-  #   $datoms_from_html
-  #   html_from_datoms
-  #   raw
-  #   text
-  #   script
-  #   css }                   = ( require '../..' ).HTML.export()
-  # info datoms_from_html "<p>one<p>two"
-  help 'ok'
-
-###
-
-_as_attribute_literal
-_as_iife
-_datom_as_html
-_dhtml
-_escape_text
-_new_parse_method
-_script_literal
-_script_src
-_parse_compact_tagname
-
-
-
-#-----------------------------------------------------------------------------------------------------------
-
-HTML
-  # HTML parser
-    html_from_datoms
-    $html_from_datoms
-  # HTML generator
-    datoms_from_html
-    $datoms_from_html
-    tag
-    css
-    raw
-    script
-    text
-
-CUPOFHTML
-  new INTERTEXT.Cupofhtml { flatten: true, }
-  tag
-  css
-  raw
-  script
-  text
-
-
-###
-

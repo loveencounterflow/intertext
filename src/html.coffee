@@ -337,6 +337,18 @@ class @Cupofhtml extends Cupofjoe
     super { { flatten: true, }..., settings..., }
     return @
 
+  #---------------------------------------------------------------------------------------------------------
+  tag: ( tagname, content... ) ->
+    return @cram content...      unless tagname?
+    ### TAINT allow extended syntax, attributes ###
+    return @cram new_datom "^#{tagname}" if content.length is 0
+    return @cram ( new_datom "<#{tagname}" ), content..., ( new_datom ">#{tagname}" )
+
+  #---------------------------------------------------------------------------------------------------------
+  text:     ( P... ) -> @cram MAIN.text     P...
+  raw:      ( P... ) -> @cram MAIN.raw      P...
+  script:   ( P... ) -> @cram MAIN.script   P...
+  css:      ( P... ) -> @cram MAIN.css      P...
 
 
 

@@ -17,6 +17,7 @@ jr                        = JSON.stringify
 Intertype                 = ( require 'intertype' ).Intertype
 intertype                 = new Intertype module.exports
 L                         = @
+PATTERNS                  = require './_patterns'
 
 #-----------------------------------------------------------------------------------------------------------
 @declare 'intertext_shy',
@@ -141,37 +142,10 @@ regex_cid_ranges =
 #===========================================================================================================
 # HTML
 #-----------------------------------------------------------------------------------------------------------
-### thx to https://www.w3.org/TR/xml ###
-tagname_head_pattern = ///
-  a-z
-  A-Z
-  :_
-  \xc0-\xd6
-  \xd8-\xf6
-  \u00f8-\u02ff
-  \u0370-\u037d
-  \u037f-\u1fff
-  \u200c-\u200d
-  \u2070-\u218f
-  \u2c00-\u2fef
-  \u3001-\ud7ff
-  \uf900-\ufdcf
-  \ufdf0-\ufffd
-  \u{10000}-\u{effff} ///u
-tagname_tail_pattern = ///
-  0-9
-  \.\x2d\xb7
-  \u0300-\u036f
-  \u203f-\u2040 ///u
-tagname_pattern = /// ^
-  [#{tagname_head_pattern.source}]
-  [#{tagname_head_pattern.source}#{tagname_tail_pattern.source}]* $ ///u ### must NOT set global flag ###
-
-#-----------------------------------------------------------------------------------------------------------
 @declare 'intertext_html_tagname',
   tests:
     "x is a text":                    ( x ) -> @isa.text x
-    "x matches tagname_pattern":      ( x ) -> tagname_pattern.test x
+    "x matches xmlname_re":           ( x ) -> PATTERNS.xmlname_re.test x
 
 #-----------------------------------------------------------------------------------------------------------
 @declare 'intertext_html_naked_attribute_value',
@@ -179,7 +153,7 @@ tagname_pattern = /// ^
   also see https://mothereff.in/unquoted-attributes,
   https://mathiasbynens.be/notes/unquoted-attribute-values ###
   tests:
-    "x is a text":                            ( x ) -> @isa.text x
+    "x is a text":                                ( x ) -> @isa.text x
     "x isa intertext_html_naked_attribute_text":  ( x ) -> @isa._intertext_html_naked_attribute_text x
 
 #-----------------------------------------------------------------------------------------------------------

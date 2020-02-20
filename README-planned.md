@@ -1,6 +1,10 @@
 
 ## InterText Planned Features
 
+* [ ] Integrate [TimeTunnel](https://github.com/loveencounterflow/timetunnel)
+
+* [ ] https://github.com/slevithan/xregexp (?)
+* [ ] PCRE, RE2 (???)
 
 * [ ] **InterText ?ANSI?** for colorizing console output.
 

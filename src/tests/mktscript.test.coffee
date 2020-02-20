@@ -51,6 +51,7 @@ INTERTEXT                 = require '../..'
 { MKTS, }                 = INTERTEXT
 
 
+
 #===========================================================================================================
 # TESTS
 #-----------------------------------------------------------------------------------------------------------
@@ -156,6 +157,46 @@ INTERTEXT                 = require '../..'
   done()
   return null
 
+#-----------------------------------------------------------------------------------------------------------
+@[ "__MKTS.datoms_from_html (SGML SHORTTAG syntax)" ] = ( T, done ) ->
+  provide_basic_parser.apply X = {}
+  urge X._parse_html "<foo><br>content</foo>"
+  urge X._parse_html "<foo#id.class>"
+  urge X._parse_html "</foo>"
+  urge X._parse_html "<tag>content</>"
+  urge X._parse_html "<tag#id>content</>"
+  urge X._parse_html "<tag/content/"
+  urge X._parse_html "Yellow is <zh/黃/ <py/huang2/ in Mandarin."
+  urge X._parse_html "Yellow is <zh/黃/> <py/huang2/> in Mandarin."
+  urge X._parse_html "Yellow is <zh/黃> <py/huang2> in Mandarin."
+  urge X._parse_html "China is big: <py|Zhongguo hen da.> in Mandarin."
+  urge X._parse_html "a<py|huang2>b"
+  urge X._parse_html "a<py|huang2 di4>b"
+  # probes_and_matchers = [
+  #   ["<tag#id>content</>",[{"message":"Syntax error: additional opening bracket: \"<tag a='<'>\"","type":"mkts-syntax-html","source":"<tag a='<'>","$key":"~error"}],null]
+  #   ["before<tag#id>content</>after",[{"message":"Syntax error: additional opening bracket: \"<tag a='<'>\"","type":"mkts-syntax-html","source":"<tag a='<'>","$key":"~error"}],null]
+  #   ]
+  # for [ probe, matcher, error, ] in probes_and_matchers
+  #   await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
+  #     # resolve MKTS.datoms_from_html probe
+  #     resolve ( require '../html' ).datoms_from_html probe
+  # #.........................................................................................................
+  done()
+  return null
+
+#-----------------------------------------------------------------------------------------------------------
+@[ "__MKTS.datoms_from_html (SGML NET syntax)" ] = ( T, done ) ->
+  probes_and_matchers = [
+    ["<tag#id/class/content/",[{"message":"Syntax error: additional opening bracket: \"<tag a='<'>\"","type":"mkts-syntax-html","source":"<tag a='<'>","$key":"~error"}],null]
+    ["before<tag#id/class/content/after",[{"message":"Syntax error: additional opening bracket: \"<tag a='<'>\"","type":"mkts-syntax-html","source":"<tag a='<'>","$key":"~error"}],null]
+    ]
+  for [ probe, matcher, error, ] in probes_and_matchers
+    await T.perform probe, matcher, error, -> return new Promise ( resolve, reject ) ->
+      resolve MKTS.datoms_from_html probe
+  #.........................................................................................................
+  done()
+  return null
+
 
 #===========================================================================================================
 # DEMOS
@@ -208,7 +249,9 @@ INTERTEXT                 = require '../..'
 ############################################################################################################
 if module is require.main then do => # await do =>
   # await @_demo()
-  await test @
+  # await test @
+  await test @[ "MKTS.datoms_from_html (SGML SHORTTAG syntax)" ]
+  await test @[ "MKTS.datoms_from_html (SGML NET syntax)" ]
   # await test @[ "MKTS.datoms_from_html" ]
   # await test @[ "MKTS.datoms_from_html (compact syntax)" ]
   # await test @[ "MKTS.$datoms_from_html" ]

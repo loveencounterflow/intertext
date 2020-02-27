@@ -3,6 +3,8 @@
 
 * [ ] Integrate [TimeTunnel](https://github.com/loveencounterflow/timetunnel)
 
+* [ ] Integrate [jzr](https://github.com/loveencounterflow/jzr), repurpose that package
+
 * [ ] https://github.com/slevithan/xregexp (?)
 * [ ] PCRE, RE2 (???)
 

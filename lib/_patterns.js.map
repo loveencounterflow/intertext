@@ -1,1 +1,13 @@
-undefined
+{
+  "version": 3,
+  "file": "_patterns.js",
+  "sourceRoot": "..",
+  "sources": [
+    "src/_patterns.coffee"
+  ],
+  "names": [],
+  "mappings": ";AACA;EAAA,aAAA;;EAIA,IAAC,CAAA,eAAD,GAAmB;;EAiBnB,IAAC,CAAA,eAAD,GAAmB;;EAMnB,IAAC,CAAA,gBAAD,GAAoB;;EAMpB,IAAC,CAAA,mBAAD,GAAuB,MAAA,CAAA,CAAA,EAAA,CAAA,CAClB,IAAC,CAAA,eAAe,CAAC,MADC,CAAA,EAAA,CAAA,CAElB,IAAC,CAAA,eAAe,CAAC,MAFC,CAAA,CAAA,CAEQ,IAAC,CAAA,eAAe,CAAC,MAFzB,CAAA,GAAA,CAAA,EAEwC,GAFxC;;EAIvB,IAAC,CAFgE,8BAEhE,wBAAD,GAA4B,MAAA,CAAA,CAAA,EAAA,CAAA,CACvB,IAAC,CAAA,eAAe,CAAC,MADM,CAAA,EAAA,CAAA,CAEvB,IAAC,CAAA,eAAe,CAAC,MAFM,CAAA,CAAA,CAEG,IAAC,CAAA,eAAe,CAAC,MAFpB,CAAA,EAAA,CAAA,EAEiC,GAFjC;;EAI5B,IAAC,CAF8D,8BAE9D,iBAAD,GAAqB,MAAA,CAAA,CAAA,CAAA,CAAA,CAChB,IAAC,CAAA,eAAe,CAAC,MADD,CAAA,EAAA,CAAA,CAEhB,IAAC,CAAA,eAAe,CAAC,MAFD,CAAA,CAAA,CAEU,IAAC,CAAA,eAAe,CAAC,MAF3B,CAAA,EAAA,CAAA,EAEwC,IAFxC;;EAIrB,IAAC,CAF+D,8BAE/D,yBAAD,GAA6B,MAAA,CAAA,CAAA,EAAA,CAAA,CACxB,IAAC,CAAA,eAAe,CAAC,MADO,CAAA,EAAA,CAAA,CAExB,IAAC,CAAA,eAAe,CAAC,MAFO,CAAA,CAAA,CAEE,IAAC,CAAA,gBAAgB,CAAC,MAFpB,CAAA,EAAA,CAAA,EAEiC,GAFjC;;EAI7B,IAAC,CAF+D,8BAE/D,kBAAD,GAAsB,MAAA,CAAA,CAAA,CAAA,CAAA,CACjB,IAAC,CAAA,eAAe,CAAC,MADA,CAAA,EAAA,CAAA,CAEjB,IAAC,CAAA,eAAe,CAAC,MAFA,CAAA,CAAA,CAES,IAAC,CAAA,gBAAgB,CAAC,MAF3B,CAAA,EAAA,CAAA,EAEwC,IAFxC;;EAE2C;AAnDjE",
+  "sourcesContent": [
+    "\n'use strict'\n\n\n### thx to https://www.w3.org/TR/xml ###\n@xmlname_re_head = ///\n  a-z\n  A-Z\n  :_\n  \\xc0-\\xd6\n  \\xd8-\\xf6\n  \\u00f8-\\u02ff\n  \\u0370-\\u037d\n  \\u037f-\\u1fff\n  \\u200c-\\u200d\n  \\u2070-\\u218f\n  \\u2c00-\\u2fef\n  \\u3001-\\ud7ff\n  \\uf900-\\ufdcf\n  \\ufdf0-\\ufffd\n  \\u{10000}-\\u{effff} ///u\n\n@xmlname_re_tail = ///\n  0-9\n  \\.\\x2d\\xb7\n  \\u0300-\\u036f\n  \\u203f-\\u2040 ///u\n\n@mktsname_re_tail = ///\n  0-9 \\x23\n  \\.\\x2d\\xb7\n  \\u0300-\\u036f\n  \\u203f-\\u2040 ///u\n\n@xmlname_re_anchored = /// ^\n  [#{@xmlname_re_head.source}]\n  [#{@xmlname_re_head.source}#{@xmlname_re_tail.source}]* $ ///u ### must NOT set global flag ###\n\n@xmlname_re_frontanchored = /// ^\n  [#{@xmlname_re_head.source}]\n  [#{@xmlname_re_head.source}#{@xmlname_re_tail.source}]* ///u ### must NOT set global flag ###\n\n@xmlname_re_sticky = ///\n  [#{@xmlname_re_head.source}]\n  [#{@xmlname_re_head.source}#{@xmlname_re_tail.source}]* ///uy ### must NOT set global flag ###\n\n@mktsname_re_frontanchored = /// ^\n  [#{@xmlname_re_head.source}]\n  [#{@xmlname_re_head.source}#{@mktsname_re_tail.source}]* ///u ### must NOT set global flag ###\n\n@mktsname_re_sticky = ///\n  [#{@xmlname_re_head.source}]\n  [#{@xmlname_re_head.source}#{@mktsname_re_tail.source}]* ///uy ### must NOT set global flag ###\n\n\n\n"
+  ]
+}

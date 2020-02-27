@@ -145,7 +145,7 @@ regex_cid_ranges =
 @declare 'intertext_html_tagname',
   tests:
     "x is a text":                    ( x ) -> @isa.text x
-    "x matches xmlname_re":           ( x ) -> PATTERNS.xmlname_re.test x
+    "x matches xmlname_re":           ( x ) -> PATTERNS.xmlname_re_anchored.test x
 
 #-----------------------------------------------------------------------------------------------------------
 @declare 'intertext_html_naked_attribute_value',

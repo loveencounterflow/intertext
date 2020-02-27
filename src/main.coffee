@@ -51,6 +51,10 @@ class Hyph extends Multimix
 class Slabs extends Multimix
   @include require './slabs'
 
+#-----------------------------------------------------------------------------------------------------------
+class Patterns extends Multimix
+  @include require './_patterns'
+
 
 
 #===========================================================================================================
@@ -64,10 +68,11 @@ class Intertext extends Multimix
   #---------------------------------------------------------------------------------------------------------
   constructor: ( target = null ) ->
     super()
-    @HTML   = new Html()
-    @MKTS   = new Mkts()
-    @HYPH   = new Hyph()
-    @SLABS  = new Slabs()
+    @HTML       = new Html()
+    @MKTS       = new Mkts()
+    @HYPH       = new Hyph()
+    @SLABS      = new Slabs()
+    @_PATTERNS  = new Patterns()
     @export target if target?
     return @
 

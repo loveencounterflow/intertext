@@ -1,3 +1,7 @@
+
+
+'use strict'
+
 ### thx to https://www.w3.org/TR/xml ###
 @xmlname_re_head = ///
   a-z

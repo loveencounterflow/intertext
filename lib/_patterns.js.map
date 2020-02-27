@@ -1,13 +1,1 @@
-{
-  "version": 3,
-  "file": "_patterns.js",
-  "sourceRoot": "..",
-  "sources": [
-    "src/_patterns.coffee"
-  ],
-  "names": [],
-  "mappings": ";AAAwC;EAAA;EACxC,IAAC,CAAA,eAAD,GAAmB;;EAgBnB,IAAC,CAAA,eAAD,GAAmB;;EAKnB,IAAC,CAAA,UAAD,GAAc,MAAA,CAAA,CAAA,EAAA,CAAA,CACT,IAAC,CAAA,eAAe,CAAC,MADR,CAAA,EAAA,CAAA,CAET,IAAC,CAAA,eAAe,CAAC,MAFR,CAAA,CAAA,CAEiB,IAAC,CAAA,eAAe,CAAC,MAFlC,CAAA,GAAA,CAAA,EAEiD,GAFjD;;EAEmD;AAxBzB",
-  "sourcesContent": [
-    "### thx to https://www.w3.org/TR/xml ###\n@xmlname_re_head = ///\n  a-z\n  A-Z\n  :_\n  \\xc0-\\xd6\n  \\xd8-\\xf6\n  \\u00f8-\\u02ff\n  \\u0370-\\u037d\n  \\u037f-\\u1fff\n  \\u200c-\\u200d\n  \\u2070-\\u218f\n  \\u2c00-\\u2fef\n  \\u3001-\\ud7ff\n  \\uf900-\\ufdcf\n  \\ufdf0-\\ufffd\n  \\u{10000}-\\u{effff} ///u\n@xmlname_re_tail = ///\n  0-9\n  \\.\\x2d\\xb7\n  \\u0300-\\u036f\n  \\u203f-\\u2040 ///u\n@xmlname_re = /// ^\n  [#{@xmlname_re_head.source}]\n  [#{@xmlname_re_head.source}#{@xmlname_re_tail.source}]* $ ///u ### must NOT set global flag ###\n\n"
-  ]
-}
+undefined

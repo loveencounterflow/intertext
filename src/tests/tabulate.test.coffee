@@ -105,7 +105,13 @@ types                     = ( require '../..' ).types
         { key: 2, value: "world", }
         { key: 2, value: "on\nmultiple\nlines", }
         ]
-      undefined ]
+      [ "┌──────────────┬──────────────┐"
+        "│ key          │ value        │"
+        "├──────────────┼──────────────┤"
+        "│ 1            │ helo         │"
+        "│ 2            │ world        │"
+        "│ 2            │ \"on\\nmultip… │"
+        "└──────────────┴──────────────┘" ] ]
     ]
   #.........................................................................................................
   for [ probe, matcher, error, ] in probes_and_matchers
@@ -113,8 +119,9 @@ types                     = ( require '../..' ).types
       pipeline = []
       pipeline.push probe
       pipeline.push TBL.$tabulate { multiline: false, }
-      pipeline.push $watch ( d ) -> echo d.text
-      pipeline.push $drain ( result ) -> resolve undefined # result
+      pipeline.push $ ( d, send ) -> send d.text
+      pipeline.push $watch ( d ) -> echo d
+      pipeline.push $drain ( result ) -> resolve result
       SP.pull pipeline...
   #.........................................................................................................
   done() if done?

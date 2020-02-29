@@ -69,14 +69,12 @@ _new_state = ( settings ) ->
   settings           ?=       {}
   S.width             =       settings[ 'width'       ] ? 12
   S.alignment         =       settings[ 'alignment'   ] ? 'left'
-  ###
-  process.stdout.columns
-  ###
   S.fit               =       settings[ 'fit'         ] ? null
   S.ellipsis          =       settings[ 'ellipsis'    ] ? '…'
   S.pad               =       settings[ 'pad'         ] ? ' '
   S.overflow          =       settings[ 'overflow'    ] ? 'show'
   S.alignment         =       settings[ 'alignment'   ] ? 'left'
+  S.multiline         =       settings[ 'multiline'   ] ? false
   #.........................................................................................................
   S.widths            = copy  settings[ 'widths'      ] ? []
   S.alignments        =       settings[ 'alignments'  ] ? []
@@ -140,7 +138,7 @@ $set_widths_etc = ( S ) ->
     unless S.keys?
       if      isa.list    data  then S.keys = ( idx for _, idx  in data )
       else if isa.object  data  then S.keys = ( key for key     of data )
-      else throw new Error "expected a list or a POD, got a #{CND.type_of data}"
+      else throw new Error "^intertext/tabulate/set_widths_etc@1^ expected a list or an object, got a #{CND.type_of data}"
     S.headings = S.keys if S.headings is true
     #...................................................................................................
     if S.widths?      then  S.widths[ idx ]      ?= S.width for idx in [ 0 ... S.keys.length ]
@@ -156,8 +154,10 @@ as_row = ( S, data, keys = null ) =>
   R = []
   if keys? then keys_and_idxs = ( [ key, idx, ] for key, idx in keys                  )
   else          keys_and_idxs = ( [ idx, idx, ] for      idx in [ 0 ... data.length ] )
+  unless S.multiline is false
+    throw new Error "^intertype/tabulate/as_row@2^ setting multiline #{rpr S.multiline} not supported"
   for [ key, idx, ] in keys_and_idxs
-    text      = as_text data[ key ]
+    text      = as_text S, data[ key ]
     width     = S.widths[ idx ]
     align     = S.alignments[ idx ]
     ellipsis  = S.ellipsis
@@ -280,7 +280,18 @@ boxes =
 # HELPERS
 #-----------------------------------------------------------------------------------------------------------
 $as_event = ( S ) -> $ ( data, send ) -> send new_datom '^data', { data, }
-as_text   = ( x ) -> if ( CND.isa_text x ) then x else rpr x
+
+#-----------------------------------------------------------------------------------------------------------
+as_text = ( S, x ) ->
+  switch type = type_of x
+    when 'text'
+      return    x if S.multiline
+      return    x unless ( x is '' ) or ( /\s/.test x )
+      return jr x
+    ### other types, number formatting go here ###
+  return rpr x
+
+#-----------------------------------------------------------------------------------------------------------
 copy      = ( x ) ->
   return Object.assign [], x if isa.list    x
   return Object.assign {}, x if isa.object  x

@@ -23,13 +23,6 @@ echo                      = CND.echo.bind CND
 #...........................................................................................................
 test                      = require 'guy-test'
 #...........................................................................................................
-SP                        = require 'steampipes'
-{ $
-  $async
-  $watch
-  $show
-  $drain }                = SP.export()
-#...........................................................................................................
 types                     = ( require '../..' ).types
 { isa
   validate
@@ -41,8 +34,36 @@ types                     = ( require '../..' ).types
 
 
 #-----------------------------------------------------------------------------------------------------------
+@_xxx_kw_demo = -> new Promise ( resolve ) =>
+  SP                        = require 'steampipes'
+  { $
+    $async
+    $watch
+    $show
+    $drain }                = SP.export()
+  TBL                       = ( require '../..' ).TBL
+  source                    = [ ( Array.from 'abcdefg' ), [ 1e6 .. 1e6 + 7 ], ]
+  #.........................................................................................................
+  pipeline = []
+  pipeline.push source
+  pipeline.push TBL.$tabulate()
+  pipeline.push $watch ( d ) -> echo d.text
+  pipeline.push $drain ( result ) -> resolve result
+  SP.pull pipeline...
+  resolve()
+  return null
+
+
+#-----------------------------------------------------------------------------------------------------------
 @demo = ( T, done ) -> new Promise ( resolve ) =>
-  TBL                 = require '../tabulate'
+  SP                        = require 'steampipes'
+  { $
+    $async
+    $watch
+    $show
+    $drain }                = SP.export()
+  #...........................................................................................................
+  TBL                 = ( require '../..' ).TBL
   probes_and_matchers = [
     [
       [ ( Array.from 'abcdefg' ), [ 1e6 .. 1e6 + 7 ], ]
@@ -73,6 +94,7 @@ types                     = ( require '../..' ).types
 
 ############################################################################################################
 if module is require.main then do =>
+  # await @_xxx_kw_demo()
   test @
   # test @[ "demo" ]
 

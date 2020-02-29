@@ -38,6 +38,7 @@
     "linebreak": "^1.0.2",
     "multimix": "^2.1.6",
     "steampipes": "^6.0.0",
+    "term-size": "^2.2.0",
     "to-width": "^1.0.3"
   },
   "devDependencies": {

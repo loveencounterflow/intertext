@@ -138,9 +138,9 @@ $set_widths_etc = ( S ) ->
     { data, } = d
     #...................................................................................................
     unless S.keys?
-      if      CND.isa_list data then S.keys = ( idx for _, idx in data )
-      else if CND.isa_pod data  then S.keys = ( key for key of data )
-      else return send.error new Error "expected a list or a POD, got a #{CND.type_of data}"
+      if      isa.list    data  then S.keys = ( idx for _, idx  in data )
+      else if isa.object  data  then S.keys = ( key for key     of data )
+      else throw new Error "expected a list or a POD, got a #{CND.type_of data}"
     S.headings = S.keys if S.headings is true
     #...................................................................................................
     if S.widths?      then  S.widths[ idx ]      ?= S.width for idx in [ 0 ... S.keys.length ]
@@ -282,8 +282,8 @@ boxes =
 $as_event = ( S ) -> $ ( data, send ) -> send new_datom '^data', { data, }
 as_text   = ( x ) -> if ( CND.isa_text x ) then x else rpr x
 copy      = ( x ) ->
-  return Object.assign [], x if CND.isa_list x
-  return Object.assign {}, x if CND.isa_pod  x
+  return Object.assign [], x if isa.list    x
+  return Object.assign {}, x if isa.object  x
   return x
 
 

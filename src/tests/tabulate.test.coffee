@@ -80,7 +80,7 @@ types                     = ( require '../..' ).types
     await T.perform probe, matcher, error, -> new Promise ( resolve ) ->
       pipeline = []
       pipeline.push probe
-      pipeline.push TBL.$tabulate()
+      pipeline.push TBL.$tabulate { width: 12, }
       pipeline.push $watch ( d ) -> echo d.text
       pipeline.push $drain ( result ) -> resolve result
       SP.pull pipeline...
@@ -103,15 +103,60 @@ types                     = ( require '../..' ).types
     [
       [ { key: 1, value: "helo", }
         { key: 2, value: "world", }
-        { key: 2, value: "on\nmultiple\nlines", }
+        { key: 3, value: "on\nmultiple\nlines", }
         ]
       [ "┌──────────────┬──────────────┐"
         "│ key          │ value        │"
         "├──────────────┼──────────────┤"
         "│ 1            │ helo         │"
         "│ 2            │ world        │"
-        "│ 2            │ \"on\\nmultip… │"
+        "│ 3            │ \"on\\nmultip… │"
         "└──────────────┴──────────────┘" ] ]
+    ]
+  #.........................................................................................................
+  for [ probe, matcher, error, ] in probes_and_matchers
+    await T.perform probe, matcher, error, -> new Promise ( resolve ) ->
+      pipeline = []
+      pipeline.push probe
+      pipeline.push TBL.$tabulate { multiline: false, width: 12, }
+      pipeline.push $ ( d, send ) -> send d.text
+      pipeline.push $watch ( d ) -> echo d
+      pipeline.push $drain ( result ) -> resolve result
+      SP.pull pipeline...
+  #.........................................................................................................
+  done() if done?
+  resolve()
+  return null
+
+#-----------------------------------------------------------------------------------------------------------
+@[ "demo: autowidth" ] = ( T, done ) -> new Promise ( resolve ) =>
+  SP                        = require 'steampipes'
+  { $
+    $async
+    $watch
+    $show
+    $drain }                = SP.export()
+  #...........................................................................................................
+  TBL                 = ( require '../..' ).TBL
+  probes_and_matchers = [
+    [
+      [ { key: 1, value: "helo", }
+        { key: 2, value: "world", }
+        { key: 3, value: "on\nmultiple\nlines", }
+        ]
+      null, ]
+    [
+      [ { key: 4, value: "helo",  extra: "other",         interesting: true, }
+        { key: 5, value: "world", extra: "stuff",         interesting: true, }
+        { key: 6, value: "!",     extra: "goes in here",  interesting: true, }
+        ]
+      null, ]
+    [
+      [ { key: 4, value: "helo",  extra: "other",         interesting: true, more: 4433, }
+        { key: 5, value: "world", extra: "stuff",         interesting: true, more: 3199, }
+        { key: 6, value: "!",     extra: "goes in here",  interesting: true, more: 1965, }
+        ]
+      null, ]
     ]
   #.........................................................................................................
   for [ probe, matcher, error, ] in probes_and_matchers
@@ -121,7 +166,7 @@ types                     = ( require '../..' ).types
       pipeline.push TBL.$tabulate { multiline: false, }
       pipeline.push $ ( d, send ) -> send d.text
       pipeline.push $watch ( d ) -> echo d
-      pipeline.push $drain ( result ) -> resolve result
+      pipeline.push $drain ( result ) -> resolve null
       SP.pull pipeline...
   #.........................................................................................................
   done() if done?

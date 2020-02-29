@@ -67,7 +67,7 @@ _new_state = ( settings ) ->
   # validate_keys "settings", "one or more out of", ( Object.keys settings ), keys_toplevel
   #.........................................................................................................
   settings           ?=       {}
-  S.width             =       settings[ 'width'       ] ? 12
+  S.width             =       settings[ 'width'       ] ? null
   S.alignment         =       settings[ 'alignment'   ] ? 'left'
   S.fit               =       settings[ 'fit'         ] ? null
   S.ellipsis          =       settings[ 'ellipsis'    ] ? '…'
@@ -140,6 +140,11 @@ $set_widths_etc = ( S ) ->
       else if isa.object  data  then S.keys = ( key for key     of data )
       else throw new Error "^intertext/tabulate/set_widths_etc@1^ expected a list or an object, got a #{CND.type_of data}"
     S.headings = S.keys if S.headings is true
+    #...................................................................................................
+    unless S.width?
+      { columns: terminal_width, } = ( require '..' ).get_terminal_size()
+      ### TAINT correction varies with border style ###
+      S.width = Math.max 10, ( Math.floor terminal_width / S.keys.length ) - 4
     #...................................................................................................
     if S.widths?      then  S.widths[ idx ]      ?= S.width for idx in [ 0 ... S.keys.length ]
     else                    S.widths              = ( S.width for key in S.keys )

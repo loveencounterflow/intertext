@@ -55,6 +55,10 @@ class Slabs extends Multimix
 class Patterns extends Multimix
   @include require './_patterns'
 
+#-----------------------------------------------------------------------------------------------------------
+class Tbl extends Multimix
+  @include require './tabulate'
+
 
 
 #===========================================================================================================
@@ -73,6 +77,7 @@ class Intertext extends Multimix
     @HYPH       = new Hyph()
     @SLABS      = new Slabs()
     @_PATTERNS  = new Patterns()
+    @TBL        = new Tbl()
     @export target if target?
     return @
 

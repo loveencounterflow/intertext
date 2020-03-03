@@ -173,6 +173,39 @@ types                     = ( require '../..' ).types
   resolve()
   return null
 
+#-----------------------------------------------------------------------------------------------------------
+@[ "widths" ] = ( T, done ) -> new Promise ( resolve ) =>
+  TBL                       = ( require '../..' ).TBL
+  SP                        = require 'steampipes'
+  { $
+    $async
+    $watch
+    $show
+    $drain }                = SP.export()
+  #...........................................................................................................
+  rows  = [
+    { key: 4, value: "helo",  extra: "other",         interesting: true, more: 4433, }
+    { key: 5, value: "world", extra: "stuff",         interesting: true, more: 3199, }
+    { key: 6, value: "!",     extra: "goes in here",  interesting: true, more: 1965, }
+    ]
+  settings =
+    # width:  7
+    widths: { key: 3, value: 7, extra: 15, }
+  #.........................................................................................................
+  doit = ->
+    pipeline = []
+    pipeline.push rows
+    pipeline.push TBL.$tabulate settings
+    pipeline.push $ ( d, send ) -> send d.text
+    pipeline.push $watch ( d ) -> echo d
+    pipeline.push $drain ( result ) -> resolve null
+    SP.pull pipeline...
+  #.........................................................................................................
+  await doit()
+  done() if done?
+  resolve()
+  return null
+
 
 
 

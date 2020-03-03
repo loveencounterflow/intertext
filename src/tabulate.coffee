@@ -171,7 +171,7 @@ as_row = ( S, data, keys = null, is_header = false ) =>
     align     = S.alignments[ idx ]
     ellipsis  = S.ellipsis
     text      = to_width text, width, { align, ellipsis, }
-    text      = S.format text, { value, is_header, key, idx, } if S.format?
+    text      = S.format text, { value, row: data, is_header, key, idx, } if S.format?
     R.push text
   #.......................................................................................................
   return S.box.left + ( R.join S.box.center ) + S.box.right

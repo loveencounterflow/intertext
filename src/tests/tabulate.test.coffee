@@ -140,34 +140,36 @@ types                     = ( require '../..' ).types
   TBL                 = ( require '../..' ).TBL
   probes_and_matchers = [
     [
-      [ { key: 1, value: 123456789, }
-        { key: 2, value: null, }
-        { key: 3, value: "some text", }
-        { key: 3, value: true, }
-        { key: 3, value: false, }
+      [ { key: 1, type: 'normal',     value: 123456789, }
+        { key: 2, type: 'normal',     value: null, }
+        { key: 3, type: 'underline',  value: "some text", }
+        { key: 4, type: 'normal',     value: true, }
+        { key: 5, type: 'normal',     value: false, }
         ]
-      [ "┌────────────┬────────────┐",
-        "│\u001b[38;05;255m\u001b[7m\u001b[1mkey         \u001b[22m\u001b[27m\u001b[0m│\u001b[38;05;255m\u001b[7m\u001b[1mvalue       \u001b[22m\u001b[27m\u001b[0m│",
-        "├────────────┼────────────┤",
-        "│\u001b[38;05;34m\u001b[7m1           \u001b[27m\u001b[0m│\u001b[38;05;34m123456789   \u001b[0m│",
-        "│\u001b[38;05;34m\u001b[7m2           \u001b[27m\u001b[0m│\u001b[38;05;67m●           \u001b[0m│",
-        "│\u001b[38;05;34m\u001b[7m3           \u001b[27m\u001b[0m│\u001b[38;05;27msome text   \u001b[0m│",
-        "│\u001b[38;05;34m\u001b[7m3           \u001b[27m\u001b[0m│\u001b[38;05;226mtrue        \u001b[0m│",
-        "│\u001b[38;05;34m\u001b[7m3           \u001b[27m\u001b[0m│\u001b[38;05;226mfalse       \u001b[0m│",
-        "└────────────┴────────────┘"]
+      [ "┌────────────┬────────────┬────────────┐",
+        "│\u001b[38;05;255m\u001b[7m\u001b[1mkey         \u001b[22m\u001b[27m\u001b[0m│\u001b[38;05;255m\u001b[7m\u001b[1mtype        \u001b[22m\u001b[27m\u001b[0m│\u001b[38;05;255m\u001b[7m\u001b[1mvalue       \u001b[22m\u001b[27m\u001b[0m│",
+        "├────────────┼────────────┼────────────┤",
+        "│\u001b[38;05;34m1           \u001b[0m│\u001b[38;05;27mnormal      \u001b[0m│\u001b[38;05;34m123456789   \u001b[0m│",
+        "│\u001b[38;05;34m2           \u001b[0m│\u001b[38;05;27mnormal      \u001b[0m│\u001b[38;05;199m●           \u001b[0m│",
+        "│\u001b[4m\u001b[38;05;34m3           \u001b[0m\u001b[24m│\u001b[4m\u001b[38;05;27munderline   \u001b[0m\u001b[24m│\u001b[4m\u001b[38;05;27msome text   \u001b[0m\u001b[24m│",
+        "│\u001b[38;05;34m4           \u001b[0m│\u001b[38;05;27mnormal      \u001b[0m│\u001b[38;05;226mtrue        \u001b[0m│",
+        "│\u001b[38;05;34m5           \u001b[0m│\u001b[38;05;27mnormal      \u001b[0m│\u001b[38;05;226mfalse       \u001b[0m│",
+        "└────────────┴────────────┴────────────┘"]
       ]
     ]
   #.........................................................................................................
-  colorize = ( cell_txt, { value, is_header, key, idx, } ) =>
-    return CND.white CND.reverse CND.bold cell_txt if is_header
-    color = switch type_of value
-      when 'boolean'  then  CND.yellow
-      when 'text'     then  CND.blue
-      when 'number'   then  CND.green
-      when 'null'     then  CND.steel
-      else                  CND.white
-    return color cell_txt unless idx is 0
-    return color CND.reverse cell_txt
+  colorize = ( cell_txt, { value, row, is_header, key, idx, } ) =>
+    if is_header
+      R = CND.white CND.reverse CND.bold cell_txt
+    else
+      switch type_of value
+        when 'boolean'  then  R = CND.yellow  cell_txt
+        when 'text'     then  R = CND.blue    cell_txt
+        when 'number'   then  R = CND.green   cell_txt
+        when 'null'     then  R = CND.pink    cell_txt
+        else                  R = CND.white   cell_txt
+      R = CND.underline R if row.type is 'underline'
+    return R
   #.........................................................................................................
   for [ probe, matcher, error, ] in probes_and_matchers
     await T.perform probe, matcher, error, -> new Promise ( resolve ) ->
@@ -381,11 +383,11 @@ types                     = ( require '../..' ).types
 ############################################################################################################
 if module is require.main then do =>
   # await @_xxx_kw_demo()
-  test @
+  # test @
   # test @[ "demo" ]
   # test @[ "multiline text" ]
   # test @[ "text representation" ]
-  # test @[ "format callback" ]
+  test @[ "format callback" ]
   # for cid in [ 0 .. 32 ]
   #   debug ( cid.toString 16 ).padStart 4, '0'
 

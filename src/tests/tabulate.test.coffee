@@ -67,13 +67,13 @@ types                     = ( require '../..' ).types
   probes_and_matchers = [
     [
       [ ( Array.from 'abcdefg' ), [ 1e6 .. 1e6 + 7 ], ]
-      [ {"text":"┌──────────────┬──────────────┬──────────────┬──────────────┬──────────────┬──────────────┬──────────────┐","$key":"^table"},
-        {"text":"│ 0            │ 1            │ 2            │ 3            │ 4            │ 5            │ 6            │","$key":"^table"},
-        {"text":"├──────────────┼──────────────┼──────────────┼──────────────┼──────────────┼──────────────┼──────────────┤","$key":"^table"},
-        {"text":"│ a            │ b            │ c            │ d            │ e            │ f            │ g            │","$key":"^table"},
-        {"text":"│ 1000000      │ 1000001      │ 1000002      │ 1000003      │ 1000004      │ 1000005      │ 1000006      │","$key":"^table"},
-        {"text":"└──────────────┴──────────────┴──────────────┴──────────────┴──────────────┴──────────────┴──────────────┘","$key":"^table"},
-        ], ]
+      [ {"text":"┌────────────┬────────────┬────────────┬────────────┬────────────┬────────────┬────────────┐","$key":"^table"},
+        {"text":"│0           │1           │2           │3           │4           │5           │6           │","$key":"^table"},
+        {"text":"├────────────┼────────────┼────────────┼────────────┼────────────┼────────────┼────────────┤","$key":"^table"},
+        {"text":"│a           │b           │c           │d           │e           │f           │g           │","$key":"^table"},
+        {"text":"│1000000     │1000001     │1000002     │1000003     │1000004     │1000005     │1000006     │","$key":"^table"},
+        {"text":"└────────────┴────────────┴────────────┴────────────┴────────────┴────────────┴────────────┘","$key":"^table"}]
+      ]
     ]
   #.........................................................................................................
   for [ probe, matcher, error, ] in probes_and_matchers
@@ -105,13 +105,13 @@ types                     = ( require '../..' ).types
         { key: 2, value: "world", }
         { key: 3, value: "on\nmultiple\nlines", }
         ]
-      [ "┌──────────────┬──────────────┐"
-        "│ key          │ value        │"
-        "├──────────────┼──────────────┤"
-        "│ 1            │ helo         │"
-        "│ 2            │ world        │"
-        "│ 3            │ on⏎multiple… │"
-        "└──────────────┴──────────────┘" ] ]
+      [ "┌────────────┬────────────┐",
+        "│key         │value       │",
+        "├────────────┼────────────┤",
+        "│1           │helo        │",
+        "│2           │world       │",
+        "│3           │on⏎multiple…│",
+        "└────────────┴────────────┘" ], ]
     ]
   #.........................................................................................................
   for [ probe, matcher, error, ] in probes_and_matchers
@@ -119,6 +119,61 @@ types                     = ( require '../..' ).types
       pipeline = []
       pipeline.push probe
       pipeline.push TBL.$tabulate { multiline: false, width: 12, }
+      pipeline.push $ ( d, send ) -> send d.text
+      pipeline.push $watch ( d ) -> echo d
+      pipeline.push $drain ( result ) -> resolve result
+      SP.pull pipeline...
+  #.........................................................................................................
+  done() if done?
+  resolve()
+  return null
+
+#-----------------------------------------------------------------------------------------------------------
+@[ "format callback" ] = ( T, done ) -> new Promise ( resolve ) =>
+  SP                        = require 'steampipes'
+  { $
+    $async
+    $watch
+    $show
+    $drain }                = SP.export()
+  #...........................................................................................................
+  TBL                 = ( require '../..' ).TBL
+  probes_and_matchers = [
+    [
+      [ { key: 1, value: 123456789, }
+        { key: 2, value: null, }
+        { key: 3, value: "some text", }
+        { key: 3, value: true, }
+        { key: 3, value: false, }
+        ]
+      [ "┌────────────┬────────────┐",
+        "│\u001b[38;05;255m\u001b[7m\u001b[1mkey         \u001b[22m\u001b[27m\u001b[0m│\u001b[38;05;255m\u001b[7m\u001b[1mvalue       \u001b[22m\u001b[27m\u001b[0m│",
+        "├────────────┼────────────┤",
+        "│\u001b[38;05;34m\u001b[7m1           \u001b[27m\u001b[0m│\u001b[38;05;34m123456789   \u001b[0m│",
+        "│\u001b[38;05;34m\u001b[7m2           \u001b[27m\u001b[0m│\u001b[38;05;67m●           \u001b[0m│",
+        "│\u001b[38;05;34m\u001b[7m3           \u001b[27m\u001b[0m│\u001b[38;05;27msome text   \u001b[0m│",
+        "│\u001b[38;05;34m\u001b[7m3           \u001b[27m\u001b[0m│\u001b[38;05;226mtrue        \u001b[0m│",
+        "│\u001b[38;05;34m\u001b[7m3           \u001b[27m\u001b[0m│\u001b[38;05;226mfalse       \u001b[0m│",
+        "└────────────┴────────────┘"]
+      ]
+    ]
+  #.........................................................................................................
+  colorize = ( cell_txt, { value, is_header, key, idx, } ) =>
+    return CND.white CND.reverse CND.bold cell_txt if is_header
+    color = switch type_of value
+      when 'boolean'  then  CND.yellow
+      when 'text'     then  CND.blue
+      when 'number'   then  CND.green
+      when 'null'     then  CND.steel
+      else                  CND.white
+    return color cell_txt unless idx is 0
+    return color CND.reverse cell_txt
+  #.........................................................................................................
+  for [ probe, matcher, error, ] in probes_and_matchers
+    await T.perform probe, matcher, error, -> new Promise ( resolve ) ->
+      pipeline = []
+      pipeline.push probe
+      pipeline.push TBL.$tabulate { width: 12, format: colorize, }
       pipeline.push $ ( d, send ) -> send d.text
       pipeline.push $watch ( d ) -> echo d
       pipeline.push $drain ( result ) -> resolve result
@@ -259,49 +314,50 @@ types                     = ( require '../..' ).types
     ]
   #.........................................................................................................
   matcher = [
-    "┌──────────────┬──────────────┐",
-    "│ description  │ sample       │",
-    "├──────────────┼──────────────┤",
-    "│ U+0000       │ x␀x          │",
-    "│ U+0001       │ x␁x          │",
-    "│ U+0002       │ x␂x          │",
-    "│ U+0003       │ x␃x          │",
-    "│ U+0004       │ x␄x          │",
-    "│ U+0005       │ x␅x          │",
-    "│ U+0006       │ x␆x          │",
-    "│ U+0007       │ x␇x          │",
-    "│ U+0008       │ x␈x          │",
-    "│ U+0009       │ x␉x          │",
-    "│ U+000a       │ x⏎x          │",
-    "│ U+000b       │ x␋x          │",
-    "│ U+000c       │ x␌x          │",
-    "│ U+000d       │ x␍x          │",
-    "│ U+000e       │ x␎x          │",
-    "│ U+000f       │ x␏x          │",
-    "│ U+0010       │ x␐x          │",
-    "│ U+0011       │ x␑x          │",
-    "│ U+0012       │ x␒x          │",
-    "│ U+0013       │ x␓x          │",
-    "│ U+0014       │ x␔x          │",
-    "│ U+0015       │ x␕x          │",
-    "│ U+0016       │ x␖x          │",
-    "│ U+0017       │ x␗x          │",
-    "│ U+0018       │ x␘x          │",
-    "│ U+0019       │ x␙x          │",
-    "│ U+001a       │ x␚x          │",
-    "│ U+001b       │ x␛x          │",
-    "│ U+001c       │ x␜x          │",
-    "│ U+001d       │ x␝x          │",
-    "│ U+001e       │ x␞x          │",
-    "│ U+001f       │ x␟x          │",
-    "│ U+0020       │ x x          │",
-    "│ newline      │ x⏎x          │",
-    "│ empty text   │ ''           │",
-    "│ undefined    │ ○            │",
-    "│ null         │ ●            │",
-    "│ notanumber   │ NaN          │",
-    "│ lime         │ \u001b[38;05;118mLime\u001b[0m         │",
-    "└──────────────┴──────────────┘"]
+    "┌────────────┬────────────┐",
+    "│description │sample      │",
+    "├────────────┼────────────┤",
+    "│U+0000      │x␀x         │",
+    "│U+0001      │x␁x         │",
+    "│U+0002      │x␂x         │",
+    "│U+0003      │x␃x         │",
+    "│U+0004      │x␄x         │",
+    "│U+0005      │x␅x         │",
+    "│U+0006      │x␆x         │",
+    "│U+0007      │x␇x         │",
+    "│U+0008      │x␈x         │",
+    "│U+0009      │x␉x         │",
+    "│U+000a      │x⏎x         │",
+    "│U+000b      │x␋x         │",
+    "│U+000c      │x␌x         │",
+    "│U+000d      │x␍x         │",
+    "│U+000e      │x␎x         │",
+    "│U+000f      │x␏x         │",
+    "│U+0010      │x␐x         │",
+    "│U+0011      │x␑x         │",
+    "│U+0012      │x␒x         │",
+    "│U+0013      │x␓x         │",
+    "│U+0014      │x␔x         │",
+    "│U+0015      │x␕x         │",
+    "│U+0016      │x␖x         │",
+    "│U+0017      │x␗x         │",
+    "│U+0018      │x␘x         │",
+    "│U+0019      │x␙x         │",
+    "│U+001a      │x␚x         │",
+    "│U+001b      │x␛x         │",
+    "│U+001c      │x␜x         │",
+    "│U+001d      │x␝x         │",
+    "│U+001e      │x␞x         │",
+    "│U+001f      │x␟x         │",
+    "│U+0020      │x x         │",
+    "│newline     │x⏎x         │",
+    "│empty text  │''          │",
+    "│undefined   │○           │",
+    "│null        │●           │",
+    "│notanumber  │NaN         │",
+    "│lime        │\u001b[38;05;118mLime\u001b[0m        │",
+    "└────────────┴────────────┘"
+    ]
   #.........................................................................................................
   result = null
   await do => new Promise ( resolve ) =>
@@ -310,10 +366,11 @@ types                     = ( require '../..' ).types
     pipeline.push TBL.$tabulate { width: 12, }
     pipeline.push $ ( d, send ) -> send d.text
     pipeline.push $watch ( d ) -> echo d
-    pipeline.push $drain ( result_ ) -> urge jr result_; result = result_; resolve()
+    pipeline.push $drain ( result_ ) -> result = result_; resolve()
     SP.pull pipeline...
   #.........................................................................................................
   T.eq result, matcher
+  # urge jr result
   done() if done?
   resolve()
   return null
@@ -326,6 +383,9 @@ if module is require.main then do =>
   # await @_xxx_kw_demo()
   test @
   # test @[ "demo" ]
+  # test @[ "multiline text" ]
+  # test @[ "text representation" ]
+  # test @[ "format callback" ]
   # for cid in [ 0 .. 32 ]
   #   debug ( cid.toString 16 ).padStart 4, '0'
 

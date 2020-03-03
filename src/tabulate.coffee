@@ -71,10 +71,11 @@ _new_state = ( settings ) ->
   S.alignment         =       settings[ 'alignment'   ] ? 'left'
   S.fit               =       settings[ 'fit'         ] ? null
   S.ellipsis          =       settings[ 'ellipsis'    ] ? '…'
-  S.pad               =       settings[ 'pad'         ] ? ' '
+  S.pad               =       settings[ 'pad'         ] ? ''
   S.overflow          =       settings[ 'overflow'    ] ? 'show'
   S.alignment         =       settings[ 'alignment'   ] ? 'left'
   S.multiline         =       settings[ 'multiline'   ] ? false
+  S.format            =       settings[ 'format'      ] ? null
   #.........................................................................................................
   S.widths            = copy  settings[ 'widths'      ] ? []
   S.alignments        =       settings[ 'alignments'  ] ? []
@@ -97,6 +98,8 @@ _new_state = ( settings ) ->
   ### TAINT use intertype ###
   # validate_keys "alignment", "one of", [ S.alignment, ], values_alignment
   # validate_keys "overflow",  "one of", [ S.overflow,  ], values_overflow
+  if settings.format? and ( type = type_of settings.format ) isnt 'function'
+    throw new Error "expected function for format, got a #{type}"
   #.........................................................................................................
   if S.overflow isnt 'show' then throw new Error "setting 'overflow' not yet supported"
   if S.fit?                 then throw new Error "setting 'fit' not yet supported"
@@ -155,18 +158,21 @@ $set_widths_etc = ( S ) ->
     return send d
 
 #-----------------------------------------------------------------------------------------------------------
-as_row = ( S, data, keys = null ) =>
-  R = []
+as_row = ( S, data, keys = null, is_header = false ) =>
+  R           = []
   if keys? then keys_and_idxs = ( [ key, idx, ] for key, idx in keys                  )
   else          keys_and_idxs = ( [ idx, idx, ] for      idx in [ 0 ... data.length ] )
   unless S.multiline is false
     throw new Error "^intertype/tabulate/as_row@2^ setting multiline #{rpr S.multiline} not supported"
   for [ key, idx, ] in keys_and_idxs
-    text      = as_text S, data[ key ]
+    value     = data[ key ]
+    text      = as_text S, value
     width     = S.widths[ idx ]
     align     = S.alignments[ idx ]
     ellipsis  = S.ellipsis
-    R.push to_width text, width, { align, ellipsis, }
+    text      = to_width text, width, { align, ellipsis, }
+    text      = S.format text, { value, is_header, key, idx, } if S.format?
+    R.push text
   #.......................................................................................................
   return S.box.left + ( R.join S.box.center ) + S.box.right
 
@@ -175,7 +181,8 @@ $as_row = ( S ) ->
   return $ ( d, send ) ->
     return send d unless select d, '^data'
     { data, } = d
-    text      = as_row S, d.data, S.keys
+    text      = as_row S, data, S.keys, false
+    is_header = false
     return send new_datom '^table', { text, }
     send d
 
@@ -235,8 +242,8 @@ $dividers_top = ( S ) ->
     send new_datom '^table', { text: ( get_divider S, 'top' ), }
     #.......................................................................................................
     unless S.headings in [ null, false, ]
-      send new_datom '^table', { text: ( as_row       S, S.headings ), }
-      send new_datom '^table', { text: ( get_divider  S, 'heading'  ), }
+      send new_datom '^table', { text: ( as_row       S, S.headings, null, true ), }
+      send new_datom '^table', { text: ( get_divider  S, 'heading'              ), }
     #.......................................................................................................
     send d
 

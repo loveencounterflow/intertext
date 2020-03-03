@@ -288,13 +288,25 @@ $as_event = ( S ) -> $ ( data, send ) -> send new_datom '^data', { data, }
 
 #-----------------------------------------------------------------------------------------------------------
 as_text = ( S, x ) ->
-  switch type = type_of x
-    when 'text'
-      return    x if S.multiline
-      return    x unless ( x is '' ) or ( /\s/.test x )
-      return jr x
-    ### other types, number formatting go here ###
-  return rpr x
+  return '○'        if x is undefined
+  return '●'        if x is null
+  return "''"       if x is ''
+  type = type_of x
+  return 'NaN'      if type is 'nan'
+  return rpr x      if type is 'infinity'
+  return jr x       if type in [ 'object', 'list', 'number', ]
+  return jr x unless type is 'text'
+  x = x.replace /\n/g, '⏎'
+  x = x.replace /[\x00-\x1a\x1c-\x1f]/g, ( $0 ) -> String.fromCodePoint ( $0.codePointAt 0 ) + 0x2400
+  x = x.replace /\x1b(?!\[)/g, '␛'
+  return x
+  # switch
+  #   when 'text'
+  #     return    x if S.multiline
+  #     return jr x
+  #     return    x unless ( x is '' ) or ( /\s/.test x )
+  #   ### other types, number formatting go here ###
+  # return rpr x
 
 #-----------------------------------------------------------------------------------------------------------
 copy      = ( x ) ->

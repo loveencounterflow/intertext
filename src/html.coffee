@@ -131,18 +131,6 @@ excluded_content_parts    = [ '', null, undefined, ]
   return { start: start_tag, content: processed_content, end: end_tag, } if end_tag?
   return { start: start_tag, content: processed_content, }
 
-# #-----------------------------------------------------------------------------------------------------------
-# @datoms_as_nlhtml = ( ds... ) ->
-#   R = ''
-#   for d in ds.flat Infinity
-#     html    = @_html_from_datoms d
-#     sigil   = d.$key[ 0 ]
-#     tagname = d.$key[ 1 .. ]
-#     R      += '\n' if sigil is '<' and isa._intertext_html_block_level_tagname tagname
-#     R      += html
-#     # R      += '\n' if
-#   return R
-
 #-----------------------------------------------------------------------------------------------------------
 @html_from_datoms   = ( ds... ) -> return ( @_html_from_datoms d for d in ds.flat Infinity ).join ''
 @$html_from_datoms  = ->
@@ -256,50 +244,6 @@ excluded_content_parts    = [ '', null, undefined, ]
 #===========================================================================================================
 # PARSING
 #-----------------------------------------------------------------------------------------------------------
-# @new_parse_method = ( settings ) ->
-#   validate.parse_html_settings settings = { types.defaults.parse_html_settings..., settings..., }
-@_new_parse_method = ( settings ) ->
-  ### NOTE strangely, throwing an error from inside the `data` handler seems to throw off the parser;
-  even when both `parser.flushText()` and `parser.reset()` were called prior to throwing the error, all
-  subsequent parsing calls will return empty lists. We therefore construct a new parser instance for
-  each call to `datoms_from_html()`. ###
-  R         = null
-  parser    = new HtmlParser { preserveWS: true, }
-  #.........................................................................................................
-  parser.on 'data', ( { name, data, text, } ) =>
-    name = name.toLowerCase() if name?
-    #.......................................................................................................
-    if name is '!doctype'
-      $value = 'html'
-      for key of data
-        $value = key
-        break
-      return R.push new_datom '^doctype', $value
-    #.......................................................................................................
-    return R.push new_datom '^text', { text, } if text?
-    is_empty_tag = isa._intertext_html_empty_element_tagname name
-    # debug '^7787^', { name, data, text, is_empty_tag, }
-    unless data?
-      return if is_empty_tag
-        # throw new Error "^intertext/_new_parse_method@6069^ found closing tag, but HTML5 <#{name}> is an empty tag"
-      return R.push new_datom '>' + name
-    has_keys = false
-    for key, value of data
-      has_keys    = true
-      data[ key ] = true if value is ''
-    sigil = if is_empty_tag then '^' else '<'
-    return R.push new_datom sigil + name unless has_keys
-    return R.push new_datom sigil + name, data
-  parser.on 'error', ( error ) -> throw error
-  # parser.on 'end', -> R.push new_datom '^stop'
-  #.........................................................................................................
-  return ( html ) =>
-    # urge '^7787^', jr html
-    R = []
-    parser.write html
-    parser.flushText()
-    # parser.reset()      # call if parser is to be reused
-    return R
 
 #-----------------------------------------------------------------------------------------------------------
 @datoms_from_html = ( html ) -> @_new_parse_method() html

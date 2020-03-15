@@ -44,6 +44,10 @@
   [#{@xmlname_re_head.source}]
   [#{@xmlname_re_head.source}#{@xmlname_re_tail.source}]* ///uy ### must NOT set global flag ###
 
+@xmlname_re = ///
+  [#{@xmlname_re_head.source}]
+  [#{@xmlname_re_head.source}#{@xmlname_re_tail.source}]* ///u ### must NOT set global flag ###
+
 @mktsname_re_frontanchored = /// ^
   [#{@xmlname_re_head.source}]
   [#{@xmlname_re_head.source}#{@mktsname_re_tail.source}]* ///u ### must NOT set global flag ###
@@ -51,6 +55,10 @@
 @mktsname_re_sticky = ///
   [#{@xmlname_re_head.source}]
   [#{@xmlname_re_head.source}#{@mktsname_re_tail.source}]* ///uy ### must NOT set global flag ###
+
+@mktsname_re = ///
+  [#{@xmlname_re_head.source}]
+  [#{@xmlname_re_head.source}#{@mktsname_re_tail.source}]* ///u ### must NOT set global flag ###
 
 
 

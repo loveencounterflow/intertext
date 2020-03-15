@@ -67,8 +67,25 @@ INTERTEXT.HTML
   > `param`, `source`, `track`, `wbr`. This list is fixed for now, but may conceivably become configurable
   > in the future.
 
+* InterText HTML uses the most generous definition of an XML name, ever. It basically allows anything except
+  those few characters that would definitely mess with the rest of the grammar, so tags like `<123>`,
+  `<foo:bar#baz.gnu bro:go=42>` are totally OK. Consumers are advised to do their own checking to narrow
+  down available choices or interpret special constructs, as the case may be. A valid InterText HTML name is
+  any sequence of one or more characters, excluding only
+  * whitespace,
+  * brackets (`{[(<>)]}`),
+  * question and exclamation marks (`!?`),
+  * slashes (`/`),
+  * equal signs (`=`),
+  * and quotes (`'` and `"`).
 
-
+* Special constructs are not further analyzed ATM; this includes
+  * Doctypes (e.g. `<!DOCTYPE html>`),
+  * XML declarations (e.g. `<?xml foo bar?>`),
+  * Processing Instructions (e.g. `<?what ever?>`).
+  Observe that tag-like constructs that start with `<?` (left pointy bracket, question mark) but end with a
+  plain `>` (right pointy bracket) not preceded by a `?` (question mark) are considered ungrammatical (they
+  are be allowed in SGML, though).
 
 ### HTML Parsing
 

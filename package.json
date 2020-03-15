@@ -30,6 +30,7 @@
   "homepage": "https://github.com/loveencounterflow/intertext#readme",
   "dependencies": {
     "atlas-html-stream": "^1.2.0",
+    "chevrotain": "^6.5.0",
     "cnd": "^5.3.0",
     "cupofjoe": "0.0.4",
     "datom": "^3.0.1",

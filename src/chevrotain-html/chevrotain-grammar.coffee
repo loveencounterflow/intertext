@@ -29,7 +29,7 @@ PARSER                    = require './chevrotain-parser'
   start     = token.startOffset
   stop      = token.endOffset + 1
   name      = token.tokenType?.name ? '???'
-  return freeze { $key: '^token', name, text, start, stop, }
+  return { name, text, start, stop, }
 
 #-----------------------------------------------------------------------------------------------------------
 @_errors_from_parsification = ( parsification ) ->

@@ -95,25 +95,30 @@ PARSER                    = require './chevrotain-parser'
   indent = '  '.repeat level
   #.........................................................................................................
   unless tree.children?
-    switch type = tree.tokenType.name
-      when 'o_text', 'stm_text'
-        yield lets ( @distill_token tree ), ( d ) -> d.$key = '^text'; delete d.name
-      when 'stm_slash2'
-        yield lets ( @distill_token tree ), ( d ) -> d.$key = '>tag'; d.type = 'nctag'; delete d.name
-      when 'o_comment'
-        yield lets ( @distill_token tree ), ( d ) -> d.$key = '^COMMENT'; delete d.name
-      when 'o_pi'
-        yield lets ( @distill_token tree ), ( d ) -> d.$key = '^PI'; delete d.name
+    type        = tree.tokenType.name
+    { name
+      text
+      start
+      stop }    = @distill_token tree
+    token_name  = name
+    #.......................................................................................................
+    switch type
+      when 'o_text', 'stm_text' then  yield freeze { $key: '^text',    text, start, stop,                 }
+      when 'stm_slash2'         then  yield freeze { $key: '>tag',     text, start, stop, type: 'ztag',   }
+      when 'o_comment'          then  yield freeze { $key: '^COMMENT', text, start, stop, escaped: true,  }
+      when 'o_doctype'          then  yield freeze { $key: '^DOCTYPE', text, start, stop, escaped: true,  }
+      when 'o_pi'               then  yield freeze { $key: '^PI',      text, start, stop, escaped: true,  }
       when 'o_cdata'
-        d = @distill_token tree
-        start = d.start + 9
-        stop  = d.stop  - 3
-        text  = source[ start ... stop ]
-        yield lets d, ( d ) -> d.$key = '<CDATA'; delete d.name; d.stop = start; d.text = source[ d.start ... d.stop ]
-        yield { $key: '^text', text, start, stop, }
-        yield lets d, ( d ) -> d.$key = '>CDATA'; delete d.name; d.start = stop; d.text = source[ d.start ... d.stop ]
+        start1 = start + 9
+        stop1  = stop  - 3
+        text0   = source[ start   ... start1  ]
+        text1   = source[ start1  ... stop1   ]
+        text2   = source[ stop1   ... stop    ]
+        yield freeze { $key: '<CDATA',  text: text0,  start: start,   stop: start1, }
+        yield freeze { $key: '^text',   text: text1,  start: start1,  stop: stop1,  }
+        yield freeze { $key: '>CDATA',  text: text2,  start: stop1,   stop: stop,   }
       else
-        yield @distill_token tree
+        yield freeze { $key: '^other', name: token_name, text, start, stop, }
     return null
   #.........................................................................................................
   { start
@@ -135,17 +140,16 @@ PARSER                    = require './chevrotain-parser'
           k         = atr.children.i_name[ 0 ].image
           v         = atr.children.v_value?[ 0 ]?.image ? true
           atrs[ k ] = v
-        yield { $key: '<tag', name, type, text, start, stop, atrs, }
+        yield freeze { $key: '<tag', name, text, start, stop, type, atrs, }
       else
-        yield { $key: '<tag', name, type, text, start, stop, }
+        yield freeze { $key: '<tag', name, text, start, stop, type, }
     when 'ctag'
       name = tree.children.i_name[ 0 ].image
-      yield { $key: '>tag', name, type, text, start, stop, }
+      yield freeze { $key: '>tag', name, text, start, stop, type, }
     else
-      yield { $key: "^unknown", type, text, start, stop, } unless type is 'document'
+      yield freeze { $key: "^unknown", text, start, stop, type, } unless type is 'document'
       for key, tokens of tree.children
         for token in tokens
-          # yield { $key: '^xxx', text, start, stop, $stamped: true, }
           yield from @_extract_tokens source, token, level + 1
   return null
 

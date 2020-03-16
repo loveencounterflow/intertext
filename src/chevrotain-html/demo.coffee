@@ -172,6 +172,13 @@ if module is require.main then do =>
   @parse "&amp;"
   @parse "<tag a='<'>"
   @parse """BEFORE <NTAG/STM_TEXT/ AFTER"""
+  @parse """bare value: <t a=v>"""
+  @parse """bare value: <t a=v'w>"""
+  @parse """bare value: <t a=v"w>"""
+  @parse """squot value: <t a='v'>"""
+  @parse """dquot value: <t a="v">"""
+  @parse """squot value: <t a='"v"'>"""
+  @parse """dquot value: <t a="'v'">"""
 
 
 

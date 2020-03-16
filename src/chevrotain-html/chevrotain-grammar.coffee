@@ -23,6 +23,20 @@ PARSER                    = require './chevrotain-parser'
   freeze }                = ( new ( require 'datom' ).Datom { dirty: false, } ).export()
 { isa }                   = require '../types'
 
+
+#===========================================================================================================
+#
+#-----------------------------------------------------------------------------------------------------------
+value_from_atr = ( atr ) ->
+  ### Return unquoted value of attribute as returned in CST; return `true` when empty string. ###
+  return true unless ( R = atr.children.v_value?[ 0 ]?.image )
+  return R[ 1 ... R.length - 1 ] if ( R.startsWith '"' ) and ( R.endsWith '"' )
+  return R[ 1 ... R.length - 1 ] if ( R.startsWith "'" ) and ( R.endsWith "'" )
+  return R
+
+
+#===========================================================================================================
+#
 #-----------------------------------------------------------------------------------------------------------
 @distill_token = ( token ) ->
   text      = token.image
@@ -138,7 +152,7 @@ PARSER                    = require './chevrotain-parser'
         # debug '^33412-3^', jr tree.children.attributes[ 0 ].children.attribute
         for atr in tree.children.attributes[ 0 ].children.attribute
           k         = atr.children.i_name[ 0 ].image
-          v         = atr.children.v_value?[ 0 ]?.image ? true
+          v         = value_from_atr atr
           atrs[ k ] = v
         yield freeze { $key: '<tag', name, text, start, stop, type, atrs, }
       else

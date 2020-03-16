@@ -35,10 +35,12 @@ types                     = require './types'
   # is_happy
   type_of }               = types
 #...........................................................................................................
-HtmlParser                = require 'atlas-html-stream'
 { Cupofjoe }              = require 'cupofjoe'
 assign                    = Object.assign
 excluded_content_parts    = [ '', null, undefined, ]
+LEXER                     = require './chevrotain-html/chevrotain-lexer'
+PARSER                    = require './chevrotain-html/chevrotain-parser'
+GRAMMAR                   = require './chevrotain-html/chevrotain-grammar'
 
 
 #===========================================================================================================
@@ -244,9 +246,20 @@ excluded_content_parts    = [ '', null, undefined, ]
 #===========================================================================================================
 # PARSING
 #-----------------------------------------------------------------------------------------------------------
-
-#-----------------------------------------------------------------------------------------------------------
-@datoms_from_html = ( html ) -> @_new_parse_method() html
+@datoms_from_html = ( html, settings ) ->
+  defaults      = { lexer_mode: 'outside_mode', parser_start: 'document', }
+  settings      = { defaults..., settings..., }
+  tokenization  = LEXER.tokenize html, settings.lexer_mode
+  parsification = PARSER.parse tokenization, settings.parser_start
+  R             =
+    source:         html
+    cst:            parsification.cst
+    lexer_mode:     settings.lexer_mode
+    parser_start:   settings.parser_start
+    errors:
+      lexer:          tokenization.errors
+      parser:         parsification.errors
+  return GRAMMAR.extract_tokens R
 
 #-----------------------------------------------------------------------------------------------------------
 @$datoms_from_html = ->

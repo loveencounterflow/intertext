@@ -321,19 +321,19 @@ test                      = require 'guy-test'
   INTERTEXT                 = require '../..'
   { HTML, }                 = INTERTEXT
   probes_and_matchers = [
-    ["<!DOCTYPE html>",[{"$value":"html","$key":"^doctype"}],null]
-    ["<!DOCTYPE obvious>",[{"$value":"obvious","$key":"^doctype"}],null]
-    ["<p contenteditable>",[{"contenteditable":true,"$key":"<p"}],null]
-    ["<img width=200>",[{"width":"200","$key":"^img"}],null]
-    ["<foo/>",[{"$key":"<foo"},{"$key":">foo"}],null]
-    ["<foo></foo>",[{"$key":"<foo"},{"$key":">foo"}],null]
-    ["<p>here and<br></br>there</p>",[{"$key":"<p"},{"text":"here and","$key":"^text"},{"$key":"^br"},{"text":"there","$key":"^text"},{"$key":">p"}],null]
-    ["<p>here and<br>there",[{"$key":"<p"},{"text":"here and","$key":"^text"},{"$key":"^br"},{"text":"there","$key":"^text"}],null]
-    ["<p>here and<br>there</p>",[{"$key":"<p"},{"text":"here and","$key":"^text"},{"$key":"^br"},{"text":"there","$key":"^text"},{"$key":">p"}],null]
-    ["<p>here and<br x=42/>there</p>",[{"$key":"<p"},{"text":"here and","$key":"^text"},{"x":"42","$key":"^br"},{"text":"there","$key":"^text"},{"$key":">p"}],null]
-    ["<p>here and<br/>there</p>",[{"$key":"<p"},{"text":"here and","$key":"^text"},{"$key":"^br"},{"text":"there","$key":"^text"},{"$key":">p"}],null]
-    ["just some plain text",[{"$key":"^text","text":"just some plain text"},],null]
-    ["<p>one<p>two",[{"$key":"<p"},{"text":"one","$key":"^text"},{"$key":"<p"},{"text":"two","$key":"^text"}],null]
+    ["<!DOCTYPE html>",[{"$key":"^report","source":"<!DOCTYPE html>","errors":[]},{"$key":"^token","name":"o_doctype","text":"<!DOCTYPE html>","start":0,"stop":15}],null]
+    ["<!DOCTYPE obvious>",[{"$key":"^report","source":"<!DOCTYPE obvious>","errors":[]},{"$key":"^token","name":"o_doctype","text":"<!DOCTYPE obvious>","start":0,"stop":18}],null]
+    ["<p contenteditable>",[{"$key":"^report","source":"<p contenteditable>","errors":[]},{"$key":"<tag","name":"p","type":"otag","text":"<p contenteditable>","start":0,"stop":19,"atrs":{"contenteditable":true}}],null]
+    ["<img width=200>",[{"$key":"^report","source":"<img width=200>","errors":[]},{"$key":"<tag","name":"img","type":"otag","text":"<img width=200>","start":0,"stop":15,"atrs":{"width":"200"}}],null]
+    ["<foo/>",[{"$key":"^report","source":"<foo/>","errors":[]},{"$key":"<tag","name":"foo","type":"stag","text":"<foo/>","start":0,"stop":6}],null]
+    ["<foo></foo>",[{"$key":"^report","source":"<foo></foo>","errors":[]},{"$key":"<tag","name":"foo","type":"otag","text":"<foo>","start":0,"stop":5},{"$key":">tag","name":"foo","type":"ctag","text":"</foo>","start":5,"stop":11}],null]
+    ["<p>here and<br></br>there</p>",[{"$key":"^report","source":"<p>here and<br></br>there</p>","errors":[]},{"$key":"<tag","name":"p","type":"otag","text":"<p>","start":0,"stop":3},{"$key":"^text","text":"here and","start":3,"stop":11},{"$key":"<tag","name":"br","type":"otag","text":"<br>","start":11,"stop":15},{"$key":">tag","name":"br","type":"ctag","text":"</br>","start":15,"stop":20},{"$key":"^text","text":"there","start":20,"stop":25},{"$key":">tag","name":"p","type":"ctag","text":"</p>","start":25,"stop":29}],null]
+    ["<p>here and<br>there",[{"$key":"^report","source":"<p>here and<br>there","errors":[]},{"$key":"<tag","name":"p","type":"otag","text":"<p>","start":0,"stop":3},{"$key":"^text","text":"here and","start":3,"stop":11},{"$key":"<tag","name":"br","type":"otag","text":"<br>","start":11,"stop":15},{"$key":"^text","text":"there","start":15,"stop":20}],null]
+    ["<p>here and<br>there</p>",[{"$key":"^report","source":"<p>here and<br>there</p>","errors":[]},{"$key":"<tag","name":"p","type":"otag","text":"<p>","start":0,"stop":3},{"$key":"^text","text":"here and","start":3,"stop":11},{"$key":"<tag","name":"br","type":"otag","text":"<br>","start":11,"stop":15},{"$key":"^text","text":"there","start":15,"stop":20},{"$key":">tag","name":"p","type":"ctag","text":"</p>","start":20,"stop":24}],null]
+    ["<p>here and<br x=42/>there</p>",[{"$key":"^report","source":"<p>here and<br x=42/>there</p>","errors":[]},{"$key":"<tag","name":"p","type":"otag","text":"<p>","start":0,"stop":3},{"$key":"^text","text":"here and","start":3,"stop":11},{"$key":"<tag","name":"br","type":"stag","text":"<br x=42/>","start":11,"stop":21,"atrs":{"x":"42"}},{"$key":"^text","text":"there","start":21,"stop":26},{"$key":">tag","name":"p","type":"ctag","text":"</p>","start":26,"stop":30}],null]
+    ["<p>here and<br/>there</p>",[{"$key":"^report","source":"<p>here and<br/>there</p>","errors":[]},{"$key":"<tag","name":"p","type":"otag","text":"<p>","start":0,"stop":3},{"$key":"^text","text":"here and","start":3,"stop":11},{"$key":"<tag","name":"br","type":"stag","text":"<br/>","start":11,"stop":16},{"$key":"^text","text":"there","start":16,"stop":21},{"$key":">tag","name":"p","type":"ctag","text":"</p>","start":21,"stop":25}],null]
+    ["just some plain text",[{"$key":"^report","source":"just some plain text","errors":[]},{"$key":"^text","text":"just some plain text","start":0,"stop":20}],null]
+    ["<p>one<p>two",[{"$key":"^report","source":"<p>one<p>two","errors":[]},{"$key":"<tag","name":"p","type":"otag","text":"<p>","start":0,"stop":3},{"$key":"^text","text":"one","start":3,"stop":6},{"$key":"<tag","name":"p","type":"otag","text":"<p>","start":6,"stop":9},{"$key":"^text","text":"two","start":9,"stop":12}],null]
     ]
   for [ probe, matcher, error, ] in probes_and_matchers
     await T.perform probe, matcher, error, -> new Promise ( resolve ) ->
@@ -378,27 +378,22 @@ probes_and_matchers = [
 @[ "HTML.datoms_from_html (dubious)" ] = ( T, done ) ->
   INTERTEXT                 = require '../..'
   { HTML, }                 = INTERTEXT
+  DEMO                      = require '../chevrotain-html/demo'
   probes_and_matchers = [
-    ### TAINT these edge cases should be solved by an appropriate (MKTScript) pre-processor; NB that in
-    MKTScript stray pointy brackets in ordinary text (but not in `<code>` blocks) are forbidden and must
-    be escaped as entities wherever they appear in attribute values; these rules, however, do not
-    necessarily apply when parsing general HTML sources. ###
-    ###
-    ["< >",[{"text":"< >","$key":"^text"}],null]          # !!! silent failure
-    ["< x >",[{"text":"< x >","$key":"^text"}],null]      # !!! silent failure
-    ["<>",[{"text":"<>","$key":"^text"}],null]            # !!! silent failure
-    ["<",[{"text":"<","$key":"^text"}],null]              # !!! silent failure
-    ["<tag",[{"text":"<tag","$key":"^text"}],null]        # !!! silent failure
-    ###
-    ["if <math> a > b </math> then",[{"text":"if ","$key":"^text"},{"$key":"<math"},{"text":" a > b ","$key":"^text"},{"$key":">math"},{"text":" then","$key":"^text"}],null]
-    [">",[{"text":">","$key":"^text"}],null]
-    ["&",[{"text":"&","$key":"^text"}],null]
-    ["&amp;",[{"text":"&amp;","$key":"^text"}],null]
-    ["<tag a='<'>",[{"a":"<","$key":"<tag"}],null]
+    ["< >","^error-MismatchedTokenException-mismatch-parser-2-2->",null]
+    ["< x >","<tag-x-0-5-< x >-otag",null]
+    ["<>","^error-MismatchedTokenException-mismatch-parser-1-1->",null]
+    ["<","^error-MismatchedTokenException-mismatch-parser-0-0-<",null]
+    ["<tag","^error-NoViableAltException-missing-parser-1-3-tag",null]
+    ["if <math> a > b </math> then","^text-0-3-if #<tag-math-3-9-<math>-otag#^text-9-16- a > b #>tag-math-16-23-</math>-ctag#^text-23-28- then",null]
+    [">","^text-0-1->",null]
+    ["&","^text-0-1-&",null]
+    ["&amp;","^text-0-5-&amp;",null]
+    ["<tag a='<'>","<tag-{\"a\":\"'<'\"}-tag-0-11-<tag a='<'>-otag",null]
     ]
   for [ probe, matcher, error, ] in probes_and_matchers
     await T.perform probe, matcher, error, -> new Promise ( resolve ) ->
-      resolve HTML.datoms_from_html probe
+      resolve DEMO.condense_tokens HTML.datoms_from_html probe
   #.........................................................................................................
   done()
   return null
@@ -409,22 +404,24 @@ probes_and_matchers = [
   { HTML, }                 = INTERTEXT
   probes_and_matchers = [
     ["<!DOCTYPE html>","<!DOCTYPE html>",null]
-    ["<!DOCTYPE obvious>","<!DOCTYPE obvious>",null]
-    ["<p contenteditable>","<p contenteditable>",null]
-    ["<dang z=Z a=A>","<dang a=A z=Z>",null]
-    ["<foo/>","<foo>|</foo>",null]
-    ["<foo></foo>","<foo>|</foo>",null]
-    ["just some plain text","just some plain text",null]
-    ["<p>one<p>two","<p>|one|<p>|two",null]
-    ["<p>here and</br>there","<p>|here and|there",null]
-    ["<img width=200>","<img width=200>",null]
-    ["<p>here and<br>there","<p>|here and|<br>|there",null]
-    ["<p>here and<br>there</p>","<p>|here and|<br>|there|</p>",null]
-    ["<p>here and<br/>there</p>","<p>|here and|<br>|there|</p>",null]
+    # ["<!DOCTYPE obvious>","<!DOCTYPE obvious>",null]
+    # ["<p contenteditable>","<p contenteditable>",null]
+    # ["<dang z=Z a=A>","<dang a=A z=Z>",null]
+    # ["<foo/>","<foo>|</foo>",null]
+    # ["<foo></foo>","<foo>|</foo>",null]
+    # ["just some plain text","just some plain text",null]
+    # ["<p>one<p>two","<p>|one|<p>|two",null]
+    # ["<p>here and</br>there","<p>|here and|there",null]
+    # ["<img width=200>","<img width=200>",null]
+    # ["<p>here and<br>there","<p>|here and|<br>|there",null]
+    # ["<p>here and<br>there</p>","<p>|here and|<br>|there|</p>",null]
+    # ["<p>here and<br/>there</p>","<p>|here and|<br>|there|</p>",null]
     ]
   for [ probe, matcher, error, ] in probes_and_matchers
     await T.perform probe, matcher, error, -> new Promise ( resolve ) ->
-      resolve ( HTML.html_from_datoms d for d in  HTML.datoms_from_html probe ).join '|'
+      debug '^30^', datoms  = HTML.datoms_from_html probe
+      urge '^30^',  html    = HTML.html_from_datoms datoms
+      resolve ( HTML.html_from_datoms d for d in HTML.datoms_from_html probe ).join '|'
   #.........................................................................................................
   done()
   return null
@@ -908,7 +905,11 @@ probes_and_matchers = [
 if module is require.main then do => # await do =>
   # debug ( k for k of ( require '../..' ).HTML ).sort().join ' '
   # await @_demo()
-  test @
+  # test @
+  # test @[ "HTML.datoms_from_html (1)" ]
+  # test @[ "HTML.datoms_from_html (dubious)" ]
+  test @[ "HTML.datoms_from_html (2)" ]
+  # test @[ "HTML.html_from_datoms (singular tags)" ]
   # test @[ "HTML Cupofhtml (1)" ]
   # test @[ "HTML Cupofhtml (2)" ]
   # test @[ "HTML._parse_compact_tagname" ]

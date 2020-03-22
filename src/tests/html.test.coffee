@@ -321,9 +321,8 @@ test                      = require 'guy-test'
   INTERTEXT                 = require '../..'
   { HTML, }                 = INTERTEXT
   probes_and_matchers = [
-    ["<!DOCTYPE html>",[{"$key":"^report","source":"<!DOCTYPE html>","errors":[]},{"$key":"^token","name":"o_doctype","text":"<!DOCTYPE html>","start":0,"stop":15}],null]
-    ["<!DOCTYPE obvious>",[{"$key":"^report","source":"<!DOCTYPE obvious>","errors":[]},{"$key":"^token","name":"o_doctype","text":"<!DOCTYPE obvious>","start":0,"stop":18}],null]
-    ["<p contenteditable>",[{"$key":"^report","source":"<p contenteditable>","errors":[]},{"$key":"<tag","name":"p","type":"otag","text":"<p contenteditable>","start":0,"stop":19,"atrs":{"contenteditable":true}}],null]
+    ["<!DOCTYPE html>",[{"$key":"^report","source":"<!DOCTYPE html>","errors":[]},{"$key":"^DOCTYPE","text":"<!DOCTYPE html>","start":0,"stop":15,"escaped":true}],null]
+    ["<!DOCTYPE obvious>",[{"$key":"^report","source":"<!DOCTYPE obvious>","errors":[]},{"$key":"^DOCTYPE","text":"<!DOCTYPE obvious>","start":0,"stop":18,"escaped":true}],null]
     ["<img width=200>",[{"$key":"^report","source":"<img width=200>","errors":[]},{"$key":"<tag","name":"img","type":"otag","text":"<img width=200>","start":0,"stop":15,"atrs":{"width":"200"}}],null]
     ["<foo/>",[{"$key":"^report","source":"<foo/>","errors":[]},{"$key":"<tag","name":"foo","type":"stag","text":"<foo/>","start":0,"stop":6}],null]
     ["<foo></foo>",[{"$key":"^report","source":"<foo></foo>","errors":[]},{"$key":"<tag","name":"foo","type":"otag","text":"<foo>","start":0,"stop":5},{"$key":">tag","name":"foo","type":"ctag","text":"</foo>","start":5,"stop":11}],null]
@@ -416,6 +415,13 @@ probes_and_matchers = [
     # ["<p>here and<br>there","<p>|here and|<br>|there",null]
     # ["<p>here and<br>there</p>","<p>|here and|<br>|there|</p>",null]
     # ["<p>here and<br/>there</p>","<p>|here and|<br>|there|</p>",null]
+      # @parse """bare value: <t a=v>"""
+      # @parse """bare value: <t a=v'w>"""
+      # @parse """bare value: <t a=v"w>"""
+      # @parse """squot value: <t a='v'>"""
+      # @parse """dquot value: <t a="v">"""
+      # @parse """squot value: <t a='"v"'>"""
+      # @parse """dquot value: <t a="'v'">"""
     ]
   for [ probe, matcher, error, ] in probes_and_matchers
     await T.perform probe, matcher, error, -> new Promise ( resolve ) ->
@@ -905,10 +911,10 @@ probes_and_matchers = [
 if module is require.main then do => # await do =>
   # debug ( k for k of ( require '../..' ).HTML ).sort().join ' '
   # await @_demo()
-  # test @
+  test @
   # test @[ "HTML.datoms_from_html (1)" ]
   # test @[ "HTML.datoms_from_html (dubious)" ]
-  test @[ "HTML.datoms_from_html (2)" ]
+  # test @[ "HTML.datoms_from_html (2)" ]
   # test @[ "HTML.html_from_datoms (singular tags)" ]
   # test @[ "HTML Cupofhtml (1)" ]
   # test @[ "HTML Cupofhtml (2)" ]

@@ -26,6 +26,7 @@ Multimix                  = require 'multimix'
   cast
   type_of }               = @types
 Multimix                  = require 'multimix'
+{ inspect }               = require 'util'
 
 ###
 #...........................................................................................................
@@ -62,6 +63,10 @@ class Tbl extends Multimix
 #-----------------------------------------------------------------------------------------------------------
 @get_terminal_size = -> ( require 'term-size' )()
 
+#-----------------------------------------------------------------------------------------------------------
+@rpr = ( P... ) ->
+  return ( ( inspect x, @rpr_settings ) for x in P ).join ' '
+
 
 #===========================================================================================================
 #
@@ -74,12 +79,17 @@ class Intertext extends Multimix
   #---------------------------------------------------------------------------------------------------------
   constructor: ( target = null ) ->
     super()
-    @HTML       = new Html()
-    @MKTS       = new Mkts()
-    @HYPH       = new Hyph()
-    @SLABS      = new Slabs()
-    @_PATTERNS  = new Patterns()
-    @TBL        = new Tbl()
+    @HTML         = new Html()
+    @MKTS         = new Mkts()
+    @HYPH         = new Hyph()
+    @SLABS        = new Slabs()
+    @_PATTERNS    = new Patterns()
+    @TBL          = new Tbl()
+    @rpr_settings =
+      depth:          Infinity
+      maxArrayLength: Infinity
+      breakLength:    Infinity
+      compact:        true
     @export target if target?
     return @
 

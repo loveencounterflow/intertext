@@ -134,17 +134,18 @@ GRAMMAR                   = require './chevrotain-html/chevrotain-grammar'
   return { start: start_tag, content: processed_content, }
 
 #-----------------------------------------------------------------------------------------------------------
-@html_from_datoms   = ( ds... ) -> return ( @_html_from_datoms d for d in ds.flat Infinity ).join ''
+@html_from_datoms   = ( ds... ) -> return ( @_html_from_datom d for d in ds.flat Infinity ).join ''
+                                                                  ### TAINT ^^^ ??? ^^^ ###
 @$html_from_datoms  = ->
   { $, } = ( require 'steampipes' ).export()
   return $ ( d, send ) =>
-    return send @_html_from_datoms d unless isa.list d
+    return send @_html_from_datom d unless isa.list d
     send x for x in @html_from_datoms d...
     return null
 
 #-----------------------------------------------------------------------------------------------------------
-@_html_from_datoms = ( d ) ->
-  return @_html_from_datoms ( @text d )[ 0 ] if isa.text d
+@_html_from_datom = ( d ) ->
+  return @_html_from_datom ( @text d )[ 0 ] if isa.text d ### TAINT ??? ###
   DATOM.types.validate.datom_datom d
   atxt          = ''
   sigil         = d.$key[ 0 ]

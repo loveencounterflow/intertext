@@ -63,16 +63,18 @@ types                     = ( require '../..' ).types
     $show
     $drain }                = SP.export()
   #...........................................................................................................
-  TBL                 = ( require '../..' ).TBL
+  INTERTEXT           = require '../..'
+  TBL                 = INTERTEXT.TBL
   probes_and_matchers = [
     [
-      [ ( Array.from 'abcdefg' ), [ 1e6 .. 1e6 + 7 ], ]
-      [ {"text":"┌────────────┬────────────┬────────────┬────────────┬────────────┬────────────┬────────────┐","$key":"^table"},
-        {"text":"│0           │1           │2           │3           │4           │5           │6           │","$key":"^table"},
-        {"text":"├────────────┼────────────┼────────────┼────────────┼────────────┼────────────┼────────────┤","$key":"^table"},
-        {"text":"│a           │b           │c           │d           │e           │f           │g           │","$key":"^table"},
-        {"text":"│1000000     │1000001     │1000002     │1000003     │1000004     │1000005     │1000006     │","$key":"^table"},
-        {"text":"└────────────┴────────────┴────────────┴────────────┴────────────┴────────────┴────────────┘","$key":"^table"}]
+      [ ( Array.from 'abcdefg' ), [ 1e6 .. 1e6 + 7 ], [ undefined, null, Infinity, [ 'text', ], { foo: 'bar', }, ] ]
+      [ { text: '┌────────────┬────────────┬────────────┬────────────┬────────────┬────────────┬────────────┐', '$key': '^table' }
+        { text: '│0           │1           │2           │3           │4           │5           │6           │', '$key': '^table' }
+        { text: '├────────────┼────────────┼────────────┼────────────┼────────────┼────────────┼────────────┤', '$key': '^table' }
+        { text: '│a           │b           │c           │d           │e           │f           │g           │', '$key': '^table' }
+        { text: '│1000000     │1000001     │1000002     │1000003     │1000004     │1000005     │1000006     │', '$key': '^table' }
+        { text: "│○           │●           │Infinity    │[ 'text' ]  │{ foo: 'bar…│○           │○           │", '$key': '^table' }
+        { text: '└────────────┴────────────┴────────────┴────────────┴────────────┴────────────┴────────────┘', '$key': '^table' }]
       ]
     ]
   #.........................................................................................................
@@ -82,7 +84,9 @@ types                     = ( require '../..' ).types
       pipeline.push probe
       pipeline.push TBL.$tabulate { width: 12, }
       pipeline.push $watch ( d ) -> echo d.text
-      pipeline.push $drain ( result ) -> resolve result
+      pipeline.push $drain ( result ) ->
+        echo CND.gold INTERTEXT.rpr row for row in result
+        resolve result
       SP.pull pipeline...
   #.........................................................................................................
   done() if done?
@@ -383,11 +387,12 @@ types                     = ( require '../..' ).types
 ############################################################################################################
 if module is require.main then do =>
   # await @_xxx_kw_demo()
-  # test @
+  test @
   # test @[ "demo" ]
   # test @[ "multiline text" ]
   # test @[ "text representation" ]
-  test @[ "format callback" ]
+  # test @[ "format callback" ]
+  # test @demo
   # for cid in [ 0 .. 32 ]
   #   debug ( cid.toString 16 ).padStart 4, '0'
 

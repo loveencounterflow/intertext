@@ -4,7 +4,6 @@
 
 ############################################################################################################
 CND                       = require 'cnd'
-rpr                       = CND.rpr
 badge                     = 'INTERTEXT/TBL'
 # log                       = CND.get_logger 'plain',     badge
 # info                      = CND.get_logger 'info',      badge
@@ -38,6 +37,7 @@ DATOM                     = new ( require 'datom' ).Datom { dirty: false, }
   freeze
   select }                = DATOM.export()
 { to_width, width_of, }   = require 'to-width'
+{ inspect }               = require 'util'
 
 
 
@@ -294,26 +294,27 @@ boxes =
 $as_event = ( S ) -> $ ( data, send ) -> send new_datom '^data', { data, }
 
 #-----------------------------------------------------------------------------------------------------------
+### TAINT this is a temporary local copy of the method defined in the `main` submodule; in the future,
+both functions should be unified. ###
+rpr = ( P... ) -> ( ( inspect x, rpr_settings ) for x in P ).join ' '
+rpr_settings =
+  depth:          Infinity
+  maxArrayLength: Infinity
+  breakLength:    Infinity
+  compact:        true
+
+#-----------------------------------------------------------------------------------------------------------
 as_text = ( S, x ) ->
   return '○'        if x is undefined
   return '●'        if x is null
   return "''"       if x is ''
   type = type_of x
-  return 'NaN'      if type is 'nan'
-  return rpr x      if type is 'infinity'
-  return jr x       if type in [ 'object', 'list', 'number', ]
-  return jr x unless type is 'text'
+  return rpr x      if type in [ 'nan', 'nan', 'infinity', 'object', 'list', 'number', ]
+  return rpr x      unless type is 'text'
   x = x.replace /\n/g, '⏎'
   x = x.replace /[\x00-\x1a\x1c-\x1f]/g, ( $0 ) -> String.fromCodePoint ( $0.codePointAt 0 ) + 0x2400
   x = x.replace /\x1b(?!\[)/g, '␛'
   return x
-  # switch
-  #   when 'text'
-  #     return    x if S.multiline
-  #     return jr x
-  #     return    x unless ( x is '' ) or ( /\s/.test x )
-  #   ### other types, number formatting go here ###
-  # return rpr x
 
 #-----------------------------------------------------------------------------------------------------------
 copy      = ( x ) ->

@@ -7,6 +7,7 @@
 
 - [InterText: Services for Recurrent Text-related Tasks](#intertext-services-for-recurrent-text-related-tasks)
 - [Related Links](#related-links)
+- [To Do](#to-do)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -43,4 +44,9 @@ See also the (rough) [list of planned features](./README-planned.md).
 * [UTS #18: Unicode Regular Expressions](https://unicode.org/reports/tr18/#RL1.2)
 * [UAX #44: Unicode Character Database](https://unicode.org/reports/tr44/#Ideographic)
 * [Unicode Utilities: UnicodeSet](https://unicode.org/cldr/utility/list-unicodeset.jsp?a=%5B%5B:name=/CJK/:%5D-%5B:ideographic:%5D%5D)
+
+## To Do
+
+* [X] use `INTERTEXT.rpr()` for tabulation instead of `JSON.stringify()`
+
 

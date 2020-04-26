@@ -41,10 +41,6 @@ class Html extends Multimix
   @include require './html'
 
 #-----------------------------------------------------------------------------------------------------------
-class Mkts extends Multimix
-  @include require './mkts'
-
-#-----------------------------------------------------------------------------------------------------------
 class Hyph extends Multimix
   @include require './hyphenation'
 
@@ -80,7 +76,6 @@ class Intertext extends Multimix
   constructor: ( target = null ) ->
     super()
     @HTML         = new Html()
-    @MKTS         = new Mkts()
     @HYPH         = new Hyph()
     @SLABS        = new Slabs()
     @_PATTERNS    = new Patterns()

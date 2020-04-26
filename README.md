@@ -1,5 +1,5 @@
 
-# InterText
+# 🅘🅝🅣🅔🅡🅣🅔🅧🅣
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -48,5 +48,6 @@ See also the (rough) [list of planned features](./README-planned.md).
 ## To Do
 
 * [X] use `INTERTEXT.rpr()` for tabulation instead of `JSON.stringify()`
-
-
+* [ ] implement path manipulation, integrate [`pathmap`](https://github.com/jeremyruppel/pathmap)
+* [ ] integrate color-related code from [DataMill
+  colorizer](https://github.com/loveencounterflow/datamill/blob/2d0ca3a784c8f3f9ba8d9fd6277d18c4ee859fb1/src/experiments/colorizer.coffee)

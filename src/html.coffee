@@ -38,9 +38,6 @@ types                     = require './types'
 { Cupofjoe }              = require 'cupofjoe'
 assign                    = Object.assign
 excluded_content_parts    = [ '', null, undefined, ]
-LEXER                     = require './chevrotain-html/chevrotain-lexer'
-PARSER                    = require './chevrotain-html/chevrotain-parser'
-GRAMMAR                   = require './chevrotain-html/chevrotain-grammar'
 
 
 #===========================================================================================================
@@ -243,31 +240,6 @@ GRAMMAR                   = require './chevrotain-html/chevrotain-grammar'
   R = "(#{f.toString()})();"
   return ( @raw R )[ 0 ]
 
-
-#===========================================================================================================
-# PARSING
-#-----------------------------------------------------------------------------------------------------------
-@datoms_from_html = ( html, settings ) ->
-  defaults      = { lexer_mode: 'outside_mode', parser_start: 'document', }
-  settings      = { defaults..., settings..., }
-  tokenization  = LEXER.tokenize html, settings.lexer_mode
-  parsification = PARSER.parse tokenization, settings.parser_start
-  R             =
-    source:         html
-    cst:            parsification.cst
-    lexer_mode:     settings.lexer_mode
-    parser_start:   settings.parser_start
-    errors:
-      lexer:          tokenization.errors
-      parser:         parsification.errors
-  return GRAMMAR.extract_tokens R
-
-#-----------------------------------------------------------------------------------------------------------
-@$datoms_from_html = ->
-  { $, } = ( require 'steampipes' ).export()
-  return $ ( buffer_or_text, send ) =>
-    send d for d in @datoms_from_html buffer_or_text
-    return null
 
 
 #===========================================================================================================

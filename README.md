@@ -19,10 +19,6 @@ tend to show up frequently. I'm aiming at conducing comparative [benchmarks](./R
 soundness checks for all solutions. Areas covered so far include:
 
 
-* [**InterText HTML**](./README-html.md): parse, generate HTML markup.
-
-* [**InterText MKTScript**](./README-mkts.md): parse, generate MKTScript markup.
-
 * [**InterText HYPH**](./README-hyphenation.md) for hyphenating text in multiple languages (only en-US
   covered so far, but underlying software is multilingual and configurable).
 

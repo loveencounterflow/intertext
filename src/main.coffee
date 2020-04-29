@@ -45,6 +45,10 @@ class Hyph extends Multimix
   @include require './hyphenation'
 
 #-----------------------------------------------------------------------------------------------------------
+class Ucd extends Multimix
+  @include require './ucd'
+
+#-----------------------------------------------------------------------------------------------------------
 class Slabs extends Multimix
   @include require './slabs'
 
@@ -77,6 +81,7 @@ class Intertext extends Multimix
     super()
     @HTML         = new Html()
     @HYPH         = new Hyph()
+    @UCD          = new Ucd()
     @SLABS        = new Slabs()
     @_PATTERNS    = new Patterns()
     @TBL          = new Tbl()

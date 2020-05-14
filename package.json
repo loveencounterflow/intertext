@@ -30,6 +30,7 @@
   "homepage": "https://github.com/loveencounterflow/intertext#readme",
   "dependencies": {
     "cnd": "^5.3.2",
+    "color-convert": "^2.0.1",
     "cupofjoe": "0.0.4",
     "datom": "^5.0.0",
     "hyphenopoly": "^4.3.0",

@@ -226,8 +226,12 @@ declare 'hexcolor',
   return "\x1b[#{fb};2;#{r};#{g};#{b}m"
 
 #-----------------------------------------------------------------------------------------------------------
+@ansi24bit_code_from_lch = ( lch, background = false ) ->
+  return @ansi24bit_code_from_rgb ( convert_color.lch.rgb lch ), background
+
+#-----------------------------------------------------------------------------------------------------------
 @ansi24bit_code_from_name = ( name, background = false ) ->
-  return @ansi24bit_code_from_rgb @rgb_from_name name, background
+  return @ansi24bit_code_from_rgb ( @rgb_from_name name ), background
 
 #-----------------------------------------------------------------------------------------------------------
 @numerical_sha1_from_text = ( text ) ->
@@ -274,9 +278,67 @@ declare 'hexcolor',
 
 ############################################################################################################
 if module is require.main then do =>
-  @demo_1()
+  # @demo_1()
   # @demo_truecolor()
+  debug type_of @ansi24bit_code_from_name
+  debug ( k for k of @ when /24/.test k )
   debug rpr @ansi24bit_code_from_rgb [ 100, 150, 0, ], false
   debug rpr @ansi24bit_code_from_rgb [ 100, 150, 0, ], true
+  color   = ''
+  ### NOTE CFN = Color From Name ###
+  @cfn = ( fg, bg = 'Black' ) -> ( @ansi24bit_code_from_name fg ) + ( @ansi24bit_code_from_name bg, true)
+  text    = CND.bold ' WXD '
+  # echo color + text
+  BAR = require './bar'
+  color_1 = @cfn 'Green', 'Black'
+  color_2 = @cfn 'Orchid', 'Green'
+  reset   = "\x1b[0m"
+  puffer  = ( @cfn 'Black' ) + ' '
+  border  = ( @cfn 'White', 'Black' ) + '▏'
+  echo color_1
+  for n in [ 70 .. 96 ] by +1
+    # echo ( BAR.hollow_percentage_bar n  ) + text
+    # echo color_1 + ( BAR.hollow_percentage_bar n  ) + text
+    echo puffer + ( color_1 + BAR.percentage_bar n )+ border + puffer + ( color_2 + " #{n} " ) + reset
+  CND.ring_bell()
+  debug ( k for k of convert_color ).sort().join ' '
+  debug @rgb_from_name 'Red'
+  debug convert_color.rgb.lch @rgb_from_name 'Green'
+  debug convert_color.rgb.lch @rgb_from_name 'Red'
+  # debug ( @ansi24bit_code_from_rgb convert_color.rgb.lch [ 53, 105, 40 ] ) + 'helo'
+  demo_lch_gamut = ->
+    ### see http://lea.verou.me/2020/04/lch-colors-in-css-what-why-and-how ###
+    L =  53
+    C = 105
+    H =  40
+    echo CND.blue 'Colors!'
+    # for L in [ 0 .. 100 ] by +10
+    for H in [ 0 .. 360 ] by +10
+      line = CND.yellow " LCH #{L},#{C},#{H} "
+      for C in [ 0 .. 100 ] by +10
+        line += ( @ansi24bit_code_from_lch [ L, C, H, ], true ) + ( '  ' )
+      echo line + ( CND.black ' ' )
+  # green_lch     = [ 46, 72, 136 ]
+  # green_lch     = [ 53, 105, 136 ]
+  green_lch     = [ 153, 105, 200 ]
+  red_lch       = [ 53, 105, 60 ]
+  step_count    = 13
+  delta_L       = ( red_lch[ 0 ] - green_lch[ 0 ] ) / ( step_count - 1 )
+  delta_C       = ( red_lch[ 1 ] - green_lch[ 1 ] ) / ( step_count - 1 )
+  delta_H       = ( red_lch[ 2 ] - green_lch[ 2 ] ) / ( step_count - 1 )
+  [ L, C, H, ]  = green_lch
+  scale         = ''
+  for _ in [ 1 .. step_count ]
+    scale += ( @ansi24bit_code_from_lch [ L, C, H, ], true ) + ' '
+    L += delta_L
+    C += delta_C
+    H += delta_H
+  echo scale + reset
+  # for n in [ 0x00 ... 0xff ] by +20
+  #   debug ( @ansi24bit_code_from_rgb ( convert_color.lch.rgb [ L, n, H, ] ), true ) + CND.black ' helo '
+  # for n in [ 0x00 ... 0xff ] by +20
+  #   debug ( @ansi24bit_code_from_rgb ( convert_color.lch.rgb [ n, C, H, ] ), true ) + CND.black ' helo '
+  return null
+
 
 

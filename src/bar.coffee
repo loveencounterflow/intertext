@@ -28,7 +28,8 @@ types                     = require './types'
 #-----------------------------------------------------------------------------------------------------------
 @percentage_bar = ( n ) ->
   if n is null or n <= 0  then return '             '
-  if n > 100              then return '████████████▌'
+  if n >= 100             then return '█████████████'
+  n = ( Math.round n / 100 * 104 )
   R = '█'.repeat n // 8
   switch n %% 8
     when 0 then R += ' '
@@ -43,9 +44,12 @@ types                     = require './types'
 
 #-----------------------------------------------------------------------------------------------------------
 @hollow_percentage_bar = ( n ) ->
-  if n is null or n <= 0  then return '░░░░░░░░░░░░░'
-  if n > 100              then return '░░░░░░░░░░░░▌'
-  R = '░'.repeat n // 8
+  if n is null or n <= 0  then return '             '
+  # if n >= 100             then return '░░░░░░░░░░░░░'
+  if n >= 100             then return '▓▓▓▓▓▓▓▓▓▓▓▓▓'
+  n = ( Math.round n / 100 * 104 )
+  # R = '░'.repeat n // 8
+  R = '▓'.repeat n // 8
   switch n %% 8
     when 0 then R += ' '
     when 1 then R += '▏'

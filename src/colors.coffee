@@ -276,6 +276,43 @@ declare 'hexcolor',
   return null
 
 
+@show_gradient = ( cold_lch, hot_lch ) ->
+  @_show_gradient cold_lch, hot_lch
+  # cold_lch[ 2 ] += 360
+  # @_show_gradient cold_lch, hot_lch
+
+@_show_gradient = ( cold_lch, hot_lch ) ->
+  reset         = "\x1b[0m"
+  step_count    = 13
+  delta_L       = ( hot_lch[ 0 ] - cold_lch[ 0 ] ) / ( step_count - 1 )
+  delta_C       = ( hot_lch[ 1 ] - cold_lch[ 1 ] ) / ( step_count - 1 )
+  delta_H       = ( hot_lch[ 2 ] - cold_lch[ 2 ] ) / ( step_count - 1 )
+  [ L, C, H, ]  = cold_lch
+  scale         = ''
+  for _ in [ 1 .. step_count ]
+    scale += ( @ansi24bit_code_from_lch [ L, C, H, ], true ) + ' '
+    L += delta_L
+    C += delta_C
+    H += delta_H
+  echo scale + reset
+# L: 0 .. 100
+# H: 0 .. 132
+# C: 0 .. 360 (wraparound)
+@show_gradient [  57,  98, 271, ], [  43,  72,  17, ]
+@show_gradient [  57,  98, 271, ], [  43,  72, 360, ]
+@show_gradient [  57,  98, 271, ], [  43,  72, 380, ]
+@show_gradient [ 153, 105, 200, ], [  53, 105,  60, ]
+@show_gradient [ 153, 105, 200, ], [  53, 105,  20, ]
+@show_gradient [  90, 105, 200, ], [  53, 105,  30, ]
+help "see https://github.com/d3/d3-color"
+help "see https://observablehq.com/@d3/achromatic-interpolation?collection=@d3/d3-color"
+help "see https://observablehq.com/@d3/working-with-color?collection=@d3/d3-color"
+help "see https://observablehq.com/@d3/sequential-scales?collection=@d3/d3-color"
+return null
+
+
+
+
 ############################################################################################################
 if module is require.main then do =>
   # @demo_1()
@@ -300,7 +337,6 @@ if module is require.main then do =>
     # echo ( BAR.hollow_percentage_bar n  ) + text
     # echo color_1 + ( BAR.hollow_percentage_bar n  ) + text
     echo puffer + ( color_1 + BAR.percentage_bar n )+ border + puffer + ( color_2 + " #{n} " ) + reset
-  CND.ring_bell()
   debug ( k for k of convert_color ).sort().join ' '
   debug @rgb_from_name 'Red'
   debug convert_color.rgb.lch @rgb_from_name 'Green'
@@ -318,27 +354,13 @@ if module is require.main then do =>
       for C in [ 0 .. 100 ] by +10
         line += ( @ansi24bit_code_from_lch [ L, C, H, ], true ) + ( '  ' )
       echo line + ( CND.black ' ' )
-  # green_lch     = [ 46, 72, 136 ]
-  # green_lch     = [ 53, 105, 136 ]
-  green_lch     = [ 153, 105, 200 ]
-  red_lch       = [ 53, 105, 60 ]
-  step_count    = 13
-  delta_L       = ( red_lch[ 0 ] - green_lch[ 0 ] ) / ( step_count - 1 )
-  delta_C       = ( red_lch[ 1 ] - green_lch[ 1 ] ) / ( step_count - 1 )
-  delta_H       = ( red_lch[ 2 ] - green_lch[ 2 ] ) / ( step_count - 1 )
-  [ L, C, H, ]  = green_lch
-  scale         = ''
-  for _ in [ 1 .. step_count ]
-    scale += ( @ansi24bit_code_from_lch [ L, C, H, ], true ) + ' '
-    L += delta_L
-    C += delta_C
-    H += delta_H
-  echo scale + reset
-  # for n in [ 0x00 ... 0xff ] by +20
-  #   debug ( @ansi24bit_code_from_rgb ( convert_color.lch.rgb [ L, n, H, ] ), true ) + CND.black ' helo '
-  # for n in [ 0x00 ... 0xff ] by +20
-  #   debug ( @ansi24bit_code_from_rgb ( convert_color.lch.rgb [ n, C, H, ] ), true ) + CND.black ' helo '
-  return null
+  # cold_lch     = [ 46, 72, 136 ]
+  # cold_lch     = [ 53, 105, 136 ]
+  # CND.ring_bell()
+  # echo "\x1b]0;helo world"
+  echo "\x1b]0;second try\x07"
+  echo "\x1b]1;second try\x07"
+  echo "\x1b]2;second try\x07"
 
 
 

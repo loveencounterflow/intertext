@@ -47,3 +47,9 @@ See also the (rough) [list of planned features](./README-planned.md).
 * [ ] implement path manipulation, integrate [`pathmap`](https://github.com/jeremyruppel/pathmap)
 * [ ] integrate color-related code from [DataMill
   colorizer](https://github.com/loveencounterflow/datamill/blob/2d0ca3a784c8f3f9ba8d9fd6277d18c4ee859fb1/src/experiments/colorizer.coffee)
+* [ ] implement number formatting using `Intl.NumberFormat`, including percentages, rounding
+
+
+
+
+

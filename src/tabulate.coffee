@@ -83,9 +83,9 @@ _new_state = ( settings ) ->
   S.keys              =       settings[ 'keys'        ] ? null
   S.box               = copy  settings[ 'box'         ] ? copy boxes[ 'plain' ]
   #.........................................................................................................
-  S.pad               = ( ' '.repeat S.pad ) if CND.isa_number S.pad
+  S.pad               = ( ' '.repeat S.pad ) if isa.float S.pad
   #.........................................................................................................
-  S.box               = box_style = boxes[ S.box ] if CND.isa_text S.box
+  S.box               = box_style = boxes[ S.box ] if isa.text S.box
   throw new Error "unknown box style #{rpr box_style}" unless S.box?
   #.........................................................................................................
   S.box.left          =         S.box.vs + S.pad

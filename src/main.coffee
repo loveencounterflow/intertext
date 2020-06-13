@@ -67,6 +67,16 @@ class Tbl extends Multimix
 @rpr = ( P... ) ->
   return ( ( inspect x, @rpr_settings ) for x in P ).join ' '
 
+#-----------------------------------------------------------------------------------------------------------
+@camelize = ( text ) ->
+  ### thx to https://github.com/lodash/lodash/blob/master/camelCase.js ###
+  words = text.split '-'
+  for idx in [ 1 ... words.length ] by +1
+    word = words[ idx ]
+    continue if word is ''
+    words[ idx ] = word[ 0 ].toUpperCase() + word[ 1 .. ]
+  return words.join ''
+
 
 #===========================================================================================================
 #

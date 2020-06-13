@@ -21,7 +21,7 @@ test                      = require 'guy-test'
 #===========================================================================================================
 # TESTS
 #-----------------------------------------------------------------------------------------------------------
-@[ "rpr" ] = ( T, done ) ->
+@[ "BASICS rpr" ] = ( T, done ) ->
   INTERTEXT                 = require '../..'
   { rpr }                   = INTERTEXT.export()
   #.........................................................................................................
@@ -40,13 +40,40 @@ test                      = require 'guy-test'
   done()
   return null
 
+#-----------------------------------------------------------------------------------------------------------
+@[ "BASICS camelize" ] = ( T, done ) ->
+  INTERTEXT                 = require '../..'
+  { camelize }              = INTERTEXT.export()
+  #.........................................................................................................
+  probes_and_matchers = [
+    [ '',             '',           ]
+    [ '-',            '',           ]
+    [ '--',           '',           ]
+    [ '-a-',          'A',          ]
+    [ '-a',           'A',          ]
+    [ 'a-',           'a',          ]
+    [ 'helo',         'helo',       ]
+    [ 'helo-world',   'heloWorld',  ]
+    [ 'HELO-WORLD',   'HELOWORLD',  ]
+    [ 'µ-DOM',        'µDOM',       ]
+    [ 'danish-øre',   'danishØre',  ]
+    ]
+  for [ probe, matcher, error, ] in probes_and_matchers
+    await T.perform probe, matcher, error, -> new Promise ( resolve ) ->
+      result = camelize probe
+      resolve result
+  #.........................................................................................................
+  done()
+  return null
+
+
 
 ############################################################################################################
 if module is require.main then do => # await do =>
   # debug ( k for k of ( require '../..' ).HTML ).sort().join ' '
   # await @_demo()
-  test @
-  # test @[ "HTML.datoms_from_html (1)" ]
+  # test @
+  test @[ "BASICS camelize" ]
   # test @[ "HTML.datoms_from_html (dubious)" ]
   # test @[ "HTML.datoms_from_html (2)" ]
   # test @[ "HTML.html_from_datoms (singular tags)" ]

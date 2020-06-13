@@ -144,22 +144,20 @@ types                     = ( require '../..' ).types
   TBL                 = ( require '../..' ).TBL
   probes_and_matchers = [
     [
-      [ { key: 1, type: 'normal',     value: 123456789, }
-        { key: 2, type: 'normal',     value: null, }
-        { key: 3, type: 'underline',  value: "some text", }
-        { key: 4, type: 'normal',     value: true, }
-        { key: 5, type: 'normal',     value: false, }
-        ]
-      [ "┌────────────┬────────────┬────────────┐",
-        "│\u001b[38;05;255m\u001b[7m\u001b[1mkey         \u001b[22m\u001b[27m\u001b[0m│\u001b[38;05;255m\u001b[7m\u001b[1mtype        \u001b[22m\u001b[27m\u001b[0m│\u001b[38;05;255m\u001b[7m\u001b[1mvalue       \u001b[22m\u001b[27m\u001b[0m│",
-        "├────────────┼────────────┼────────────┤",
-        "│\u001b[38;05;34m1           \u001b[0m│\u001b[38;05;27mnormal      \u001b[0m│\u001b[38;05;34m123456789   \u001b[0m│",
-        "│\u001b[38;05;34m2           \u001b[0m│\u001b[38;05;27mnormal      \u001b[0m│\u001b[38;05;199m●           \u001b[0m│",
-        "│\u001b[4m\u001b[38;05;34m3           \u001b[0m\u001b[24m│\u001b[4m\u001b[38;05;27munderline   \u001b[0m\u001b[24m│\u001b[4m\u001b[38;05;27msome text   \u001b[0m\u001b[24m│",
-        "│\u001b[38;05;34m4           \u001b[0m│\u001b[38;05;27mnormal      \u001b[0m│\u001b[38;05;226mtrue        \u001b[0m│",
-        "│\u001b[38;05;34m5           \u001b[0m│\u001b[38;05;27mnormal      \u001b[0m│\u001b[38;05;226mfalse       \u001b[0m│",
-        "└────────────┴────────────┴────────────┘"]
-      ]
+      [ { key: 1, type: 'normal', value: 123456789 },
+        { key: 2, type: 'normal', value: null },
+        { key: 3, type: 'underline', value: 'some text' },
+        { key: 4, type: 'normal', value: true },
+        { key: 5, type: 'normal', value: false } ],
+      [ '┌────────────┬────────────┬────────────┐',
+        '│\x1B[38;05;255m\x1B[7m\x1B[1mkey         \x1B[22m\x1B[27m\x1B[0m│\x1B[38;05;255m\x1B[7m\x1B[1mtype        \x1B[22m\x1B[27m\x1B[0m│\x1B[38;05;255m\x1B[7m\x1B[1mvalue       \x1B[22m\x1B[27m\x1B[0m│',
+        '├────────────┼────────────┼────────────┤',
+        '│\x1B[38;05;255m1           \x1B[0m│\x1B[38;05;27mnormal      \x1B[0m│\x1B[38;05;255m123456789   \x1B[0m│',
+        '│\x1B[38;05;255m2           \x1B[0m│\x1B[38;05;27mnormal      \x1B[0m│\x1B[38;05;199m●           \x1B[0m│',
+        '│\x1B[4m\x1B[38;05;255m3           \x1B[0m\x1B[24m│\x1B[4m\x1B[38;05;27munderline   \x1B[0m\x1B[24m│\x1B[4m\x1B[38;05;27msome text   \x1B[0m\x1B[24m│',
+        '│\x1B[38;05;255m4           \x1B[0m│\x1B[38;05;27mnormal      \x1B[0m│\x1B[38;05;226mtrue        \x1B[0m│',
+        '│\x1B[38;05;255m5           \x1B[0m│\x1B[38;05;27mnormal      \x1B[0m│\x1B[38;05;226mfalse       \x1B[0m│',
+        '└────────────┴────────────┴────────────┘' ], null ]
     ]
   #.........................................................................................................
   colorize = ( cell_txt, { value, row, is_header, key, idx, } ) =>

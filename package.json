@@ -5,7 +5,7 @@
   "main": "lib/main.js",
   "scripts": {
     "build": "coffee --map -o lib -c src",
-    "test": "node lib/tests/main.js"
+    "test": "echo 'see https://github.com/loveencounterflow/hengist/tree/master/dev/intertext'"
   },
   "repository": {
     "type": "git",
@@ -31,17 +31,15 @@
   "dependencies": {
     "cnd": "^9.0.0",
     "color-convert": "^2.0.1",
-    "cupofjoe": "0.0.4",
-    "datom": "^5.0.0",
+    "cupofjoe": "^0.1.0",
+    "datom": "^6.1.0",
     "hyphenopoly": "^4.5.0",
-    "intertype": "^7.0.1",
+    "intertype": "^7.0.2",
     "linebreak": "^1.0.2",
     "multimix": "^4.0.0",
     "steampipes": "^6.3.0",
     "term-size": "^2.2.0",
     "to-width": "^1.0.4"
   },
-  "devDependencies": {
-    "guy-test": "^4.0.0"
-  }
+  "devDependencies": {}
 }

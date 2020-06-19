@@ -185,32 +185,4 @@ excluded_content_parts    = [ '', null, undefined, ]
 
 
 
-#===========================================================================================================
-# CUP OF HTML
-#-----------------------------------------------------------------------------------------------------------
-MAIN = @ ### TAINT won't work with configured instances of HTML ###
-
-class @Cupofhtml extends Cupofjoe
-  # @include CUPOFHTML, { overwrite: false, }
-  # @extend MAIN, { overwrite: false, }
-
-  #---------------------------------------------------------------------------------------------------------
-  constructor: ( settings = null) ->
-    super { { flatten: true, }..., settings..., }
-    return @
-
-  #---------------------------------------------------------------------------------------------------------
-  tag: ( tagname, content... ) ->
-    return @cram content...      unless tagname?
-    ### TAINT allow extended syntax, attributes ###
-    return @cram new_datom "^#{tagname}" if content.length is 0
-    return @cram ( new_datom "<#{tagname}" ), content..., ( new_datom ">#{tagname}" )
-
-  #---------------------------------------------------------------------------------------------------------
-  text:     ( P... ) -> @cram MAIN.text     P...
-  raw:      ( P... ) -> @cram MAIN.raw      P...
-  script:   ( P... ) -> @cram MAIN.script   P...
-  css:      ( P... ) -> @cram MAIN.css      P...
-
-
 

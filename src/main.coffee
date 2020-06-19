@@ -41,6 +41,10 @@ class Html extends Multimix
   @include require './html'
 
 #-----------------------------------------------------------------------------------------------------------
+class Cupofhtml extends Multimix
+  @include require './cupofhtml'
+
+#-----------------------------------------------------------------------------------------------------------
 class Hyph extends Multimix
   @include require './hyphenation'
 
@@ -90,6 +94,7 @@ class Intertext extends Multimix
   constructor: ( target = null ) ->
     super()
     @HTML         = new Html()
+    @CUPOFHTML    = new Cupofhtml()
     @HYPH         = new Hyph()
     @UCD          = new Ucd()
     @SLABS        = new Slabs()

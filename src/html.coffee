@@ -132,7 +132,8 @@ excluded_content_parts    = [ '', null, undefined, ]
 
 #-----------------------------------------------------------------------------------------------------------
 @html_from_datoms   = ( ds... ) -> return ( @_html_from_datom d for d in ds.flat Infinity ).join ''
-                                                                  ### TAINT ^^^ ??? ^^^ ###
+
+#-----------------------------------------------------------------------------------------------------------
 @$html_from_datoms  = ->
   { $, } = ( require 'steampipes' ).export()
   return $ ( d, send ) =>
@@ -149,6 +150,9 @@ excluded_content_parts    = [ '', null, undefined, ]
   tagname       = d.$key[ 1 .. ]
   is_empty_tag  = isa._intertext_html_empty_element_tagname tagname
   x_key         = null
+  is_block_tag  = d.$blk ? false
+  bnl           = if is_block_tag then '\n\n' else ''   ### TAINT make configurable ###
+  xnl           = '\n'                                  ### TAINT make configurable ###
   #.........................................................................................................
   ### TAINT simplistic solution; namespace might already be taken? ###
   if sigil in '[~]'
@@ -160,8 +164,8 @@ excluded_content_parts    = [ '', null, undefined, ]
   #.........................................................................................................
   return ( @_escape_text d.text ? '' )      if ( sigil is '^' ) and ( tagname is 'text'     )
   return (               d.text ? '' )      if ( sigil is '^' ) and ( tagname is 'raw'      )
-  return "<!DOCTYPE #{d.$value ? 'html'}>"  if ( sigil is '^' ) and ( tagname is 'doctype'  )
-  return "</#{tagname}>"                    if sigil is '>'
+  return "<!DOCTYPE #{d.$value ? 'html'}>#{xnl}"  if ( sigil is '^' ) and ( tagname is 'doctype'  )
+  return "</#{tagname}>#{bnl}"                    if sigil is '>'
   #.........................................................................................................
   ### NOTE sorting atxt by keys to make result predictable: ###
   if isa.object d.$value then  src = d.$value

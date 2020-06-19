@@ -162,8 +162,8 @@ excluded_content_parts    = [ '', null, undefined, ]
       when ']' then sigil = '>'
     [ x_key, tagname, ] = [ tagname, 'x-sys', ]
   #.........................................................................................................
-  return ( @_escape_text d.text ? '' )      if ( sigil is '^' ) and ( tagname is 'text'     )
-  return (               d.text ? '' )      if ( sigil is '^' ) and ( tagname is 'raw'      )
+  return ( @_escape_text d.text ? '' )            if ( sigil is '^' ) and ( tagname is 'text'     )
+  return (               d.text ? '' )            if ( sigil is '^' ) and ( tagname is 'raw'      )
   return "<!DOCTYPE #{d.$value ? 'html'}>#{xnl}"  if ( sigil is '^' ) and ( tagname is 'doctype'  )
   return "</#{tagname}>#{bnl}"                    if sigil is '>'
   #.........................................................................................................

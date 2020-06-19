@@ -177,72 +177,11 @@ excluded_content_parts    = [ '', null, undefined, ]
     else                                    atxt += " #{key}=#{@_as_attribute_literal value}"
   #.........................................................................................................
   ### TAINT make self-closing elements configurable, depend on HTML5 type ###
-  slash     = if ( sigil is '<' ) or is_empty_tag then '' else "</#{tagname}>"
+  slash     = if ( sigil is '<' ) or is_empty_tag then '' else "</#{tagname}>#{bnl}"
   x_sys_key = if x_key? then "<x-sys-key>#{x_key}</x-sys-key>" else ''
   return "<#{tagname}>#{slash}#{x_sys_key}" if atxt is ''
   return "<#{tagname}#{atxt}>#{x_sys_key}#{slash}"
 
-
-
-#===========================================================================================================
-# HTML SPECIALS
-#-----------------------------------------------------------------------------------------------------------
-@raw = ( text ) ->
-  unless ( arity = arguments.length ) is 1
-    throw new Error "^intertext/raw@1801^ expected 1 argument, got #{arity}"
-  validate.text text
-  return [ ( new_datom '^raw', { text, } ), ]
-
-#-----------------------------------------------------------------------------------------------------------
-@text = ( text ) ->
-  unless ( arity = arguments.length ) is 1
-    throw new Error "^intertext/text@2368^ expected 1 argument, got #{arity}"
-  validate.text text
-  return [ ( new_datom '^text', { text, } ), ]
-
-#-----------------------------------------------------------------------------------------------------------
-@css = ( href ) ->
-  ### Creates a list with one datom representing a stylesheet link: `<link rel=stylesheet
-  href="../reset.css"/>`
-  ###
-  unless ( arity = arguments.length ) is 1
-    throw new Error "^intertext/css@2935^ expected 1 argument, got #{arity}"
-  validate.nonempty_text href
-  return [ ( new_datom '^link', { rel: 'stylesheet', href, } ), ]
-
-#-----------------------------------------------------------------------------------------------------------
-@script = ( x ) ->
-  unless ( arity = arguments.length ) is 1
-    throw new Error "^intertext/script@3502^ expected 1 argument, got #{arity}"
-  return switch type = type_of x
-    when 'text'     then @_script_src     x
-    when 'function' then @_script_literal x
-  throw new Error "^intertext/script@4069^ expected a text or a function, got a #{type}"
-
-#-----------------------------------------------------------------------------------------------------------
-@_script_src = ( src ) ->
-  ### Creates a list with one datom representing a script tag: `<script type="text/javascript"
-  src="../jquery-3.4.1.js">`
-  ###
-  validate.nonempty_text src
-  return [ ( new_datom '^script', { src, } ), ]
-
-#-----------------------------------------------------------------------------------------------------------
-@_script_literal = ( f ) ->
-  ### Creates a list with three datoms representing a script tag with embedded JavaScript source text:
-  ```
-  <script type="text/javascript">
-    var a, b;
-    a = 42;
-    b = a * 2;
-    </script>`
-  ###
-  return [ ( new_datom '<script' ), ( @_as_iife f ), ( new_datom '>script' ), ]
-
-#-----------------------------------------------------------------------------------------------------------
-@_as_iife = ( f ) ->
-  R = "(#{f.toString()})();"
-  return ( @raw R )[ 0 ]
 
 
 

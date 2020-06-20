@@ -325,7 +325,8 @@ class @Cupofhtml extends DATOM.Cupofdatom
 
   #---------------------------------------------------------------------------------------------------------
   new_tag: ( name, attributes ) ->
-    f           = ( P... ) -> @_.tag name, attributes, P...
+    if attributes?  then  f = ( P... ) -> @_.tag name, attributes, P...
+    else                  f = ( P... ) -> @_.tag name, P...
     @H[ name ]  = f.bind @H
     return null
 

@@ -40,7 +40,7 @@ class @_Targeted_collection extends Multimix
 #===========================================================================================================
 #
 #-----------------------------------------------------------------------------------------------------------
-class @_Tags extends @_Targeted_collection
+class @Tags extends @_Targeted_collection
   address:      ( P... ) => @_.tag 'address',     { $blk: true, }, P...
   article:      ( P... ) => @_.tag 'article',     { $blk: true, }, P...
   aside:        ( P... ) => @_.tag 'aside',       { $blk: true, }, P...
@@ -170,7 +170,7 @@ class @_Tags extends @_Targeted_collection
 #===========================================================================================================
 #
 #-----------------------------------------------------------------------------------------------------------
-class @_Specials extends @_Targeted_collection
+class @Specials extends @_Targeted_collection
   doctype:      ( type = 'html' ) => @_._cram @_raw 'doctype', type
   # img:          ( P... ) => XXXX @_.tag '!–', P...
 
@@ -312,12 +312,14 @@ class @Cupofhtml extends DATOM.Cupofdatom
   # @extend MAIN, { overwrite: false, }
   _defaults:      _defaults
   last_expansion: null
+  H:              MAIN.Tags
+  S:              MAIN.Specials
 
   #---------------------------------------------------------------------------------------------------------
   constructor: ( settings = null) ->
     super { _defaults..., settings..., }
-    @H = new MAIN._Tags     @
-    @S = new MAIN._Specials @
+    @H = new @H @
+    @S = new @S @
     return @
 
   #---------------------------------------------------------------------------------------------------------

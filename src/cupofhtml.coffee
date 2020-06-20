@@ -188,7 +188,6 @@ class @Specials extends @_Targeted_collection
     ### `<link rel=stylesheet href="../reset.css"/>` ###
     unless ( arity = arguments.length ) is 1
       throw new Error "^intertext/html/link_css@2935^ expected 1 argument, got #{arity}"
-    debug '^3334^', href
     validate.nonempty_text href
     return @_._cram @_.DATOM.new_datom '^link', { rel: 'stylesheet', href, }
 

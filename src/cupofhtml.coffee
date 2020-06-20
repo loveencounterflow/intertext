@@ -25,7 +25,7 @@ types                     = require './types'
   cast
   type_of }               = types
 #...........................................................................................................
-_defaults = Object.freeze { flatten: true, DATOM: null, }
+_defaults = { flatten: true, DATOM: null, newlines: true, }
 
 
 #===========================================================================================================
@@ -212,6 +212,97 @@ class @_Specials extends @_Targeted_collection
     ### `<script type="text/javascript"> var a, b; ...;</script>` ###
     @_.cram 'script', => @raw "(#{f.toString()})();"
 
+############################################################################################################
+############################################################################################################
+############################################################################################################
+############################################################################################################
+############################################################################################################
+############################################################################################################
+
+#===========================================================================================================
+#
+#-----------------------------------------------------------------------------------------------------------
+@_escape_text = ( x ) ->
+  R           = x
+  R           = R.replace /&/g,   '&amp;'
+  R           = R.replace /</g,   '&lt;'
+  R           = R.replace />/g,   '&gt;'
+  return R
+
+#-----------------------------------------------------------------------------------------------------------
+@_as_attribute_literal = ( x ) ->
+  R           = if isa.text x then x else JSON.stringify x
+  must_quote  = not isa._intertext_html_naked_attribute_text R
+  R           = @_escape_text R
+  R           = R.replace /'/g,   '&#39;'
+  R           = R.replace /\n/g,  '&#10;'
+  R           = "'" + R + "'" if must_quote
+  return R
+
+#-----------------------------------------------------------------------------------------------------------
+@$html_from_datoms  = ->
+  { $, } = ( require 'steampipes' ).export()
+  return $ ( d, send ) =>
+    ds = if ( isa.list d ) then d else [ d, ]
+    for d in ds
+      send @_html_from_datom { newlines: false, }, d
+    return null
+
+#-----------------------------------------------------------------------------------------------------------
+@_html_from_datom = ( settings, d ) ->
+  return @_html_from_datom ( @text d )[ 0 ] if isa.text d ### TAINT ??? ###
+  DATOM.types.validate.datom_datom d
+  atxt          = ''
+  sigil         = d.$key[ 0 ]
+  tagname       = d.$key[ 1 .. ]
+  is_empty_tag  = isa._intertext_html_empty_element_tagname tagname
+  x_key         = null
+  is_block_tag  = d.$blk ? false
+  if settings.newlines
+    bnl = if is_block_tag then '\n\n' else ''
+    xnl = '\n'
+  else
+    bnl = ''
+    xnl = ''
+  #.........................................................................................................
+  ### TAINT simplistic solution; namespace might already be taken? ###
+  if sigil in '[~]'
+    switch sigil
+      when '[' then sigil = '<'
+      when '~' then sigil = '^'
+      when ']' then sigil = '>'
+    [ x_key, tagname, ] = [ tagname, 'x-sys', ]
+  #.........................................................................................................
+  return ( @_escape_text d.text ? '' )            if ( sigil is '^' ) and ( tagname is 'text'     )
+  return (               d.text ? '' )            if ( sigil is '^' ) and ( tagname is 'raw'      )
+  return "<!DOCTYPE #{d.$value ? 'html'}>#{xnl}"  if ( sigil is '^' ) and ( tagname is 'doctype'  )
+  return "</#{tagname}>#{bnl}"                    if sigil is '>'
+  #.........................................................................................................
+  ### NOTE sorting atxt by keys to make result predictable: ###
+  if isa.object d.$value then  src = d.$value
+  else                          src = d
+  atxt += " x-key=#{@_as_attribute_literal x_key}" if x_key?
+  for key in ( Object.keys src ).sort()
+    continue if key.startsWith '$'
+    if ( value = src[ key ] ) is true then  atxt += " #{key}"
+    else                                    atxt += " #{key}=#{@_as_attribute_literal value}"
+  #.........................................................................................................
+  ### TAINT make self-closing elements configurable, depend on HTML5 type ###
+  slash     = if ( sigil is '<' ) or is_empty_tag then '' else "</#{tagname}>#{bnl}"
+  x_sys_key = if x_key? then "<x-sys-key>#{x_key}</x-sys-key>" else ''
+  return "<#{tagname}>#{slash}#{x_sys_key}" if atxt is ''
+  return "<#{tagname}#{atxt}>#{x_sys_key}#{slash}"
+
+
+
+
+
+############################################################################################################
+############################################################################################################
+############################################################################################################
+############################################################################################################
+############################################################################################################
+############################################################################################################
 
 #===========================================================================================================
 #
@@ -219,18 +310,34 @@ class @_Specials extends @_Targeted_collection
 class @Cupofhtml extends DATOM.Cupofdatom
   # @include CUPOFHTML, { overwrite: false, }
   # @extend MAIN, { overwrite: false, }
-  _defaults: _defaults
+  _defaults:      _defaults
+  last_expansion: null
 
   #---------------------------------------------------------------------------------------------------------
   constructor: ( settings = null) ->
     super { _defaults..., settings..., }
-    # @tag = @constructor.get_keymethod_proxy @, tag
-    # @tags =
     @H = new MAIN._Tags     @
     @S = new MAIN._Specials @
     return @
 
   #---------------------------------------------------------------------------------------------------------
+  expand: -> return @last_expansion = super()
+
+  #---------------------------------------------------------------------------------------------------------
+  new_tag: ( name, attributes ) ->
+    f           = ( P... ) -> @_.tag name, attributes, P...
+    @H[ name ]  = f.bind @H
+    return null
+
+  #---------------------------------------------------------------------------------------------------------
   tag: ( name, content... ) ->
     validate.intertext_html_tagname name if name isnt null
     @cram name, content...
+
+  #---------------------------------------------------------------------------------------------------------
+  as_html: -> return ( MAIN._html_from_datom @.settings, d for d in @expand() ).join ''
+
+
+
+
+

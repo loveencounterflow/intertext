@@ -187,18 +187,18 @@ class @Specials extends @_Targeted_collection
   link_css: ( href ) ->
     ### `<link rel=stylesheet href="../reset.css"/>` ###
     unless ( arity = arguments.length ) is 1
-      throw new Error "^intertext/html/link_css@2935^ expected 1 argument, got #{arity}"
+      throw new Error "^intertext/cupofhtml/link_css@2935^ expected 1 argument, got #{arity}"
     validate.nonempty_text href
     return @_._cram @_.DATOM.new_datom '^link', { rel: 'stylesheet', href, }
 
   #---------------------------------------------------------------------------------------------------------
   script: ( x ) ->
     unless ( arity = arguments.length ) is 1
-      throw new Error "^intertext//html/link_js@3502^ expected 1 argument, got #{arity}"
+      throw new Error "^intertext//cupofhtml/link_js@3502^ expected 1 argument, got #{arity}"
     return switch type = type_of x
       when 'text'     then @_script_src     x
       when 'function' then @_script_literal x
-    throw new Error "^intertext/script@4069^ expected a text or a function, got a #{type}"
+    throw new Error "^intertext/cupofhtml/script@4069^ expected a text or a function, got a #{type}"
 
   #---------------------------------------------------------------------------------------------------------
   _script_src: ( src ) ->

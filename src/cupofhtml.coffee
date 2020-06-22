@@ -249,8 +249,11 @@ class @Specials extends @_Targeted_collection
 
 #-----------------------------------------------------------------------------------------------------------
 @_html_from_datom = ( settings, d ) ->
-  return @_html_from_datom ( @text d )[ 0 ] if isa.text d ### TAINT ??? ###
-  DATOM.types.validate.datom_datom d
+  unless DATOM.types.isa.datom_datom d
+    unless isa.text d
+      throw new Error "^intertext/cupofhtml/_html_from_datom@4786^ unable to convert a #{type_of d} to HTML; got #{rpr d}"
+    d = { $key: '^text', text: d, }
+  #.........................................................................................................
   atxt          = ''
   sigil         = d.$key[ 0 ]
   tagname       = d.$key[ 1 .. ]
@@ -337,7 +340,7 @@ class @Cupofhtml extends DATOM.Cupofdatom
     @cram name, content...
 
   #---------------------------------------------------------------------------------------------------------
-  as_html: -> return ( MAIN._html_from_datom @.settings, d for d in @expand() ).join ''
+  as_html: -> return ( MAIN._html_from_datom @settings, d for d in @expand() ).join ''
 
 
 

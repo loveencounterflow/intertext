@@ -100,6 +100,8 @@ class Intertext extends Multimix
     @SLABS        = new Slabs()
     @_PATTERNS    = new Patterns()
     @TBL          = new Tbl()
+    @DIFF         = require './diff'
+    @RE           = require './re'
     @rpr_settings =
       depth:          Infinity
       maxArrayLength: Infinity

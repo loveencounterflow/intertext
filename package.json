@@ -33,10 +33,11 @@
     "color-convert": "^2.0.1",
     "cupofjoe": "^0.1.1",
     "datom": "^7.0.1",
+    "diff-match-patch": "^1.0.5",
     "hyphenopoly": "^4.5.0",
     "intertype": "^7.0.2",
     "linebreak": "^1.0.2",
-    "multimix": "^4.0.0",
+    "multimix": "^4.1.0",
     "steampipes": "^6.3.0",
     "term-size": "^2.2.0",
     "to-width": "^1.0.4"

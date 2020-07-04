@@ -19,6 +19,9 @@ types                     = require './types'
 { to_width, width_of, }   = require 'to-width'
 Multimix                  = require 'multimix'
 
+
+### see https://github.com/JackuB/diff-match-patch ###
+
 #-----------------------------------------------------------------------------------------------------------
 class Diff extends Multimix
   # @include MAIN, { overwrite: false, }

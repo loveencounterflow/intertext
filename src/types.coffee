@@ -25,6 +25,21 @@ PATTERNS                  = require './_patterns'
     "x is a text":                   					( x ) -> @isa.text                      x
     "x ends with soft hyphen":       					( x ) -> x[ x.length - 1 ] is '\u00ad'
 
+#-----------------------------------------------------------------------------------------------------------
+@declare 'intertext_slabs_slabjoints',
+  tests:
+    "x is a object":                          ( x ) -> @isa.object x
+    "x.version is a nonempty_text":           ( x ) -> @isa.nonempty_text x.version
+    "x.joints is an object":                  ( x ) -> @isa.object x.joints
+    "x.joints.blunt is a chr":                ( x ) -> @isa.chr x.joints.blunt
+    "x.joints.shy is a chr":                  ( x ) -> @isa.chr x.joints.shy
+    "x.joints.space is a chr":                ( x ) -> @isa.chr x.joints.space
+
+#-----------------------------------------------------------------------------------------------------------
+@declare 'intertext_slabs_slabjoints_v001',
+    "x is a intertext_slabs_slabjoints":      ( x ) -> @isa.intertext_slabs_slabjoints x
+    "x.version is '0.0.1":                    ( x ) -> x.version is '0.0.1'
+
 # #-----------------------------------------------------------------------------------------------------------
 # @declare 'intertext_template_name',
 #   tests:

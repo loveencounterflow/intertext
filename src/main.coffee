@@ -53,10 +53,6 @@ class Ucd extends Multimix
   @include require './ucd'
 
 #-----------------------------------------------------------------------------------------------------------
-class Slabs extends Multimix
-  @include require './slabs'
-
-#-----------------------------------------------------------------------------------------------------------
 class Patterns extends Multimix
   @include require './_patterns'
 
@@ -97,9 +93,9 @@ class Intertext extends Multimix
     @CUPOFHTML    = new Cupofhtml()
     @HYPH         = new Hyph()
     @UCD          = new Ucd()
-    @SLABS        = new Slabs()
     @_PATTERNS    = new Patterns()
     @TBL          = new Tbl()
+    @SLABS        = require './slabs'
     @DIFF         = require './diff'
     @RE           = require './re'
     @rpr_settings =

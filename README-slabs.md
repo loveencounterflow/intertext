@@ -7,7 +7,7 @@
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [API](#api)
-- [`slb` Objects](#slb-objects)
+- [`slabjoints` Objects](#slabjoints-objects)
 - [A Practical Example](#a-practical-example)
 - [Terminology](#terminology)
 
@@ -22,14 +22,44 @@
 * `@assemble = ( slb, first_idx = null, last_idx = null ) ->`—Given an `slb` object and, optionally, two
   slab indices, return a line of text, honoring the intermediate and final LBOs as needed for typesetting.
 
-### `slb` Objects
+### `slabjoints` Objects
 
-An `slb` is a plain JS object with two attributes:
-* `slb.slabs` is a list of strings containing the individual subparts of the original text;
-* `slb.ends` ends is string of codepoints (in the range `U+0021..U+ffff`, excluding surrogates,
-  non-printables, specials, and whitespace) of the same length as `slb.slabs`, each code unit using one of a
-  number of codes to describe how the end (right edge in the case of LTR scripts, left edge in the case of
-  RTL scripts) is to be treated when re-assembling lines from slabs.
+A `slabjoints` (`sjs`) is a plain JS object that contains
+* the `segments` found for the text,
+* with each segment ending in a `joint` character taken from printable Unicode codepoints in the range
+  `U+0021..U+ffff`, excluding surrogates, non-printables, specials, combining marks, and whitespace),
+* a version string (currently `0.0.1`), and
+* a `size` attribute that records the length of the `segments` list.
+
+InterText `HYPH.hyphenate text` inserts 'Soft' (Discretionary)
+Hyphen characters (U+00ad) into the text, here symbolized with `🞛`
+
+For example, the string `Tis a consummation, devoutly to be wished.` when hyphenated gives `Tis a
+con🞛sum🞛ma🞛tion, de🞛voutly to be wished.`; this hyphenated string, when fed into
+`INTERTEXT.SLABS.slabjoints_from_text()`, gives:
+
+```js
+sjs = {
+  segments: [
+    'Tis°',
+    'a°',
+    'con=',
+    'sum=',
+    'ma=',
+    'tion,°',
+    'de=',
+    'voutly°',
+    'to°',
+    'be°',
+    'wished.#', ],
+  version:  '0.0.1',
+  joints:   { blunt: '#', shy: '=', space: '°', },
+  size:     11, }
+````
+
+
+`Tis°a°con=sum=ma=tion,°de=voutly°to°be°wished.#`
+
 
 ### A Practical Example
 

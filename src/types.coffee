@@ -28,17 +28,28 @@ PATTERNS                  = require './_patterns'
 #-----------------------------------------------------------------------------------------------------------
 @declare 'intertext_slabs_slabjoints',
   tests:
-    "x is a object":                          ( x ) -> @isa.object x
+    "x is an object":                         ( x ) -> @isa.object x
     "x.version is a nonempty_text":           ( x ) -> @isa.nonempty_text x.version
     "x.joints is an object":                  ( x ) -> @isa.object x.joints
     "x.joints.blunt is a chr":                ( x ) -> @isa.chr x.joints.blunt
     "x.joints.shy is a chr":                  ( x ) -> @isa.chr x.joints.shy
     "x.joints.space is a chr":                ( x ) -> @isa.chr x.joints.space
+    "x.cursor is a count":                    ( x ) -> @isa.count x.cursor
 
 #-----------------------------------------------------------------------------------------------------------
 @declare 'intertext_slabs_slabjoints_v001',
+  tests:
     "x is a intertext_slabs_slabjoints":      ( x ) -> @isa.intertext_slabs_slabjoints x
     "x.version is '0.0.1":                    ( x ) -> x.version is '0.0.1'
+
+#-----------------------------------------------------------------------------------------------------------
+@declare 'intertext_slabs_metrics',
+  tests:
+    "x is an object":                         ( x ) -> @isa.object x
+    "x.width is a positive float":            ( x ) -> @isa.positive_float x.width
+    "x.widths is an object":                  ( x ) -> @isa.object x.widths
+    ### TAINT should allow async functions: ###
+    "x.compute_width is a function":          ( x ) -> @isa.function x.compute_width
 
 # #-----------------------------------------------------------------------------------------------------------
 # @declare 'intertext_template_name',

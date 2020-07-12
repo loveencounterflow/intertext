@@ -94,7 +94,7 @@ class Slabs extends Multimix
       last_idx      = slab.length - 1
       #.....................................................................................................
       switch slab[ last_idx ]
-        when shy_chr  then [ end, slab, ] = [ shy, slab[ ... last_idx ], ]
+        when shy_chr  then [ end, slab, ] = [ shy, slab[ ... last_idx ] + '-', ]
         ### TAINT in the future, we might want to consider other breaking (fixed or variable) spaces ###
         when spc_chr  then [ end, slab, ] = [ space, slab[ ... last_idx ], ]
       #.....................................................................................................
@@ -110,7 +110,23 @@ class Slabs extends Multimix
     version           = @settings.versions.slabjoints
     joints            = @settings.joints
     segments          = ( slab + ends[ idx ] for slab, idx in slabs )
-    return { segments, version, joints, size: segments.length, }
+    return { segments, version, joints, size: segments.length, cursor: 0, }
+
+  #---------------------------------------------------------------------------------------------------------
+  text_and_joint_from_segment: ( text ) ->
+    ### TAINT should pass in slabjoints object, idx, should not return joint chr but joint type ###
+    validate.nonempty_text text
+    return [ text[ ... text.length - 1 ], text[ text.length - 1 ], ]
+
+  #---------------------------------------------------------------------------------------------------------
+  get_line_candidates: ( slabjoints, metrics ) ->
+    validate.intertext_slabs_slabjoints_v001 slabjoints
+    validate.intertext_slabs_metrics metrics
+    return @_get_line_candidates slabjoints, metrics
+
+  #---------------------------------------------------------------------------------------------------------
+  _get_line_candidates: ( slabjoints, metrics ) ->
+    validate.intertext_slabs_slabjoints_v001 slabjoints
 
   #---------------------------------------------------------------------------------------------------------
   assemble: ( slabjoints, first_idx = null, last_idx = null ) ->
@@ -135,7 +151,8 @@ class Slabs extends Multimix
         when blunt  then null
         when space  then ( if idx isnt last_idx then R += '\x20' )
         ### TAINT allow to configure hyphen ###
-        when shy    then ( if idx is last_idx then R += '-' )
+        when shy    then ( if idx isnt last_idx then R = R[ ... R.length - 1 ] )
+        # when shy    then ( if idx is last_idx then R += '-' )
         else throw new Error "^INTERTEXT/SLABS@4352^ unknown slab `end` option #{rpr end}"
     #.......................................................................................................
     return R

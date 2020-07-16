@@ -98,6 +98,7 @@ class Intertext extends Multimix
     @SLABS        = require './slabs'
     @DIFF         = require './diff'
     @RE           = require './re'
+    @WRAP         = require './wordwrap'
     @rpr_settings =
       depth:          Infinity
       maxArrayLength: Infinity

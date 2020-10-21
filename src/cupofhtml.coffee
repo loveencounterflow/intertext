@@ -249,6 +249,8 @@ class @Specials extends @_Targeted_collection
 
 #-----------------------------------------------------------------------------------------------------------
 @_html_from_datom = ( settings, d ) ->
+  ### TAINT should not use `$key` for the tag name, rather, use `$key` to distinguish tags, texts ###
+  ### TAINT make compatible with Paragate HTMLish parser ###
   unless DATOM.types.isa.datom_datom d
     unless isa.text d
       throw new Error "^intertext/cupofhtml/_html_from_datom@4786^ unable to convert a #{type_of d} to HTML; got #{rpr d}"

@@ -28,13 +28,13 @@ PATTERNS                  = require './_patterns'
 #-----------------------------------------------------------------------------------------------------------
 @declare 'intertext_slabs_slabjoints',
   tests:
-    "x is an object":                         ( x ) -> @isa.object x
-    "x.version is a nonempty_text":           ( x ) -> @isa.nonempty_text x.version
-    "x.joints is an object":                  ( x ) -> @isa.object x.joints
-    "x.joints.blunt is a chr":                ( x ) -> @isa.chr x.joints.blunt
-    "x.joints.shy is a chr":                  ( x ) -> @isa.chr x.joints.shy
-    "x.joints.space is a chr":                ( x ) -> @isa.chr x.joints.space
-    "x.cursor is a count":                    ( x ) -> @isa.count x.cursor
+    "@isa.object x":                          ( x ) -> @isa.object x
+    "@isa.nonempty_text x.version":           ( x ) -> @isa.nonempty_text x.version
+    "@isa.object x.joints":                   ( x ) -> @isa.object x.joints
+    "@isa.chr x.joints.blunt":                ( x ) -> @isa.chr x.joints.blunt
+    "@isa.chr x.joints.shy":                  ( x ) -> @isa.chr x.joints.shy
+    "@isa.chr x.joints.space":                ( x ) -> @isa.chr x.joints.space
+    "@isa.cardinal x.cursor":                 ( x ) -> @isa.cardinal x.cursor
 
 #-----------------------------------------------------------------------------------------------------------
 @declare 'intertext_slabs_slabjoints_v001',

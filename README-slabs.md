@@ -10,6 +10,7 @@
 - [`slabjoints` Objects](#slabjoints-objects)
 - [A Practical Example](#a-practical-example)
 - [Terminology](#terminology)
+- [npm Packages](#npm-packages)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -205,3 +206,15 @@ Slabs used to be known as 'Logotypes' in typesetting:
 > There were later attempts to speed up the typesetting process by casting syllables or entire words as one
 > piece. Those pieces were called logotypes—from Ancient Greek “lógos” meaning
 > “word”.—(typography.guru)[https://typography.guru/journal/words-and-phrases-in-common-use-which-originated-in-the-field-of-typography-r78/]
+
+
+### npm Packages
+
+* [foliojs/linebreak](https://github.com/foliojs/linebreak): "A JS implementation of the Unicode Line
+  Breaking Algorithm (UAX #14)"
+* [robertknight/tex-linebreak](https://github.com/robertknight/tex-linebreak): "JavaScript implementation of
+  the Knuth-Plass linebreaking algorithm"
+
+
+
+

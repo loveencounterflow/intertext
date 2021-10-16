@@ -11,7 +11,6 @@ specifiers:
   linebreak: ^1.0.2
   multimix: 5.0.0
   steampipes: 6.7.1
-  term-size: 2.2.1
   to-width: ^1.1.0
 
 dependencies:
@@ -25,7 +24,6 @@ dependencies:
   linebreak: 1.0.2
   multimix: 5.0.0
   steampipes: 6.7.1
-  term-size: 2.2.1
   to-width: 1.1.0
 
 packages:
@@ -559,11 +557,6 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       ansi-regex: 5.0.0
-    dev: false
-
-  /term-size/2.2.1:
-    resolution: {integrity: sha512-wK0Ri4fOGjv/XPy8SBHZChl8CM7uMc5VML7SqiQ0zG7+J5Vr+RMQDoHa2CNT6KHUnTGIXH34UDMkPzAUyapBZg==}
-    engines: {node: '>=8'}
     dev: false
 
   /through2/2.0.5:

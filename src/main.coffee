@@ -61,7 +61,7 @@ class Tbl extends Multimix
   @include require './tabulate'
 
 #-----------------------------------------------------------------------------------------------------------
-@get_terminal_size = -> ( require 'term-size' )()
+@get_terminal_size = -> ( require '../dependencies/sindre-sorhus-term-size.js' )()
 
 #-----------------------------------------------------------------------------------------------------------
 @rpr = ( P... ) ->

@@ -29,17 +29,17 @@
   },
   "homepage": "https://github.com/loveencounterflow/intertext#readme",
   "dependencies": {
-    "cnd": "^9.0.0",
+    "cnd": "9.2.2",
     "color-convert": "^2.0.1",
-    "cupofjoe": "^0.1.1",
-    "datom": "^7.0.1",
+    "cupofjoe": "0.2.1",
+    "datom": "8.0.3",
     "diff-match-patch": "^1.0.5",
-    "hyphenopoly": "^4.5.0",
-    "intertype": "^7.0.2",
+    "hyphenopoly": "4.12.0",
+    "intertype": "7.6.7",
     "linebreak": "^1.0.2",
-    "multimix": "^4.1.0",
-    "steampipes": "^6.3.0",
-    "term-size": "^2.2.0",
+    "multimix": "5.0.0",
+    "steampipes": "6.7.1",
+    "term-size": "=2.2.1",
     "to-width": "^1.1.0"
   }
 }

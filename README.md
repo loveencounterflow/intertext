@@ -50,7 +50,8 @@ See also the (rough) [list of planned features](./README-planned.md).
 * [ ] implement number formatting using `Intl.NumberFormat`, including percentages, rounding
 * [ ] CupOfHTML: make compatible with Paragate HTMLish parser
 * [ ] CupOfHTML: consider using template strings as in ``H`div#id.class` 'content'``
-
+* [ ] turn into monorepo
+* [ ] integrate `jzr-old/timetunnel`
 
 
 

@@ -38,6 +38,28 @@ types                     = require './types'
 { Cupofjoe }              = require 'cupofjoe'
 assign                    = Object.assign
 excluded_content_parts    = [ '', null, undefined, ]
+compact_tagname_re        = ///
+  (?<prefix>[^\s.:#]+(?=:)) |
+  (?<id>(?<=#)[^\s.:#]+) |
+  (?<class>(?<=\.)[^\s.:#]+) |
+  (?<name>[^\s.:#]+)
+  ///ug
+
+#-----------------------------------------------------------------------------------------------------------
+@parse_compact_tagname = ( compact_tagname, strict = false ) ->
+  R = {}
+  for { groups, } from compact_tagname.matchAll compact_tagname_re
+    for k, v of groups
+      continue if ( not v? ) or ( v is '' )
+      if k is 'class'
+        ( R.class ?= [] ).push v
+      else
+        if ( target = R[ k ] )?
+          throw new Error "^intertext/htmlish/parse_compact_tagname@1^ found duplicate values for #{rpr k}: #{rpr target}, #{rpr v}"
+        R[ k ] = v
+  if strict and not R.name?
+    throw new Error "^intertext/htmlish/parse_compact_tagname@2^ illegal compact tag syntax in #{rpr compact_tagname}"
+  return R
 
 
 #===========================================================================================================
@@ -132,57 +154,57 @@ excluded_content_parts    = [ '', null, undefined, ]
   return { start: start_tag, content: processed_content, }
 ###
 
-# #-----------------------------------------------------------------------------------------------------------
-# @html_from_datoms   = ( ds, settings ) -> return ( @_html_from_datom d for d in ds.flat Infinity ).join ''
+#-----------------------------------------------------------------------------------------------------------
+@html_from_datoms   = ( ds, settings ) -> return ( @_html_from_datom d for d in ds.flat Infinity ).join ''
 
-# #-----------------------------------------------------------------------------------------------------------
-# @$html_from_datoms  = ->
-#   { $, } = ( require 'steampipes' ).export()
-#   return $ ( d, send ) =>
-#     return send @_html_from_datom d unless isa.list d
-#     send x for x in @html_from_datoms d...
-#     return null
+#-----------------------------------------------------------------------------------------------------------
+@$html_from_datoms  = ->
+  { $, } = ( require 'steampipes' ).export()
+  return $ ( d, send ) =>
+    return send @_html_from_datom d unless isa.list d
+    send x for x in @html_from_datoms d...
+    return null
 
-# #-----------------------------------------------------------------------------------------------------------
-# @_html_from_datom = ( d ) ->
-#   return @_html_from_datom ( @text d )[ 0 ] if isa.text d ### TAINT ??? ###
-#   DATOM.types.validate.datom_datom d
-#   atxt          = ''
-#   sigil         = d.$key[ 0 ]
-#   tagname       = d.$key[ 1 .. ]
-#   is_empty_tag  = isa._intertext_html_empty_element_tagname tagname
-#   x_key         = null
-#   is_block_tag  = d.$blk ? false
-#   bnl           = if is_block_tag then '\n\n' else ''   ### TAINT make configurable ###
-#   xnl           = '\n'                                  ### TAINT make configurable ###
-#   #.........................................................................................................
-#   ### TAINT simplistic solution; namespace might already be taken? ###
-#   if sigil in '[~]'
-#     switch sigil
-#       when '[' then sigil = '<'
-#       when '~' then sigil = '^'
-#       when ']' then sigil = '>'
-#     [ x_key, tagname, ] = [ tagname, 'x-sys', ]
-#   #.........................................................................................................
-#   return ( @_escape_text d.text ? '' )            if ( sigil is '^' ) and ( tagname is 'text'     )
-#   return (               d.text ? '' )            if ( sigil is '^' ) and ( tagname is 'raw'      )
-#   return "<!DOCTYPE #{d.$value ? 'html'}>#{xnl}"  if ( sigil is '^' ) and ( tagname is 'doctype'  )
-#   return "</#{tagname}>#{bnl}"                    if sigil is '>'
-#   #.........................................................................................................
-#   ### NOTE sorting atxt by keys to make result predictable: ###
-#   if isa.object d.$value then  src = d.$value
-#   else                          src = d
-#   atxt += " x-key=#{@_as_attribute_literal x_key}" if x_key?
-#   for key in ( Object.keys src ).sort()
-#     continue if key.startsWith '$'
-#     if ( value = src[ key ] ) is true then  atxt += " #{key}"
-#     else                                    atxt += " #{key}=#{@_as_attribute_literal value}"
-#   #.........................................................................................................
-#   ### TAINT make self-closing elements configurable, depend on HTML5 type ###
-#   slash     = if ( sigil is '<' ) or is_empty_tag then '' else "</#{tagname}>#{bnl}"
-#   x_sys_key = if x_key? then "<x-sys-key>#{x_key}</x-sys-key>" else ''
-#   return "<#{tagname}>#{slash}#{x_sys_key}" if atxt is ''
-#   return "<#{tagname}#{atxt}>#{x_sys_key}#{slash}"
+#-----------------------------------------------------------------------------------------------------------
+@_html_from_datom = ( d ) ->
+  return @_html_from_datom ( @text d )[ 0 ] if isa.text d ### TAINT ??? ###
+  DATOM.types.validate.datom_datom d
+  atxt          = ''
+  sigil         = d.$key[ 0 ]
+  tagname       = d.$key[ 1 .. ]
+  is_empty_tag  = isa._intertext_html_empty_element_tagname tagname
+  x_key         = null
+  is_block_tag  = d.$blk ? false
+  bnl           = if is_block_tag then '\n\n' else ''   ### TAINT make configurable ###
+  xnl           = '\n'                                  ### TAINT make configurable ###
+  #.........................................................................................................
+  ### TAINT simplistic solution; namespace might already be taken? ###
+  if sigil in '[~]'
+    switch sigil
+      when '[' then sigil = '<'
+      when '~' then sigil = '^'
+      when ']' then sigil = '>'
+    [ x_key, tagname, ] = [ tagname, 'x-sys', ]
+  #.........................................................................................................
+  return ( @_escape_text d.text ? '' )            if ( sigil is '^' ) and ( tagname is 'text'     )
+  return (               d.text ? '' )            if ( sigil is '^' ) and ( tagname is 'raw'      )
+  return "<!DOCTYPE #{d.$value ? 'html'}>#{xnl}"  if ( sigil is '^' ) and ( tagname is 'doctype'  )
+  return "</#{tagname}>#{bnl}"                    if sigil is '>'
+  #.........................................................................................................
+  ### NOTE sorting atxt by keys to make result predictable: ###
+  if isa.object d.$value then  src = d.$value
+  else                          src = d
+  atxt += " x-key=#{@_as_attribute_literal x_key}" if x_key?
+  for key in ( Object.keys src ).sort()
+    continue if key.startsWith '$'
+    if ( value = src[ key ] ) is true then  atxt += " #{key}"
+    else                                    atxt += " #{key}=#{@_as_attribute_literal value}"
+  #.........................................................................................................
+  ### TAINT make self-closing elements configurable, depend on HTML5 type ###
+  slash     = if ( sigil is '<' ) or is_empty_tag then '' else "</#{tagname}>#{bnl}"
+  x_sys_key = if x_key? then "<x-sys-key>#{x_key}</x-sys-key>" else ''
+  return "<#{tagname}>#{slash}#{x_sys_key}" if atxt is ''
+  return "<#{tagname}#{atxt}>#{x_sys_key}#{slash}"
 
 
 

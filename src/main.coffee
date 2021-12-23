@@ -95,7 +95,6 @@ class Intertext extends Multimix
     @UCD          = new Ucd()
     @_PATTERNS    = new Patterns()
     @TBL          = new Tbl()
-    @SLABS        = require './slabs'
     @DIFF         = require './diff'
     @RE           = require './re'
     @WRAP         = require './wordwrap'

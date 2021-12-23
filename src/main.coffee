@@ -37,8 +37,8 @@ format_as_percentage      = ( x ) -> _format '#,##0.00',  x * 100
 ###
 
 #-----------------------------------------------------------------------------------------------------------
-class Html extends Multimix
-  @include require './html'
+class Htmlish extends Multimix
+  @include require './htmlish'
 
 #-----------------------------------------------------------------------------------------------------------
 class Cupofhtml extends Multimix
@@ -89,7 +89,7 @@ class Intertext extends Multimix
   #---------------------------------------------------------------------------------------------------------
   constructor: ( target = null ) ->
     super()
-    @HTML         = new Html()
+    @HTMLISH      = new Htmlish()
     @CUPOFHTML    = new Cupofhtml()
     @HYPH         = new Hyph()
     @UCD          = new Ucd()

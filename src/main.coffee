@@ -97,7 +97,6 @@ class Intertext extends Multimix
     @TBL          = new Tbl()
     @DIFF         = require './diff'
     @RE           = require './re'
-    @WRAP         = require './wordwrap'
     @rpr_settings =
       depth:          Infinity
       maxArrayLength: Infinity
